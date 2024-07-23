@@ -26,7 +26,7 @@ namespace LiminalSpaceMazeGame
         public int Attack { get => attack; set => attack = value; }
         public int Damage { get => damage; set => damage = value; }
 
-        protected virtual void move()
+        public virtual void update()
         {
 
         }
@@ -56,7 +56,7 @@ namespace LiminalSpaceMazeGame
         {
 
         }
-        protected virtual void draw(SpriteBatch spriteBatch)
+        public virtual void draw(SpriteBatch spriteBatch)
         {
 
         }

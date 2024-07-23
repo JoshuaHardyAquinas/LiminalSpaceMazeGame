@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace LiminalSpaceMazeGame
@@ -13,8 +12,12 @@ namespace LiminalSpaceMazeGame
     internal class StationaryObject
     {
         public Vector2 Location;
+        public float rotation;
         protected Texture2D Texture;
+        public virtual void update()
+        {
 
+        }
         public virtual void LoadContent(ContentManager Content)
         {
 
@@ -27,7 +30,7 @@ namespace LiminalSpaceMazeGame
         {
 
         }
-        protected virtual void draw(SpriteBatch spriteBatch)
+        public virtual void draw(SpriteBatch spriteBatch)
         {
 
         }

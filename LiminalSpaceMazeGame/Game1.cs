@@ -31,7 +31,7 @@ namespace LiminalSpaceMazeGame
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
             TheHero.LoadContent(Content);
 
             // TODO: use this.Content to load your game content here
@@ -40,8 +40,11 @@ namespace LiminalSpaceMazeGame
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
 
+            }
+            TheHero.update();
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -52,7 +55,9 @@ namespace LiminalSpaceMazeGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             // TODO: Add your drawing code here
-
+            spriteBatch.Begin();
+            TheHero.draw(spriteBatch);
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
