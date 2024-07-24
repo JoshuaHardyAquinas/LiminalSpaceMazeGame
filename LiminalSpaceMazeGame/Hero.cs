@@ -23,7 +23,7 @@ namespace LiminalSpaceMazeGame
             up,
         }
         private Vector2 Movement;
-       
+        float PI = 3.141592f;
 
         public Hero()
         {
@@ -42,53 +42,56 @@ namespace LiminalSpaceMazeGame
             speed = speed * speedMultiplyer;
             if (ks.IsKeyDown(Keys.A) && Location.X > 0)
             {
-                rotation = rotation - 0.1f;
-                Movement.X = -speed;
-                Movement.Y = 0;
+                rotation = rotation - PI/16f;
             }
             if (ks.IsKeyDown(Keys.D) && Location.X < 1000)
             {
-                rotation = rotation + 0.1f;
-
-                Movement.X = speed;
-                Movement.Y = 0;
+                rotation = rotation + PI/16f;
             }
             if (ks.IsKeyDown(Keys.S) && Location.Y < 1000)
             {
-                Movement.X = 0;
-                Movement.Y = speed;
-                if (ks.IsKeyDown(Keys.A))
+                Movement.X = speed * (float)Math.Cos(rotation);
+                Movement.Y = speed * (float)Math.Sin(rotation);
+                /*if (ks.IsKeyDown(Keys.A))
                 {
                     Movement.X = -speed;
                 }
                 if (ks.IsKeyDown(Keys.D))
                 {
                     Movement.X = speed;
-                }
+                }*/
             }
            if (ks.IsKeyDown(Keys.W) && Location.X > 0)
             {
-                Movement.X = 0;
-                Movement.Y = -speed;
-                if (ks.IsKeyDown(Keys.A))
+                Movement.X = -speed * (float)Math.Cos(rotation);
+                Movement.Y = -speed * (float)Math.Sin(rotation);
+                /*if (ks.IsKeyDown(Keys.A))
                 {
                     Movement.X = -speed;
                 }
                 if (ks.IsKeyDown(Keys.D))
                 {
                     Movement.X = speed;
-                }
+                }*/
             }
             if (!ks.IsKeyDown(Keys.A) && !ks.IsKeyDown(Keys.W) && !ks.IsKeyDown(Keys.S) && !ks.IsKeyDown(Keys.D))
             {
                 Movement.X = 0;
                 Movement.Y = 0;
             }
+            if (rotation > PI*2f)
+            {
+                rotation = 0;
+            }
+            if (rotation < 0)
+            {
+                rotation = PI*2f;
+            }
             Location = Location + Movement;
         }
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White,rotation,new Vector2(Texture.Width/2f,Texture.Height/2f),new Vector2(1,1),SpriteEffects.None,1);
+            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
         public override void LoadContent(ContentManager Content)
         {
