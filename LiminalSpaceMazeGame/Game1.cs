@@ -25,6 +25,7 @@ namespace LiminalSpaceMazeGame
         protected override void Initialize()
         {
             TheHero = new Hero();
+            TheMaze = new GenerateMaze();
             // TODO: Add your initialization logic here
 
             base.Initialize();

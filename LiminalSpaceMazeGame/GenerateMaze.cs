@@ -19,7 +19,7 @@ namespace LiminalSpaceMazeGame
         public static Random rnd = new Random();
         public int[,] GenerateNewMaze()
         {
-            int mazeWidth=14, mazeHeight=14;
+            int mazeWidth=15, mazeHeight=15;
             int[,] newMaze = new int[mazeWidth, mazeHeight];
             int[] startingCoords = { 0, 0 };
             int[] nextCoords = { 0, 0 };
@@ -104,7 +104,7 @@ namespace LiminalSpaceMazeGame
                 prevCoords = (int[])currentCoords.Clone(); // Ai Fix
                 currentCoords = (int[])nextCoords.Clone(); // Ai Fix
 
-                backtrackingMazeAlg(currentCoords, nextCoords, maze, length, width);
+                backtrackingMazeAlg(currentCoords, nextCoords, maze, length, width);//backtracking
                 backtrackingMazeAlg(currentCoords, prevCoords, maze, length, width);
             }
             return maze;
