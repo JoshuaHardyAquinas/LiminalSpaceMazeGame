@@ -40,44 +40,25 @@ namespace LiminalSpaceMazeGame
             int speedMultiplyer = 1;
             int speed = 1;
             speed = speed * speedMultiplyer;
-            if (ks.IsKeyDown(Keys.A) && Location.X > 0)
+            Movement.X = 0;
+            Movement.Y = 0;
+            if (ks.IsKeyDown(Keys.A))
             {
                 rotation = rotation - PI/16f;
             }
-            if (ks.IsKeyDown(Keys.D) && Location.X < 1000)
+            if (ks.IsKeyDown(Keys.D))
             {
                 rotation = rotation + PI/16f;
             }
-            if (ks.IsKeyDown(Keys.S) && Location.Y < 1000)
+            if (ks.IsKeyDown(Keys.S))
             {
                 Movement.X = speed * (float)Math.Cos(rotation);
                 Movement.Y = speed * (float)Math.Sin(rotation);
-                /*if (ks.IsKeyDown(Keys.A))
-                {
-                    Movement.X = -speed;
-                }
-                if (ks.IsKeyDown(Keys.D))
-                {
-                    Movement.X = speed;
-                }*/
             }
-           if (ks.IsKeyDown(Keys.W) && Location.X > 0)
+            if (ks.IsKeyDown(Keys.W))
             {
                 Movement.X = -speed * (float)Math.Cos(rotation);
                 Movement.Y = -speed * (float)Math.Sin(rotation);
-                /*if (ks.IsKeyDown(Keys.A))
-                {
-                    Movement.X = -speed;
-                }
-                if (ks.IsKeyDown(Keys.D))
-                {
-                    Movement.X = speed;
-                }*/
-            }
-            if (!ks.IsKeyDown(Keys.A) && !ks.IsKeyDown(Keys.W) && !ks.IsKeyDown(Keys.S) && !ks.IsKeyDown(Keys.D))
-            {
-                Movement.X = 0;
-                Movement.Y = 0;
             }
             if (rotation > PI*2f)
             {
@@ -86,6 +67,14 @@ namespace LiminalSpaceMazeGame
             if (rotation < 0)
             {
                 rotation = PI*2f;
+            }
+            if(Location.X < 0)
+            {
+                Location.X = 0;
+            }
+            if (Location.Y < 0)
+            {
+                Location.Y = 0;
             }
             Location = Location + Movement;
         }
