@@ -9,6 +9,7 @@ namespace LiminalSpaceMazeGame
     public class Game1 : Game
     {
         Hero TheHero;
+        GenerateMaze TheMaze;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -27,6 +28,7 @@ namespace LiminalSpaceMazeGame
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            int[,] maze = TheMaze.GenerateNewMaze();
         }
 
         protected override void LoadContent()
