@@ -14,6 +14,8 @@ namespace LiminalSpaceMazeGame
 {
     internal class Hero : MovingObject
     {
+        private int textureHieght = 20;
+        private int textureWidth = 20;
         public enum Direction
         {
             none,
@@ -80,11 +82,11 @@ namespace LiminalSpaceMazeGame
         }
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
+            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, textureWidth, textureHieght), Color.White, rotation, new Vector2(textureWidth/2f, textureHieght/2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
         public override void LoadContent(ContentManager Content)
         {
-            Texture = Content.Load<Texture2D>("Yellow_Box");
+            Texture = Content.Load<Texture2D>("2d_Hero");
         }
         protected override void spawn()
         {
