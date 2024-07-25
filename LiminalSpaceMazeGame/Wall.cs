@@ -10,16 +10,17 @@ using System.Windows.Forms;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class walls:StationaryObject
+    public class Wall:StationaryObject
     {
-        int textureWidth = 40;
-        int textureHieght = 40;
-        public walls(int i,int j)
+        protected int textureWidth = 40;
+        protected int textureHieght = 40;
+        public Wall(int i,int j)
         {
             Location = new Vector2(i * textureWidth, j * textureHieght);
         }
         public override void update()
         {
+            Edge = new Rectangle((int)Location.X, (int)Location.Y, textureHieght, textureWidth);
             //TODO: COLIDE WITH EDGE OF PLAYER!
         }
         public override void LoadContent(ContentManager Content)

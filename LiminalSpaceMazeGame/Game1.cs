@@ -12,12 +12,11 @@ namespace LiminalSpaceMazeGame
         Hero TheHero;
         GenerateMaze TheMaze;
 
-        List<walls> wall = new List<walls>();
+        public List<Wall> walls = new List<Wall>();
 
         private GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
-        SpriteFont GameFont;
-        Random Rng = new Random();
+
 
         int mazeHieght = 11;
         int mazeWidth = 15;
@@ -40,9 +39,9 @@ namespace LiminalSpaceMazeGame
                 for (int j = 0; j < mazeHieght; j++)
                 {
                     if (maze[i,j] == 0) {
-                        walls newWall = new walls(i, j);
+                        Wall newWall = new Wall(i, j);
                         newWall.LoadContent(Content);
-                        wall.Add(newWall);
+                        walls.Add(newWall);
                     }
                 }
             }
@@ -61,7 +60,6 @@ namespace LiminalSpaceMazeGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
-
             }
             TheHero.update();
             // TODO: Add your update logic here
@@ -75,9 +73,9 @@ namespace LiminalSpaceMazeGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            for (int i = 0; i < wall.Count; i++)
+            for (int i = 0; i < walls.Count; i++)
             {
-                wall[i].draw(spriteBatch);
+                walls[i].draw(spriteBatch);
             }
             TheHero.draw(spriteBatch);
             spriteBatch.End();

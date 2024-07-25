@@ -8,7 +8,7 @@ namespace LiminalSpaceMazeGame
 {
     public class GenerateMaze
     {
-        enum Direction
+        protected enum Direction
         {
             none,
             North,
@@ -16,7 +16,7 @@ namespace LiminalSpaceMazeGame
             South,
             West
         }
-        public static Random rnd = new Random();
+        protected static Random rnd = new Random();
         public int[,] GenerateNewMaze(int mazeWidth,int mazeHeight)
         {
             

@@ -9,11 +9,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class StationaryObject
+    public class StationaryObject
     {
         public Vector2 Location;
         public float rotation;
         protected Texture2D Texture;
+        public Rectangle Edge;
         public virtual void update()
         {
 

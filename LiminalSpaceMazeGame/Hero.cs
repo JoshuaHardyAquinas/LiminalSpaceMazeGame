@@ -33,11 +33,16 @@ namespace LiminalSpaceMazeGame
             Location = new Vector2(60, 60);
             Movement = new Vector2(0, 0);
             rotation = 0;
+            
         }
         public override void update()
         {
-            //Edge = new Rectangle((int)Location.X, (int)Location.Y, 32, 54);
-
+            Rectangle Edge = new Rectangle((int)Location.X, (int)Location.Y, textureHieght, textureWidth);
+            move();
+            die();
+        }
+        protected void move()
+        {
             KeyboardState ks = Keyboard.GetState();
             int speedMultiplyer = 1;
             int speed = 1;
@@ -46,11 +51,11 @@ namespace LiminalSpaceMazeGame
             Movement.Y = 0;
             if (ks.IsKeyDown(Keys.A))
             {
-                rotation = rotation - PI/16f;
+                rotation = rotation - PI / 16f;
             }
             if (ks.IsKeyDown(Keys.D))
             {
-                rotation = rotation + PI/16f;
+                rotation = rotation + PI / 16f;
             }
             if (ks.IsKeyDown(Keys.S))
             {
@@ -59,19 +64,19 @@ namespace LiminalSpaceMazeGame
             }
             if (ks.IsKeyDown(Keys.W))
             {
-                
+
                 Movement.X = -speed * (float)Math.Sin(rotation);
                 Movement.Y = speed * (float)Math.Cos(rotation);
             }
-            if (rotation > PI*2f)
+            if (rotation > PI * 2f)
             {
                 rotation = 0;
             }
             if (rotation < 0)
             {
-                rotation = PI*2f;
+                rotation = PI * 2f;
             }
-            if(Location.X < 0)
+            if (Location.X < 0)
             {
                 Location.X = 0;
             }
@@ -80,10 +85,6 @@ namespace LiminalSpaceMazeGame
                 Location.Y = 0;
             }
             Location = Location + Movement;
-            if (Health <= 0)
-            {
-                die();
-            }
         }
         public override void draw(SpriteBatch spriteBatch)
         {
@@ -99,7 +100,10 @@ namespace LiminalSpaceMazeGame
         }
         protected override void die()
         {
-            
+            if (Health <= 0)
+            {
+                //die
+            }
         }
     }
 }
