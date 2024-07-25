@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace LiminalSpaceMazeGame
 {
@@ -11,8 +12,9 @@ namespace LiminalSpaceMazeGame
         Hero TheHero;
         GenerateMaze TheMaze;
 
+        List<walls> Holes = new List<walls>();
+
         private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
         SpriteBatch spriteBatch;
         SpriteFont GameFont;
         Random Rng = new Random();
