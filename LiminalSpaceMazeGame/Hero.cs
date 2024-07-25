@@ -54,13 +54,14 @@ namespace LiminalSpaceMazeGame
             }
             if (ks.IsKeyDown(Keys.S))
             {
-                Movement.X = speed * (float)Math.Cos(rotation);
-                Movement.Y = speed * (float)Math.Sin(rotation);
+                Movement.X = speed * (float)Math.Sin(rotation);
+                Movement.Y = -speed * (float)Math.Cos(rotation);
             }
             if (ks.IsKeyDown(Keys.W))
             {
-                Movement.X = -speed * (float)Math.Cos(rotation);
-                Movement.Y = -speed * (float)Math.Sin(rotation);
+                
+                Movement.X = -speed * (float)Math.Sin(rotation);
+                Movement.Y = speed * (float)Math.Cos(rotation);
             }
             if (rotation > PI*2f)
             {
@@ -79,6 +80,10 @@ namespace LiminalSpaceMazeGame
                 Location.Y = 0;
             }
             Location = Location + Movement;
+            if (Health <= 0)
+            {
+                die();
+            }
         }
         public override void draw(SpriteBatch spriteBatch)
         {
@@ -94,7 +99,7 @@ namespace LiminalSpaceMazeGame
         }
         protected override void die()
         {
-
+            
         }
     }
 }

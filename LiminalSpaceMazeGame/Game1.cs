@@ -75,11 +75,11 @@ namespace LiminalSpaceMazeGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            TheHero.draw(spriteBatch);
             for (int i = 0; i < wall.Count; i++)
             {
                 wall[i].draw(spriteBatch);
             }
+            TheHero.draw(spriteBatch);
             spriteBatch.End();
             
             base.Draw(gameTime);
