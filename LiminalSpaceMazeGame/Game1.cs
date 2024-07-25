@@ -12,12 +12,15 @@ namespace LiminalSpaceMazeGame
         Hero TheHero;
         GenerateMaze TheMaze;
 
-        List<walls> Holes = new List<walls>();
+        List<walls> wall = new List<walls>();
 
         private GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
         SpriteFont GameFont;
         Random Rng = new Random();
+
+        int mazeHieght = 11;
+        int mazeWidth = 15;
 
         public Game1()
         {
@@ -31,7 +34,18 @@ namespace LiminalSpaceMazeGame
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            int[,] maze = TheMaze.GenerateNewMaze();
+            int[,] maze = TheMaze.GenerateNewMaze(mazeWidth,mazeHieght);
+            for (int i = 0; i < mazeWidth; i++)
+            {
+                for (int j = 0; j < mazeHieght; j++)
+                {
+                    if (maze[i,j] == 0) {
+                        walls newWall = new walls(i, j);
+                        newWall.LoadContent(Content);
+                        wall.Add(newWall);
+                    }
+                }
+            }
         }
 
         protected override void LoadContent()
@@ -62,7 +76,12 @@ namespace LiminalSpaceMazeGame
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             TheHero.draw(spriteBatch);
+            for (int i = 0; i < wall.Count; i++)
+            {
+                wall[i].draw(spriteBatch);
+            }
             spriteBatch.End();
+            
             base.Draw(gameTime);
         }
     }

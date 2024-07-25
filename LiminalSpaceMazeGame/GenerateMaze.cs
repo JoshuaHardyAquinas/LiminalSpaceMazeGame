@@ -17,12 +17,12 @@ namespace LiminalSpaceMazeGame
             West
         }
         public static Random rnd = new Random();
-        public int[,] GenerateNewMaze()
+        public int[,] GenerateNewMaze(int mazeWidth,int mazeHeight)
         {
-            int mazeWidth=15, mazeHeight=15;
+            
             int[,] newMaze = new int[mazeWidth, mazeHeight];
-            int[] startingCoords = { 0, 0 };
-            int[] nextCoords = { 0, 0 };
+            int[] startingCoords = { 1, 1 };
+            int[] nextCoords = { 1, 1 };
             newMaze = backtrackingMazeAlg(nextCoords, startingCoords, newMaze, mazeWidth, mazeHeight);
 
             return newMaze;
@@ -35,22 +35,37 @@ namespace LiminalSpaceMazeGame
                 Direction.East,
                 Direction.West
             };
-            if (currentCoords[0] - 2 < 0 || maze[currentCoords[0] - 2, currentCoords[1]] != 0) // north
-            {
-                dir[0] = Direction.none;
+            try{
+                if (currentCoords[0] - 2 < 0 || maze[currentCoords[0] - 2, currentCoords[1]] != 0) // north
+                {
+                    dir[0] = Direction.none;
+                }
             }
-            if (currentCoords[0] + 2 > length - 1 || maze[currentCoords[0] + 2, currentCoords[1]] != 0) // south
+            catch{dir[0] = Direction.none;}
+            try
             {
-                dir[1] = Direction.none;
+                if(currentCoords[0] + 2 > length - 1 || maze[currentCoords[0] + 2, currentCoords[1]] != 0) // south
+                {
+                    dir[1] = Direction.none;
+                }
             }
-            if (currentCoords[1] + 2 > width - 1 || maze[currentCoords[0], currentCoords[1] + 2] != 0) // east
+            catch { dir[1] = Direction.none;}
+            try
             {
-                dir[2] = Direction.none;
+                if (currentCoords[1] + 2 > width - 1 || maze[currentCoords[0], currentCoords[1] + 2] != 0) // east
+                {
+                    dir[2] = Direction.none;
+                }
             }
-            if (currentCoords[1] - 2 < 0 || maze[currentCoords[0], currentCoords[1] - 2] != 0) // west
+            catch { dir[2] = Direction.none; }
+            try
             {
-                dir[3] = Direction.none;
+                if (currentCoords[1] - 2 < 0 || maze[currentCoords[0], currentCoords[1] - 2] != 0) // west
+                {
+                    dir[3] = Direction.none;
+                }
             }
+            catch { dir[3] = Direction.none; }
             bool nullCase = true;
             for (int i = 0; i < dir.Length; i++)
             {
@@ -104,7 +119,7 @@ namespace LiminalSpaceMazeGame
                 prevCoords = (int[])currentCoords.Clone(); // Ai Fix
                 currentCoords = (int[])nextCoords.Clone(); // Ai Fix
 
-                backtrackingMazeAlg(currentCoords, nextCoords, maze, length, width);//backtracking
+                backtrackingMazeAlg(currentCoords, nextCoords, maze, length, width);//backtracking ai fix
                 backtrackingMazeAlg(currentCoords, prevCoords, maze, length, width);
             }
             return maze;

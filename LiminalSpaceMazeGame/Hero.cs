@@ -30,7 +30,7 @@ namespace LiminalSpaceMazeGame
         public Hero()
         {
             // constructor
-            Location = new Vector2(0, 0);
+            Location = new Vector2(60, 60);
             Movement = new Vector2(0, 0);
             rotation = 0;
         }
@@ -86,7 +86,7 @@ namespace LiminalSpaceMazeGame
         }
         public override void LoadContent(ContentManager Content)
         {
-            Texture = Content.Load<Texture2D>("2d_Hero");
+            Texture = Content.Load<Texture2D>(@"2d_Hero");
         }
         protected override void spawn()
         {
