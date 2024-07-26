@@ -12,7 +12,7 @@ namespace LiminalSpaceMazeGame
         Hero TheHero;
         GenerateMaze TheMaze;
 
-        public List<Wall> walls = new List<Wall>();
+        List<Wall> walls = new List<Wall>();
 
         private GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
@@ -62,6 +62,38 @@ namespace LiminalSpaceMazeGame
                 Exit();
             }
             TheHero.update();
+            foreach (Wall wall in walls)
+            {
+                if (wall.Edge.Intersects(TheHero.Edge))
+                {
+                    for (int i = 0;i<3;i++)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            TheHero.Location = TheHero.Location + new Vector2(i, j);
+                            TheHero.Edge = new Rectangle((int)TheHero.Location.X, (int)TheHero.Location.Y, TheHero.textureHieght, TheHero.textureWidth);
+                            if (wall.Edge.Intersects(TheHero.Edge) == false)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                TheHero.Location = TheHero.Location - new Vector2(i, j);
+                            }
+                            TheHero.Location = TheHero.Location + new Vector2(-i, -j);
+                            TheHero.Edge = new Rectangle((int)TheHero.Location.X, (int)TheHero.Location.Y, TheHero.textureHieght, TheHero.textureWidth);
+                            if (wall.Edge.Intersects(TheHero.Edge) == false)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                TheHero.Location = TheHero.Location - new Vector2(-i, -j);
+                            }
+                        }
+                    }
+                }
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);

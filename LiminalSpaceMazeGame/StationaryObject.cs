@@ -12,6 +12,8 @@ namespace LiminalSpaceMazeGame
     public class StationaryObject
     {
         public Vector2 Location;
+        public Vector2 Rotation;
+        public Vector2 Movement;
         public float rotation;
         protected Texture2D Texture;
         public Rectangle Edge;

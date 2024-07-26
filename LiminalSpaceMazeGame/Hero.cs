@@ -9,13 +9,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Windows.Forms.VisualStyles;
 using SharpDX.Direct3D9;
+using System.Reflection.Metadata.Ecma335;
 
 namespace LiminalSpaceMazeGame
 {
     internal class Hero : MovingObject
     {
-        private int textureHieght = 20;
-        private int textureWidth = 20;
+        public int textureHieght = 20;
+        public int textureWidth = 20;
         public enum Direction
         {
             none,
@@ -24,20 +25,18 @@ namespace LiminalSpaceMazeGame
             right,
             up,
         }
-        private Vector2 Movement;
         float PI = 3.141592f;
-
+        public Vector2 Movement;
         public Hero()
         {
             // constructor
             Location = new Vector2(60, 60);
             Movement = new Vector2(0, 0);
             rotation = 0;
-            
         }
         public override void update()
         {
-            Rectangle Edge = new Rectangle((int)Location.X, (int)Location.Y, textureHieght, textureWidth);
+            Edge = new Rectangle((int)Location.X, (int)Location.Y, textureHieght, textureWidth);
             move();
             die();
         }
@@ -94,9 +93,9 @@ namespace LiminalSpaceMazeGame
         {
             Texture = Content.Load<Texture2D>(@"2d_Hero");
         }
-        protected override void spawn()
+        public override void spawn(StationaryObject obj)
         {
-            base.spawn();
+            base.spawn(obj);
         }
         protected override void die()
         {

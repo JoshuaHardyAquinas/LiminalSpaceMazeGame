@@ -17,15 +17,15 @@ namespace LiminalSpaceMazeGame
         public Wall(int i,int j)
         {
             Location = new Vector2(i * textureWidth, j * textureHieght);
+            
         }
         public override void update()
         {
-            Edge = new Rectangle((int)Location.X, (int)Location.Y, textureHieght, textureWidth);
-            //TODO: COLIDE WITH EDGE OF PLAYER!
         }
         public override void LoadContent(ContentManager Content)
         {
             Texture = Content.Load<Texture2D>(@"wall");
+            Edge = new Rectangle((int)Location.X, (int)Location.Y, textureHieght, textureWidth);
         }
         public override void draw(SpriteBatch spriteBatch)
         {

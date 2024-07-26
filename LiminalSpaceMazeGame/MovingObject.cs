@@ -46,7 +46,7 @@ namespace LiminalSpaceMazeGame
         {
 
         }
-        protected virtual void spawn()
+        public virtual void spawn(StationaryObject obj)
         {
             health = 20;
             speed = 2;
