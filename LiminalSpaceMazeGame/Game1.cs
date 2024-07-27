@@ -24,19 +24,22 @@ namespace LiminalSpaceMazeGame
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            _graphics.PreferredBackBufferWidth = 1280;  // Width of the window
-            _graphics.PreferredBackBufferHeight = 720;  // Height of the window
+            //change screen size
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferHeight = 720; 
             _graphics.ApplyChanges();
+            Content.RootDirectory = "Content";
         }
         protected override void Initialize()
         {
+            //create hero and maze object
             TheHero = new Hero();
             TheMaze = new GenerateMaze();
             // TODO: Add your initialization logic here
 
-            base.Initialize();
+            //makes 1st maze
             int[,] maze = TheMaze.GenerateNewMaze(mazeWidth,mazeHieght);
+            //creats wall entities to be writen to the screen
             for (int i = 0; i < mazeWidth; i++)
             {
                 for (int j = 0; j < mazeHieght; j++)
@@ -48,6 +51,7 @@ namespace LiminalSpaceMazeGame
                     }
                 }
             }
+            base.Initialize();
         }
 
         protected override void LoadContent()
@@ -65,19 +69,13 @@ namespace LiminalSpaceMazeGame
                 Exit();
             }
             TheHero.update();
+            //checks every singe wall for a collision, ineficient but not intensive enough that it causes issues since the 1st check is a collision check
             foreach (Wall wall in walls)
             {
-                /*
-                float updis = Math.Abs(wall.Edge.Top + wall.Location.Y- TheHero.Location.Y);
-                float downdis = Math.Abs(wall.Edge.Bottom + wall.Location.Y - TheHero.Location.Y);
-                float leftdis = Math.Abs(wall.Edge.Right +wall.Location.X - TheHero.Location.X);
-                float rightdis = Math.Abs(wall.Edge.Left + wall.Location.X - TheHero.Location.X);
-                */
-                
-                
                 if (wall.Edge.Intersects(TheHero.Edge))
                 {
-                    Vector2 centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.Location;
+                    Vector2 centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.Location;//make variable to determine the vector distance away from the center of  the wall in question
+                    //move player away depending on what side is furthur on collision
                     if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))
                     {
                         TheHero.Location.X += centreDis.X * -0.125f;
@@ -99,10 +97,12 @@ namespace LiminalSpaceMazeGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
+            //draw walls below player
             for (int i = 0; i < walls.Count; i++)
             {
                 walls[i].draw(spriteBatch);
             }
+            //draw hero on top
             TheHero.draw(spriteBatch);
             spriteBatch.End();
             

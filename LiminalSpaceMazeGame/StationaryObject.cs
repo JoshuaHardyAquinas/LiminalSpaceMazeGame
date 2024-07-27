@@ -25,10 +25,6 @@ namespace LiminalSpaceMazeGame
         {
 
         }
-        protected virtual void spawn()
-        {
-
-        }
         protected virtual void die()
         {
 

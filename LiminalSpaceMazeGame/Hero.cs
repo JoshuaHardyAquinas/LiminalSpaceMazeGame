@@ -15,42 +15,36 @@ namespace LiminalSpaceMazeGame
 {
     internal class Hero : MovingObject
     {
-        public int textureHieght = 20;
-        public int textureWidth = 20;
-        public enum Direction
-        {
-            none,
-            down,
-            left,
-            right,
-            up,
-        }
-        float PI = 3.141592f;
-        public Vector2 Movement;
+        float PI = 3.141592f;//pie for radians/rotation
         public Hero()
         {
             // constructor
-            Location = new Vector2(60, 60);
-            Movement = new Vector2(0, 0);
-            rotation = 0;
+            Location = new Vector2(60, 60);//player spawn location
+            Movement = new Vector2(0, 0);//no movment for player to begin with
+            rotation = 0;//starting rotation
         }
         public override void update()
         {
-            Edge = new Rectangle((int)Location.X-textureWidth/2, (int)Location.Y-textureHieght/2, textureHieght, textureWidth);
+            //creates player edge
+            Edge = new Rectangle((int)Location.X-Texture.Width/2, (int)Location.Y-Texture.Height/2, Texture.Width, Texture.Height);
             move();
             die();
         }
         protected void move()
         {
+            //checks for keyboard inputs
             KeyboardState ks = Keyboard.GetState();
+            //calculates layer speed with possibility to add sprinting
             int speedMultiplyer = 1;
             int speed = 1;
             speed = speed * speedMultiplyer;
+            //reset movment
             Movement.X = 0;
             Movement.Y = 0;
-            if (ks.IsKeyDown(Keys.A))
+            //for player movment and rotation
+            if (ks.IsKeyDown(Keys.A))//rotation using radians
             {
-                rotation = rotation - PI / 16f;
+                rotation = rotation - PI / 16f;//used pi/16 for smoother rotation in comparison to a larger value
             }
             if (ks.IsKeyDown(Keys.D))
             {
@@ -58,16 +52,16 @@ namespace LiminalSpaceMazeGame
             }
             if (ks.IsKeyDown(Keys.S))
             {
-                Movement.X = speed * (float)Math.Sin(rotation);
+                Movement.X = speed * (float)Math.Sin(rotation);//trig to edit players directional movment
                 Movement.Y = -speed * (float)Math.Cos(rotation);
             }
             if (ks.IsKeyDown(Keys.W))
             {
-
-                Movement.X = -speed * (float)Math.Sin(rotation);
+                Movement.X = -speed * (float)Math.Sin(rotation);// --//--
                 Movement.Y = speed * (float)Math.Cos(rotation);
             }
-            if (rotation > PI * 2f)
+            //resets rotation if it goes above 2 or below 0 to keep accuracy high
+            if (rotation > PI * 2f)//pi*2 for full circle in radians
             {
                 rotation = 0;
             }
@@ -75,31 +69,21 @@ namespace LiminalSpaceMazeGame
             {
                 rotation = PI * 2f;
             }
-            if (Location.X < 0)
-            {
-                Location.X = 0;
-            }
-            if (Location.Y < 0)
-            {
-                Location.Y = 0;
-            }
-            Location = Location + Movement;
+            Location = Location + Movement;//move player
         }
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, textureWidth, textureHieght), Color.White, rotation, new Vector2(textureWidth/2f, textureHieght/2f), new Vector2(1, 1), SpriteEffects.None, 1);
+            //draw player including rotation
+            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, rotation, new Vector2(Texture.Width/2f, Texture.Height/2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
         public override void LoadContent(ContentManager Content)
         {
+            //load player texture
             Texture = Content.Load<Texture2D>(@"2d_Hero");
-        }
-        public override void spawn(StationaryObject obj)
-        {
-            base.spawn(obj);
         }
         protected override void die()
         {
-            if (Health <= 0)
+            if (Health <= 0)//player dies if health reaches 0
             {
                 //die
             }

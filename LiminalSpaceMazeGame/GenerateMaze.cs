@@ -19,55 +19,60 @@ namespace LiminalSpaceMazeGame
         protected static Random rnd = new Random();
         public int[,] GenerateNewMaze(int mazeWidth,int mazeHeight)
         {
-            
+            //create maze using pre determind sizes
             int[,] newMaze = new int[mazeWidth, mazeHeight];
+            //sterting coords are 1,1 so there is an outer wall
             int[] startingCoords = { 1, 1 };
             int[] nextCoords = { 1, 1 };
+            //begin reacursive backtracking using ariables taht are allready pre defined
             newMaze = backtrackingMazeAlg(nextCoords, startingCoords, newMaze, mazeWidth, mazeHeight);
 
             return newMaze;
         }
         protected static int[,] backtrackingMazeAlg(int[] prevCoords, int[] currentCoords, int[,] maze, int length, int width)
         {
+            //array to tell program what random directuion it can pick from
             Direction[] dir = {
                 Direction.North,
                 Direction.South,
                 Direction.East,
                 Direction.West
             };
+            //sneaky hack to make walls on the outside of the play field by atempting to check parts of the map that dont exist and then setting that direction as null
             try{
-                if (currentCoords[0] - 2 < 0 || maze[currentCoords[0] - 2, currentCoords[1]] != 0) // north
+                if (currentCoords[0] - 2 < 0 || maze[currentCoords[0] - 2, currentCoords[1]] != 0) // check north
                 {
-                    dir[0] = Direction.none;
+                    dir[0] = Direction.none;//set respective direction in array to null so it cannot be picked by rng alg as it allready has path #1
                 }
             }
-            catch{dir[0] = Direction.none;}
+            catch{dir[0] = Direction.none; }//set respective direction in array to null so it cannot be picked by rng alg as it does not exist #2
             try
             {
-                if(currentCoords[0] + 2 > length - 1 || maze[currentCoords[0] + 2, currentCoords[1]] != 0) // south
+                if(currentCoords[0] + 2 > length - 1 || maze[currentCoords[0] + 2, currentCoords[1]] != 0) // check south 
                 {
-                    dir[1] = Direction.none;
+                    dir[1] = Direction.none;// --//-- #1
                 }
             }
-            catch { dir[1] = Direction.none;}
+            catch { dir[1] = Direction.none; }//--//-- #2
             try
             {
-                if (currentCoords[1] + 2 > width - 1 || maze[currentCoords[0], currentCoords[1] + 2] != 0) // east
+                if (currentCoords[1] + 2 > width - 1 || maze[currentCoords[0], currentCoords[1] + 2] != 0) // check east 
                 {
-                    dir[2] = Direction.none;
+                    dir[2] = Direction.none;// --//-- #1
                 }
             }
-            catch { dir[2] = Direction.none; }
+            catch { dir[2] = Direction.none; }// --//-- #2
             try
             {
-                if (currentCoords[1] - 2 < 0 || maze[currentCoords[0], currentCoords[1] - 2] != 0) // west
+                if (currentCoords[1] - 2 < 0 || maze[currentCoords[0], currentCoords[1] - 2] != 0) // check west 
                 {
-                    dir[3] = Direction.none;
+                    dir[3] = Direction.none;// --//-- #1
                 }
             }
-            catch { dir[3] = Direction.none; }
+            catch { dir[3] = Direction.none; }// --//-- #2
+
             bool nullCase = true;
-            for (int i = 0; i < dir.Length; i++)
+            for (int i = 0; i < dir.Length; i++)//check if any direction is achievable
             {
                 if (dir[i] != Direction.none)
                 {
@@ -75,54 +80,61 @@ namespace LiminalSpaceMazeGame
                     break;
                 }
             }
-            if (nullCase)
+            if (nullCase)//if there is no locations then backtrack to prec location
             {
                 return maze;
             }
-            else
+            else//if tehre is
             {
                 int[] nextCoords = currentCoords;
                 bool breakCase = true;
-                do
+                List<Direction> available = new List<Direction>();
+                for (int i = 0;i < dir.Length;i++)//optimization to stop rng calls for directions that are not possible
+                {
+                    if (dir[i] != Direction.none)
+                    {
+                        available.Add(dir[i]);
+                    }
+                }
+                do//loop though setting the necesary coords dependiong on direction
                 {
                     breakCase = true;
-                    int number = rnd.Next(0, 4);
-                    switch (dir[number])
+                    int number = rnd.Next(0, available.Count);
+                    switch (available[number])
                     {
                         case Direction.North:
-                            nextCoords[0] = currentCoords[0] - 2;
+                            nextCoords[0] = currentCoords[0] - 2;//set x and y coords, bug caused by using pointers instead of actal values, reaseached after ai added the code
                             nextCoords[1] = currentCoords[1];//Ai fix
-                            maze[currentCoords[0] + 1, currentCoords[1]] = 1;
+                            maze[currentCoords[0] + 1, currentCoords[1]] = 1;//change null space to 1
                             break;
                         case Direction.South:
-                            nextCoords[0] = currentCoords[0] + 2;
+                            nextCoords[0] = currentCoords[0] + 2;// --//--
                             nextCoords[1] = currentCoords[1];//Ai fix
                             maze[currentCoords[0] - 1, currentCoords[1]] = 1;
                             break;
                         case Direction.East:
                             nextCoords[0] = currentCoords[0];//Ai fix
-                            nextCoords[1] = currentCoords[1] + 2;
+                            nextCoords[1] = currentCoords[1] + 2;// --//--
                             maze[currentCoords[0], currentCoords[1] - 1] = 1;
                             break;
                         case Direction.West:
                             nextCoords[0] = currentCoords[0];//Ai fix
-                            nextCoords[1] = currentCoords[1] - 2;
+                            nextCoords[1] = currentCoords[1] - 2;// --//--
                             maze[currentCoords[0], currentCoords[1] + 1] = 1;
-
                             break;
                         case Direction.none:
                             breakCase = false;
                             break;
                     }
                 } while (breakCase == false);
-                maze[currentCoords[0], currentCoords[1]] = 1;
+                maze[currentCoords[0], currentCoords[1]] = 1;//adds next coords to maze
                 prevCoords = (int[])currentCoords.Clone(); // Ai Fix
                 currentCoords = (int[])nextCoords.Clone(); // Ai Fix
 
-                backtrackingMazeAlg(currentCoords, nextCoords, maze, length, width);//backtracking ai fix
-                backtrackingMazeAlg(currentCoords, prevCoords, maze, length, width);
+                backtrackingMazeAlg(currentCoords, nextCoords, maze, length, width);//backtracking
+                backtrackingMazeAlg(currentCoords, prevCoords, maze, length, width);//move to next space in maze
             }
-            return maze;
+            return maze;//once backracking is complete there is no otehr space to be than the start so maze complete!
         }
     }
 }

@@ -43,15 +43,8 @@ namespace LiminalSpaceMazeGame
 
         }
         public virtual void LoadContent(ContentManager Content)
-        {
+        { }
 
-        }
-        public virtual void spawn(StationaryObject obj)
-        {
-            health = 20;
-            speed = 2;
-            sprint = 2;
-        }
         protected virtual void die()
         {
 
