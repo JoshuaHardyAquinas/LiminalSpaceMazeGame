@@ -18,13 +18,16 @@ namespace LiminalSpaceMazeGame
         SpriteBatch spriteBatch;
 
 
-        int mazeHieght = 11;
-        int mazeWidth = 15;
+        int mazeHieght = 17;
+        int mazeWidth = 17;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            _graphics.PreferredBackBufferWidth = 1280;  // Width of the window
+            _graphics.PreferredBackBufferHeight = 720;  // Height of the window
+            _graphics.ApplyChanges();
         }
         protected override void Initialize()
         {
@@ -64,34 +67,26 @@ namespace LiminalSpaceMazeGame
             TheHero.update();
             foreach (Wall wall in walls)
             {
+                /*
+                float updis = Math.Abs(wall.Edge.Top + wall.Location.Y- TheHero.Location.Y);
+                float downdis = Math.Abs(wall.Edge.Bottom + wall.Location.Y - TheHero.Location.Y);
+                float leftdis = Math.Abs(wall.Edge.Right +wall.Location.X - TheHero.Location.X);
+                float rightdis = Math.Abs(wall.Edge.Left + wall.Location.X - TheHero.Location.X);
+                */
+                
+                
                 if (wall.Edge.Intersects(TheHero.Edge))
                 {
-                    for (int i = 0;i<3;i++)
+                    Vector2 centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.Location;
+                    if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))
                     {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            TheHero.Location = TheHero.Location + new Vector2(i, j);
-                            TheHero.Edge = new Rectangle((int)TheHero.Location.X, (int)TheHero.Location.Y, TheHero.textureHieght, TheHero.textureWidth);
-                            if (wall.Edge.Intersects(TheHero.Edge) == false)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                TheHero.Location = TheHero.Location - new Vector2(i, j);
-                            }
-                            TheHero.Location = TheHero.Location + new Vector2(-i, -j);
-                            TheHero.Edge = new Rectangle((int)TheHero.Location.X, (int)TheHero.Location.Y, TheHero.textureHieght, TheHero.textureWidth);
-                            if (wall.Edge.Intersects(TheHero.Edge) == false)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                TheHero.Location = TheHero.Location - new Vector2(-i, -j);
-                            }
-                        }
+                        TheHero.Location.X += centreDis.X * -0.125f;
                     }
+                    else
+                    {
+                        TheHero.Location.Y += centreDis.Y * -0.125f;
+                    }
+                    break;
                 }
             }
             // TODO: Add your update logic here
@@ -103,7 +98,6 @@ namespace LiminalSpaceMazeGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            // TODO: Add your drawing code here
             spriteBatch.Begin();
             for (int i = 0; i < walls.Count; i++)
             {

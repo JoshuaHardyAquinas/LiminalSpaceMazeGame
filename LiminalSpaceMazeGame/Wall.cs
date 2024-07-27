@@ -12,8 +12,8 @@ namespace LiminalSpaceMazeGame
 {
     public class Wall:StationaryObject
     {
-        protected int textureWidth = 40;
-        protected int textureHieght = 40;
+        public int textureWidth = 40;
+        public int textureHieght = 40;
         public Wall(int i,int j)
         {
             Location = new Vector2(i * textureWidth, j * textureHieght);

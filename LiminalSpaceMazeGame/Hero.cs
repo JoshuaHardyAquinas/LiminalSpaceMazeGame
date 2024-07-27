@@ -36,7 +36,7 @@ namespace LiminalSpaceMazeGame
         }
         public override void update()
         {
-            Edge = new Rectangle((int)Location.X, (int)Location.Y, textureHieght, textureWidth);
+            Edge = new Rectangle((int)Location.X-textureWidth/2, (int)Location.Y-textureHieght/2, textureHieght, textureWidth);
             move();
             die();
         }
