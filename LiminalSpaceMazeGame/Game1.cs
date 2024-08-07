@@ -77,7 +77,6 @@ namespace LiminalSpaceMazeGame
 
         protected override void Update(GameTime gameTime)
         {
-            
             ks1 = Keyboard.GetState();
             switch (currentState)
             {
@@ -169,33 +168,43 @@ namespace LiminalSpaceMazeGame
                     GraphicsDevice.Clear(Color.Yellow);
                     spriteBatch.DrawString(GameFont, "welcome", new Vector2(0, 0), Color.Black);
                     break;
+
                 case gamestate.LevelGen:
                     GraphicsDevice.Clear(Color.Peru);
                     this.IsMouseVisible = false;
                     spriteBatch.DrawString(GameFont, "maze gen", new Vector2(0, 0), Color.Black);
                     break;
+
                 case gamestate.InGame:
                     this.IsMouseVisible = false;
-                    GraphicsDevice.Clear(Color.CornflowerBlue);
-                    //draw walls below player
-                    for (int i = 0; i < walls.Count; i++)
+                    switch (Dimension)
                     {
-                        walls[i].draw(spriteBatch);
+                        case dimension.D2://2d representation
+                            GraphicsDevice.Clear(Color.CornflowerBlue);
+                            //draw walls below player
+                            for (int i = 0; i < walls.Count; i++)
+                            {
+                                walls[i].draw(spriteBatch);
+                            }
+                            //draw hero on top
+                            TheHero.draw(spriteBatch);
+                            break;
+                        case dimension.D3://3d representation
+                            break;
                     }
-                    //draw hero on top
-                    TheHero.draw(spriteBatch);
                     break;
+
                 case gamestate.Dead:
                     GraphicsDevice.Clear(Color.Red);
-
                     this.IsMouseVisible = true;
                     spriteBatch.DrawString(GameFont, "dead", new Vector2(0, 0), Color.Black);
                     break;
+
                 default:
                     GraphicsDevice.Clear(Color.White);
-
                     spriteBatch.DrawString(GameFont, "error", new Vector2(0, 0), Color.Black);
                     break;
+
             }
             spriteBatch.End();
             base.Draw(gameTime);

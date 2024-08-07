@@ -83,7 +83,7 @@ namespace LiminalSpaceMazeGame
         }
         public void spawn()
         {
-            Location = new Vector2 (50, 50);
+            Location = new Vector2 (60, 60);
         }
         protected override void die()
         {
