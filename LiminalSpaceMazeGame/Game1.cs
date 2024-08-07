@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 
@@ -9,6 +10,7 @@ namespace LiminalSpaceMazeGame
     //test push
     public class Game1 : Game
     {
+        KeyboardState ks1, ks2;
         Hero TheHero;
         GenerateMaze TheMaze;
         SpriteFont GameFont;
@@ -42,10 +44,12 @@ namespace LiminalSpaceMazeGame
         dimension Dimension = dimension.D2;
         public Game1()
         {
+            ks1 = Keyboard.GetState();
+            ks2 = Keyboard.GetState();
             this.IsMouseVisible = true;
             _graphics = new GraphicsDeviceManager(this);
             //change screen size
-            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferWidth = 720;
             _graphics.PreferredBackBufferHeight = 720; 
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
@@ -60,17 +64,7 @@ namespace LiminalSpaceMazeGame
             //makes 1st maze
             maze = TheMaze.GenerateNewMaze(mazeWidth,mazeHieght);
             //creats wall entities to be writen to the screen
-            for (int i = 0; i < mazeWidth; i++)
-            {
-                for (int j = 0; j < mazeHieght; j++)
-                {
-                    if (maze[i,j] == 0) {
-                        Wall newWall = new Wall(i, j);
-                        newWall.LoadContent(Content);
-                        walls.Add(newWall);
-                    }
-                }
-            }
+            CreateWalllEntities();
             base.Initialize();
         }
 
@@ -83,31 +77,21 @@ namespace LiminalSpaceMazeGame
 
         protected override void Update(GameTime gameTime)
         {
-            KeyboardState ks = Keyboard.GetState();
+            
+            ks1 = Keyboard.GetState();
             switch (currentState)
             {
                 case gamestate.StartMenu:
-                    if (ks.IsKeyDown(Keys.Enter))
+                    if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = gamestate.LevelGen;
                     }
                     break;
                 case gamestate.LevelGen:
-                    maze = TheMaze.GenerateNewMaze(mazeWidth,mazeHieght);
-                    walls.Clear();
-                    for (int i = 0; i < mazeWidth; i++)
-                    {
-                        for (int j = 0; j < mazeHieght; j++)
-                        {
-                            if (maze[i, j] == 0)
-                            {
-                                Wall newWall = new Wall(i, j);
-                                newWall.LoadContent(Content);
-                                walls.Add(newWall);
-                            }
-                        }
-                    }
-                    if (ks.IsKeyDown(Keys.Enter))
+                    maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHieght);
+                    CreateWalllEntities();
+                    TheHero.spawn();//put the hero back at its spawn location
+                    if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = gamestate.InGame;
                     }
@@ -132,13 +116,13 @@ namespace LiminalSpaceMazeGame
                             break;
                         }
                     }
-                    if (ks.IsKeyDown(Keys.Enter))
+                    if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = gamestate.Dead;
                     }
                     break;
                 case gamestate.Dead:
-                    if (ks.IsKeyDown(Keys.Enter))
+                    if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = gamestate.StartMenu;
                     }
@@ -150,14 +134,29 @@ namespace LiminalSpaceMazeGame
             {
                 Exit();
             }
-            if (ks.IsKeyDown(Keys.Enter))
-            {
-                System.Threading.Thread.Sleep(100);
-            }
+            ks2 = ks1;
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
 
+        }
+
+        private void CreateWalllEntities()
+        {
+            walls.Clear();
+            for (int i = 0; i < mazeWidth; i++)
+            {
+                for (int j = 0; j < mazeHieght; j++)
+                {
+                    if (maze[i, j] == 0)
+                    {
+                        Wall newWall = new Wall(i, j);
+                        newWall.LoadContent(Content);
+                        walls.Add(newWall);
+                    }
+                }
+            }
         }
 
         protected override void Draw(GameTime gameTime)

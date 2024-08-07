@@ -81,6 +81,10 @@ namespace LiminalSpaceMazeGame
             //load player texture
             Texture = Content.Load<Texture2D>(@"2d_Hero");
         }
+        public void spawn()
+        {
+            Location = new Vector2 (50, 50);
+        }
         protected override void die()
         {
             if (Health <= 0)//player dies if health reaches 0
