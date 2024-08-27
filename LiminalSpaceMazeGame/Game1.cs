@@ -12,10 +12,13 @@ namespace LiminalSpaceMazeGame
     {
         KeyboardState ks1, ks2;
         Hero TheHero;
+        Ray TheRay;
         GenerateMaze TheMaze;
         SpriteFont GameFont;
 
         List<Wall> walls = new List<Wall>();
+
+        List<wall3d> walls3d = new List<wall3d>();
 
         private GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
@@ -59,19 +62,23 @@ namespace LiminalSpaceMazeGame
             //create hero and maze object
             TheHero = new Hero();
             TheMaze = new GenerateMaze();
+            TheRay = new Ray(TheHero);
             // TODO: Add your initialization logic here
 
             //makes 1st maze
             maze = TheMaze.GenerateNewMaze(mazeWidth,mazeHieght);
             //creats wall entities to be writen to the screen
-            CreateWalllEntities();
+            CreateWallEntities();
+            CreateWall3dEntities();
             base.Initialize();
+            
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             TheHero.LoadContent(Content);
+            TheRay.LoadContent(Content);
             GameFont = Content.Load<SpriteFont>(@"File");
         }
 
@@ -88,7 +95,7 @@ namespace LiminalSpaceMazeGame
                     break;
                 case gamestate.LevelGen:
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHieght);
-                    CreateWalllEntities();
+                    CreateWallEntities();
                     TheHero.spawn();//put the hero back at its spawn location
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
@@ -133,15 +140,22 @@ namespace LiminalSpaceMazeGame
             {
                 Exit();
             }
+            if (ks1.IsKeyDown(Keys.NumPad1) && ks2.IsKeyUp(Keys.NumPad1))
+            {
+                Dimension = dimension.D2;
+            }
+            if (ks1.IsKeyDown(Keys.NumPad2) && ks2.IsKeyUp(Keys.NumPad2))
+            {
+                Dimension = dimension.D3;
+            }
             ks2 = ks1;
 
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-
         }
 
-        private void CreateWalllEntities()
+        private void CreateWallEntities()
         {
             walls.Clear();
             for (int i = 0; i < mazeWidth; i++)
@@ -156,6 +170,19 @@ namespace LiminalSpaceMazeGame
                     }
                 }
             }
+        }
+        private void CreateWall3dEntities()
+        {
+            walls3d.Clear();
+            wall3d newWall3d = new wall3d(10, 30, new Vector2(10, 10));
+            newWall3d.LoadContent(Content);
+            walls3d.Add(newWall3d);
+            newWall3d = new wall3d(10, 30, new Vector2(20, 10));
+            newWall3d.LoadContent(Content);
+            walls3d.Add(newWall3d);
+            newWall3d = new wall3d(10, 30, new Vector2(30, 10));
+            newWall3d.LoadContent(Content);
+            walls3d.Add(newWall3d);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -188,8 +215,11 @@ namespace LiminalSpaceMazeGame
                             }
                             //draw hero on top
                             TheHero.draw(spriteBatch);
+                            TheRay.draw(spriteBatch);
                             break;
                         case dimension.D3://3d representation
+                            TheHero.draw(spriteBatch);
+                            TheRay.draw(spriteBatch);
                             break;
                     }
                     break;
