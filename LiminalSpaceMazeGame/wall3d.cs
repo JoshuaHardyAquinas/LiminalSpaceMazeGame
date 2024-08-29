@@ -12,7 +12,6 @@ using System.Windows.Forms;
 namespace LiminalSpaceMazeGame
 {
     internal class wall3d: StationaryObject {
-        private GraphicsDeviceManager _graphics;
         private int Width;
         private int Height;
         public wall3d(int width,int hieght, Vector2 location)
@@ -29,10 +28,10 @@ namespace LiminalSpaceMazeGame
         {
             base.LoadContent(Content);
         }
-        public override void draw(SpriteBatch spriteBatch)
+        public void draw(SpriteBatch spriteBatch,GraphicsDevice device)
         {
             //draw in location
-            Texture2D rectangle = new Texture2D(_graphics.GraphicsDevice, Width, Height);
+            Texture2D rectangle = new Texture2D(device, Width, Height);
 
             Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectange for printing
             for (int i = 0; i < pixelData.Length; ++i)

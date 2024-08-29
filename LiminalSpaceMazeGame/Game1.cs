@@ -20,7 +20,7 @@ namespace LiminalSpaceMazeGame
 
         List<wall3d> walls3d = new List<wall3d>();
 
-        private GraphicsDeviceManager _graphics;
+        public GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
 
         int[,] maze;
@@ -177,10 +177,10 @@ namespace LiminalSpaceMazeGame
             wall3d newWall3d = new wall3d(10, 30, new Vector2(10, 10));
             newWall3d.LoadContent(Content);
             walls3d.Add(newWall3d);
-            newWall3d = new wall3d(10, 30, new Vector2(20, 10));
+            newWall3d = new wall3d(10, 30, new Vector2(20, 11));
             newWall3d.LoadContent(Content);
             walls3d.Add(newWall3d);
-            newWall3d = new wall3d(10, 30, new Vector2(30, 10));
+            newWall3d = new wall3d(10, 30, new Vector2(30, 12));
             newWall3d.LoadContent(Content);
             walls3d.Add(newWall3d);
         }
@@ -204,10 +204,11 @@ namespace LiminalSpaceMazeGame
 
                 case gamestate.InGame:
                     this.IsMouseVisible = false;
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
                     switch (Dimension)
                     {
                         case dimension.D2://2d representation
-                            GraphicsDevice.Clear(Color.CornflowerBlue);
+                            
                             //draw walls below player
                             for (int i = 0; i < walls.Count; i++)
                             {
@@ -220,6 +221,10 @@ namespace LiminalSpaceMazeGame
                         case dimension.D3://3d representation
                             TheHero.draw(spriteBatch);
                             TheRay.draw(spriteBatch);
+                            for (int i = 0;i< walls3d.Count; i++)
+                            {
+                                walls3d[i].draw(spriteBatch,GraphicsDevice);
+                            }
                             break;
                     }
                     break;
