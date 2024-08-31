@@ -171,16 +171,20 @@ namespace LiminalSpaceMazeGame
 
                 case gamestate.LevelGen:
                     GraphicsDevice.Clear(Color.Peru);
-                    this.IsMouseVisible = false;
-                    spriteBatch.DrawString(GameFont, "maze gen", new Vector2(0, 0), Color.Black);
+                    this.IsMouseVisible = true;
+                    spriteBatch.DrawString(GameFont, "shop", new Vector2(0, 0), Color.Black);
+                    spriteBatch.DrawString(GameFont, "example item 1", new Vector2(0, 0), Color.Black);
+                    spriteBatch.DrawString(GameFont, "example item 2", new Vector2(10, 20), Color.Black);
+                    spriteBatch.DrawString(GameFont, "upgrade health", new Vector2(10, 40), Color.Black);
+                    spriteBatch.DrawString(GameFont, "upgrade armour", new Vector2(10, 60), Color.Black);
                     break;
 
                 case gamestate.InGame:
                     this.IsMouseVisible = false;
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
                     switch (Dimension)
                     {
                         case dimension.D2://2d representation
-                            GraphicsDevice.Clear(Color.CornflowerBlue);
                             //draw walls below player
                             for (int i = 0; i < walls.Count; i++)
                             {
@@ -202,7 +206,7 @@ namespace LiminalSpaceMazeGame
 
                 default:
                     GraphicsDevice.Clear(Color.White);
-                    spriteBatch.DrawString(GameFont, "error", new Vector2(0, 0), Color.Black);
+                    spriteBatch.DrawString(GameFont, "how did you get here?", new Vector2(0, 0), Color.Black);
                     break;
 
             }
