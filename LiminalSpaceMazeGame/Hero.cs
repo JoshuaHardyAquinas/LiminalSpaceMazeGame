@@ -22,6 +22,7 @@ namespace LiminalSpaceMazeGame
             Location = new Vector2(60, 60);//player spawn location
             Movement = new Vector2(0, 0);//no movment for player to begin with
             rotation = 0;//starting rotation
+            double fov = PI / 2;
         }
         public override void update()
         {
