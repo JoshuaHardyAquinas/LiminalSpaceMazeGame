@@ -16,13 +16,14 @@ namespace LiminalSpaceMazeGame
     internal class Hero : MovingObject
     {
         float PI = 3.141592f;//pie for radians/rotation
-        public Hero()
+        public double FOV;
+        public Hero(double fov)
         {
             // constructor
             Location = new Vector2(60, 60);//player spawn location
             Movement = new Vector2(0, 0);//no movment for player to begin with
             rotation = 0;//starting rotation
-            double fov = PI / 2;
+            FOV = fov;
         }
         public override void update()
         {

@@ -7,16 +7,22 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.XAudio2;
+using System.Threading;
 
 namespace LiminalSpaceMazeGame
 {
     internal class Ray : MovingObject
     {
-        public Ray(MovingObject theHero)
+        public Ray(MovingObject TheHero)
         {
             Location = new Vector2(10, 10);//ray spawn location
             Movement = new Vector2(0, 0);//no movment for player to begin with
             rotation = 0;//starting rotation
+            int speed = 2;
+            Location = TheHero.Location;
+            rotation = TheHero.rotation;
+            Movement = new Vector2(-speed * (float)Math.Sin(rotation), speed * (float)Math.Cos(rotation));
         }
         public override void update()
         {

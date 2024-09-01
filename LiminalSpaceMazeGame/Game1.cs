@@ -26,7 +26,10 @@ namespace LiminalSpaceMazeGame
         int[,] maze;
         int mazeHieght = 17;
         int mazeWidth = 17;
-        //int mazeHeight;
+
+        int rayHits = 0;
+
+        float PI = 3.141592f;
 
         //states to switch game between its respective screens
         enum gamestate
@@ -60,7 +63,7 @@ namespace LiminalSpaceMazeGame
         protected override void Initialize()
         {
             //create hero and maze object
-            TheHero = new Hero();
+            TheHero = new Hero(PI/2);
             TheMaze = new GenerateMaze();
             TheRay = new Ray(TheHero);
             // TODO: Add your initialization logic here
@@ -122,6 +125,7 @@ namespace LiminalSpaceMazeGame
                             break;
                         }
                     }
+                    cast();
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = gamestate.Dead;
@@ -174,18 +178,11 @@ namespace LiminalSpaceMazeGame
         private void CreateWall3dEntities()
         {
             walls3d.Clear();
-            wall3d newWall3d = new wall3d(10, 30, new Vector2(10, 10),GraphicsDevice,1);
-            newWall3d.LoadContent(Content);
-            walls3d.Add(newWall3d);
-            newWall3d = new wall3d(10, 30, new Vector2(20, 15), GraphicsDevice,4);
-            newWall3d.LoadContent(Content);
-            walls3d.Add(newWall3d);
-            newWall3d = new wall3d(10, 30, new Vector2(30, 20), GraphicsDevice,8);
-            newWall3d.LoadContent(Content);
-            walls3d.Add(newWall3d);
-            newWall3d = new wall3d(10, 30, new Vector2(30, 25), GraphicsDevice, 16);
-            newWall3d.LoadContent(Content);
-            walls3d.Add(newWall3d);
+            for (float i = 0; i < TheHero.FOV; i = i+PI/180)
+            {
+                
+            }
+      
         }
 
         protected override void Draw(GameTime gameTime)
@@ -211,7 +208,6 @@ namespace LiminalSpaceMazeGame
                     switch (Dimension)
                     {
                         case dimension.D2://2d representation
-                            
                             //draw walls below player
                             for (int i = 0; i < walls.Count; i++)
                             {
@@ -220,6 +216,8 @@ namespace LiminalSpaceMazeGame
                             //draw hero on top
                             TheHero.draw(spriteBatch);
                             TheRay.draw(spriteBatch);
+                            string test = "ray hits" + rayHits.ToString();
+                            spriteBatch.DrawString(GameFont, test, new Vector2(50, 0), Color.Black);
                             break;
                         case dimension.D3://3d representation
                             TheHero.draw(spriteBatch);
@@ -246,6 +244,28 @@ namespace LiminalSpaceMazeGame
             }
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+        public void cast()
+        {
+            bool colided = false;
+            Vector2 startloc = TheRay.Location;
+            while (colided == false)
+            {
+                TheRay.Location = TheRay.Location + TheRay.Movement;//move ray forward
+                TheRay.update();//update hitbox
+                foreach (Wall wall in walls)//loop though all wallys (ik its slow but its easy)
+                {
+                    if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
+                    {
+                        colided = true;
+                        
+                        rayHits++;//increment for testing
+                        break;//save time/ dont check multiple walls
+                    }
+                }
+            }
+            Vector2 distance = startloc - TheHero.Location;
+            TheRay.Location = TheHero.Location;//reset ray for next cast
         }
     }
 }
