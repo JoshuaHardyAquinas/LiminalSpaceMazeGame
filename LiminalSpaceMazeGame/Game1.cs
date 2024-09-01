@@ -26,7 +26,7 @@ namespace LiminalSpaceMazeGame
         //int mazeHeight;
 
         //states to switch game between its respective screens
-        enum gamestate
+        enum GameState
         {
             StartMenu,
             LevelGen,
@@ -34,14 +34,14 @@ namespace LiminalSpaceMazeGame
             Dead
         }
         //states to swith logic between dimensions
-        enum dimension
+        enum Dimension
         {
             D2,
             D3
         }
 
-        gamestate currentState = gamestate.StartMenu;
-        dimension Dimension = dimension.D2;
+        GameState currentState = GameState.StartMenu;
+        Dimension CurrentDimension = Dimension.D2;
         public Game1()
         {
             ks1 = Keyboard.GetState();
@@ -80,22 +80,22 @@ namespace LiminalSpaceMazeGame
             ks1 = Keyboard.GetState();
             switch (currentState)
             {
-                case gamestate.StartMenu:
+                case GameState.StartMenu:
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
-                        currentState = gamestate.LevelGen;
+                        currentState = GameState.LevelGen;
                     }
                     break;
-                case gamestate.LevelGen:
+                case GameState.LevelGen:
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHieght);
                     CreateWalllEntities();
                     TheHero.spawn();//put the hero back at its spawn location
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
-                        currentState = gamestate.InGame;
+                        currentState = GameState.InGame;
                     }
                     break;
-                case gamestate.InGame:
+                case GameState.InGame:
                     TheHero.update();
                     //checks every singe wall for a collision, ineficient but not intensive enough that it causes issues since the 1st check is a collision check
                     foreach (Wall wall in walls)
@@ -117,13 +117,13 @@ namespace LiminalSpaceMazeGame
                     }
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
-                        currentState = gamestate.Dead;
+                        currentState = GameState.Dead;
                     }
                     break;
-                case gamestate.Dead:
+                case GameState.Dead:
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
-                        currentState = gamestate.StartMenu;
+                        currentState = GameState.StartMenu;
                     }
                     break;
                 default: 
@@ -163,13 +163,13 @@ namespace LiminalSpaceMazeGame
             spriteBatch.Begin();
             switch (currentState)
             {
-                case gamestate.StartMenu:
+                case GameState.StartMenu:
                     this.IsMouseVisible = true;
                     GraphicsDevice.Clear(Color.Yellow);
                     spriteBatch.DrawString(GameFont, "welcome", new Vector2(0, 0), Color.Black);
                     break;
 
-                case gamestate.LevelGen:
+                case GameState.LevelGen:
                     GraphicsDevice.Clear(Color.Peru);
                     this.IsMouseVisible = true;
                     spriteBatch.DrawString(GameFont, "shop", new Vector2(0, 0), Color.Black);
@@ -179,12 +179,12 @@ namespace LiminalSpaceMazeGame
                     spriteBatch.DrawString(GameFont, "upgrade armour", new Vector2(10, 60), Color.Black);
                     break;
 
-                case gamestate.InGame:
+                case GameState.InGame:
                     this.IsMouseVisible = false;
                     GraphicsDevice.Clear(Color.CornflowerBlue);
-                    switch (Dimension)
+                    switch (CurrentDimension)
                     {
-                        case dimension.D2://2d representation
+                        case Dimension.D2://2d representation
                             //draw walls below player
                             for (int i = 0; i < walls.Count; i++)
                             {
@@ -193,12 +193,12 @@ namespace LiminalSpaceMazeGame
                             //draw hero on top
                             TheHero.draw(spriteBatch);
                             break;
-                        case dimension.D3://3d representation
+                        case Dimension.D3://3d representation
                             break;
                     }
                     break;
 
-                case gamestate.Dead:
+                case GameState.Dead:
                     GraphicsDevice.Clear(Color.Red);
                     this.IsMouseVisible = true;
                     spriteBatch.DrawString(GameFont, "dead", new Vector2(0, 0), Color.Black);
