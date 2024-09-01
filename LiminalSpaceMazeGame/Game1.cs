@@ -174,13 +174,16 @@ namespace LiminalSpaceMazeGame
         private void CreateWall3dEntities()
         {
             walls3d.Clear();
-            wall3d newWall3d = new wall3d(10, 30, new Vector2(10, 10));
+            wall3d newWall3d = new wall3d(10, 30, new Vector2(10, 10),GraphicsDevice,1);
             newWall3d.LoadContent(Content);
             walls3d.Add(newWall3d);
-            newWall3d = new wall3d(10, 30, new Vector2(20, 11));
+            newWall3d = new wall3d(10, 30, new Vector2(20, 15), GraphicsDevice,4);
             newWall3d.LoadContent(Content);
             walls3d.Add(newWall3d);
-            newWall3d = new wall3d(10, 30, new Vector2(30, 12));
+            newWall3d = new wall3d(10, 30, new Vector2(30, 20), GraphicsDevice,8);
+            newWall3d.LoadContent(Content);
+            walls3d.Add(newWall3d);
+            newWall3d = new wall3d(10, 30, new Vector2(30, 25), GraphicsDevice, 16);
             newWall3d.LoadContent(Content);
             walls3d.Add(newWall3d);
         }
@@ -223,7 +226,7 @@ namespace LiminalSpaceMazeGame
                             TheRay.draw(spriteBatch);
                             for (int i = 0;i< walls3d.Count; i++)
                             {
-                                walls3d[i].draw(spriteBatch,GraphicsDevice);
+                                walls3d[i].draw(spriteBatch);
                             }
                             break;
                     }

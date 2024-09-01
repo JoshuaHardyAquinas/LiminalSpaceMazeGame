@@ -11,14 +11,33 @@ using System.Windows.Forms;
 
 namespace LiminalSpaceMazeGame
 {
+
     internal class wall3d: StationaryObject {
+        protected static Random rnd = new Random();
         private int Width;
         private int Height;
-        public wall3d(int width,int hieght, Vector2 location)
+        Texture2D rectangle;
+        public wall3d(int width,int hieght, Vector2 location, GraphicsDevice device, int decay)
         {
             Width = width;
             Height = hieght;
             Location = location;
+            rectangle = new Texture2D(device, Width, Height);
+
+            Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectange for printing
+            for (int i = 0; i < pixelData.Length; ++i)
+            {
+                int num = rnd.Next(-1, decay);
+                if (num == 0)
+                {
+                    pixelData[i] = Color.GreenYellow;//set each pixels data, in future can turn this into a texture map and use math to darken and hue
+                }
+                else
+                {
+                    pixelData[i] = Color.Green;
+                }
+            }
+            rectangle.SetData(pixelData);
         }
         public override void update()
         {
@@ -28,17 +47,10 @@ namespace LiminalSpaceMazeGame
         {
             base.LoadContent(Content);
         }
-        public void draw(SpriteBatch spriteBatch,GraphicsDevice device)
+        public new void draw(SpriteBatch spriteBatch)
         {
             //draw in location
-            Texture2D rectangle = new Texture2D(device, Width, Height);
-
-            Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectange for printing
-            for (int i = 0; i < pixelData.Length; ++i)
-            {
-                pixelData[i] = Color.GreenYellow;//set each pixels data, in future can turn this into a texture map and use math to darken and hue
-            }
-            rectangle.SetData(pixelData);
+            
             spriteBatch.Draw(rectangle, Location, Color.White);
         }
     }
