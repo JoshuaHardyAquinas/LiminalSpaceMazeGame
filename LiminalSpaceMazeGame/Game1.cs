@@ -27,6 +27,8 @@ namespace LiminalSpaceMazeGame
         int mazeHieght = 17;
         int mazeWidth = 17;
 
+        Vector2 dist;
+
         int rayHits = 0;
 
         float PI = 3.141592f;
@@ -65,7 +67,7 @@ namespace LiminalSpaceMazeGame
             //create hero and maze object
             TheHero = new Hero(PI/2);
             TheMaze = new GenerateMaze();
-            TheRay = new Ray(TheHero);
+            TheRay = new Ray();
             // TODO: Add your initialization logic here
 
             //makes 1st maze
@@ -125,7 +127,7 @@ namespace LiminalSpaceMazeGame
                             break;
                         }
                     }
-                    cast();
+                    dist = cast();
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = gamestate.Dead;
@@ -218,6 +220,8 @@ namespace LiminalSpaceMazeGame
                             TheRay.draw(spriteBatch);
                             string test = "ray hits" + rayHits.ToString();
                             spriteBatch.DrawString(GameFont, test, new Vector2(50, 0), Color.Black);
+                            test = "time" + dist.ToString();
+                            spriteBatch.DrawString(GameFont, test, new Vector2(150, 0), Color.Black);
                             break;
                         case dimension.D3://3d representation
                             TheHero.draw(spriteBatch);
@@ -245,10 +249,14 @@ namespace LiminalSpaceMazeGame
             spriteBatch.End();
             base.Draw(gameTime);
         }
-        public void cast()
+        public Vector2 cast()
         {
             bool colided = false;
+            int speed = 10;
+            TheRay.Location = TheHero.Location;//reset ray location
             Vector2 startloc = TheRay.Location;
+            TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
+            TheRay.rotation = TheHero.rotation;
             while (colided == false)
             {
                 TheRay.Location = TheRay.Location + TheRay.Movement;//move ray forward
@@ -257,15 +265,15 @@ namespace LiminalSpaceMazeGame
                 {
                     if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
                     {
+                        TheRay.Location = TheRay.Location + TheRay.Movement;
                         colided = true;
-                        
                         rayHits++;//increment for testing
                         break;//save time/ dont check multiple walls
                     }
+                    
                 }
             }
-            Vector2 distance = startloc - TheHero.Location;
-            TheRay.Location = TheHero.Location;//reset ray for next cast
+            return startloc - TheRay.Location;
         }
     }
 }
