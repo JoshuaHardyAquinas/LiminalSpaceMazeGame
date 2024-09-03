@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace LiminalSpaceMazeGame
 {
 
-    internal class wall3d: StationaryObject {
+    public class wall3d: StationaryObject {
         protected static Random rnd = new Random();
         private int Width;
         private int Height;

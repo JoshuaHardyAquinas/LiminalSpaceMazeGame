@@ -58,25 +58,25 @@ namespace LiminalSpaceMazeGame
             _graphics = new GraphicsDeviceManager(this);
             //change screen size
             _graphics.PreferredBackBufferWidth = 720;
-            _graphics.PreferredBackBufferHeight = 720; 
+            _graphics.PreferredBackBufferHeight = 720;
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
         protected override void Initialize()
         {
             //create hero and maze object
-            TheHero = new Hero(PI/2);
+            TheHero = new Hero(PI / 2);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
             // TODO: Add your initialization logic here
 
             //makes 1st maze
-            maze = TheMaze.GenerateNewMaze(mazeWidth,mazeHieght);
+            maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHieght);
             //creats wall entities to be writen to the screen
             CreateWallEntities();
             CreateWall3dEntities();
             base.Initialize();
-            
+
         }
 
         protected override void LoadContent()
@@ -139,7 +139,7 @@ namespace LiminalSpaceMazeGame
                         currentState = gamestate.StartMenu;
                     }
                     break;
-                default: 
+                default:
                     break;
             }
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -180,11 +180,11 @@ namespace LiminalSpaceMazeGame
         private void CreateWall3dEntities()
         {
             walls3d.Clear();
-            for (float i = 0; i < TheHero.FOV; i = i+PI/180)
+            for (float i = 0; i < TheHero.FOV; i = i + PI / 180)
             {
-                
+
             }
-      
+
         }
 
         protected override void Draw(GameTime gameTime)
@@ -226,7 +226,7 @@ namespace LiminalSpaceMazeGame
                         case dimension.D3://3d representation
                             TheHero.draw(spriteBatch);
                             TheRay.draw(spriteBatch);
-                            for (int i = 0;i< walls3d.Count; i++)
+                            for (int i = 0; i < walls3d.Count; i++)
                             {
                                 walls3d[i].draw(spriteBatch);
                             }
@@ -251,13 +251,12 @@ namespace LiminalSpaceMazeGame
         }
         public Vector2 cast()
         {
-            bool colided = false;
             int speed = 10;
             TheRay.Location = TheHero.Location;//reset ray location
             Vector2 startloc = TheRay.Location;
             TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
             TheRay.rotation = TheHero.rotation;
-            while (colided == false)
+            while (true)
             {
                 TheRay.Location = TheRay.Location + TheRay.Movement;//move ray forward
                 TheRay.update();//update hitbox
@@ -265,15 +264,38 @@ namespace LiminalSpaceMazeGame
                 {
                     if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
                     {
-                        TheRay.Location = TheRay.Location + TheRay.Movement;
-                        colided = true;
-                        rayHits++;//increment for testing
-                        break;//save time/ dont check multiple walls
+                        TheRay.Location = TheRay.Location - (TheRay.Movement + TheRay.Movement / 10);//move ray backwards a lil further than the last hit
+                        while (true)//increase ray accuracy for a known hit by moving slower to the actual location
+                        {
+                            TheRay.Location = TheRay.Location + TheRay.Movement * 0.1f;//move 
+                            TheRay.update();
+                            if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
+                            {
+                                rayHits++;//increment for testing
+                                return startloc - TheRay.Location;
+                            }
+                        }
                     }
-                    
                 }
             }
-            return startloc - TheRay.Location;
+
+        }
+        public wall3d generate3dWall(Vector2 distance, int slice)
+        {
+            int hieght = 1;
+            if (distance.X > distance.Y)
+            {
+
+            }
+            else
+            {
+
+            }
+            Vector2 location = new Vector2((_graphics.PreferredBackBufferHeight-hieght) / 2, slice * 4);
+
+            wall3d newWall = new wall3d(4, hieght, location, GraphicsDevice, 1);
+
+    return newWall;
         }
     }
 }
