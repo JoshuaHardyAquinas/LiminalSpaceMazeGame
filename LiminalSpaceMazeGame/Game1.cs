@@ -74,7 +74,6 @@ namespace LiminalSpaceMazeGame
             maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHieght);
             //creats wall entities to be writen to the screen
             CreateWallEntities();
-            CreateWall3dEntities();
             base.Initialize();
 
         }
@@ -127,7 +126,7 @@ namespace LiminalSpaceMazeGame
                             break;
                         }
                     }
-                    dist = cast();
+                    rayCast();
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = gamestate.Dead;
@@ -176,15 +175,6 @@ namespace LiminalSpaceMazeGame
                     }
                 }
             }
-        }
-        private void CreateWall3dEntities()
-        {
-            walls3d.Clear();
-            for (float i = 0; i < TheHero.FOV; i = i + PI / 180)
-            {
-
-            }
-
         }
 
         protected override void Draw(GameTime gameTime)
@@ -249,10 +239,21 @@ namespace LiminalSpaceMazeGame
             spriteBatch.End();
             base.Draw(gameTime);
         }
+        public void rayCast()
+        {
+            walls3d.Clear();
+            for (int i = -10;i< 10; i++)
+            {
+                TheRay.Location = TheHero.Location;//reset ray location
+                TheRay.Location = TheRay.Location + new Vector2(i* (float)Math.Sin(TheRay.rotation), i* (float)Math.Cos(TheRay.rotation));
+                Vector2 distanceTraveled = cast();
+                walls3d.Add(generate3dWall(distanceTraveled, i + 10));
+            }
+        }
         public Vector2 cast()
         {
             int speed = 10;
-            TheRay.Location = TheHero.Location;//reset ray location
+
             Vector2 startloc = TheRay.Location;
             TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
             TheRay.rotation = TheHero.rotation;
@@ -278,24 +279,22 @@ namespace LiminalSpaceMazeGame
                     }
                 }
             }
-
         }
         public wall3d generate3dWall(Vector2 distance, int slice)
         {
-            int hieght = 1;
-            if (distance.X > distance.Y)
+            int hieght;
+            if(distance.X < distance.Y)
             {
-
+                hieght = Math.Abs(Convert.ToInt32(distance.X));
             }
             else
             {
-
+                hieght = Math.Abs(Convert.ToInt32(distance.Y));
             }
-            Vector2 location = new Vector2((_graphics.PreferredBackBufferHeight-hieght) / 2, slice * 4);
+            Vector2 location = new Vector2(slice * 4,(_graphics.PreferredBackBufferHeight+hieght) / 2);
 
-            wall3d newWall = new wall3d(4, hieght, location, GraphicsDevice, 1);
-
-    return newWall;
+            wall3d newWall = new wall3d(10, hieght+1, location, GraphicsDevice, 1);
+            return newWall;
         }
     }
 }

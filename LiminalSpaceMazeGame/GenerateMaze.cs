@@ -103,23 +103,23 @@ namespace LiminalSpaceMazeGame
                     switch (available[number])
                     {
                         case Direction.North:
-                            nextCoords[0] = currentCoords[0] - 2;//set x and y coords, bug caused by using pointers instead of actal values, reaseached after ai added the code
-                            nextCoords[1] = currentCoords[1];//Ai fix
+                            nextCoords[0] = currentCoords[0] - 2;//set x and y coords
+                            nextCoords[1] = currentCoords[1];
                             maze[currentCoords[0] + 1, currentCoords[1]] = 1;//change null space to 1
                             break;
                         case Direction.South:
-                            nextCoords[0] = currentCoords[0] + 2;// --//--
-                            nextCoords[1] = currentCoords[1];//Ai fix
+                            nextCoords[0] = currentCoords[0] + 2;
+                            nextCoords[1] = currentCoords[1];
                             maze[currentCoords[0] - 1, currentCoords[1]] = 1;
                             break;
                         case Direction.East:
-                            nextCoords[0] = currentCoords[0];//Ai fix
-                            nextCoords[1] = currentCoords[1] + 2;// --//--
+                            nextCoords[0] = currentCoords[0];
+                            nextCoords[1] = currentCoords[1] + 2;
                             maze[currentCoords[0], currentCoords[1] - 1] = 1;
                             break;
                         case Direction.West:
-                            nextCoords[0] = currentCoords[0];//Ai fix
-                            nextCoords[1] = currentCoords[1] - 2;// --//--
+                            nextCoords[0] = currentCoords[0];
+                            nextCoords[1] = currentCoords[1] - 2;
                             maze[currentCoords[0], currentCoords[1] + 1] = 1;
                             break;
                         case Direction.none:
@@ -128,15 +128,13 @@ namespace LiminalSpaceMazeGame
                     }
                 } while (breakCase == false);
                 maze[currentCoords[0], currentCoords[1]] = 1;//adds next coords to maze
-                prevCoords = (int[])currentCoords.Clone(); // Ai Fix
-                currentCoords = (int[])nextCoords.Clone(); // Ai Fix
+                prevCoords = (int[])currentCoords.Clone();
+                currentCoords = (int[])nextCoords.Clone();
 
                 backtrackingMazeAlg(currentCoords, nextCoords, maze, length, width);//backtracking
                 backtrackingMazeAlg(currentCoords, prevCoords, maze, length, width);//move to next space in maze
             }
-            return maze;//once backracking is complete there is no otehr space to be than the start so maze complete!
+            return maze;//once backracking is complete there is no other space to be than the start so maze is complete!
         }
     }
 }
-// https://chatgpt.com/c/8862f603-f6a6-4a79-8c4f-68f82d294ffa
-//used to fix some bugs
