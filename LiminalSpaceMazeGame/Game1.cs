@@ -245,7 +245,7 @@ namespace LiminalSpaceMazeGame
             for (int i = -10;i< 10; i++)
             {
                 TheRay.Location = TheHero.Location;//reset ray location
-                TheRay.Location = TheRay.Location + new Vector2(i* (float)Math.Sin(TheRay.rotation), i* (float)Math.Cos(TheRay.rotation));
+                TheRay.Location = TheRay.Location * new Vector2(i* (float)Math.Sin(TheRay.rotation), i* (float)Math.Cos(TheRay.rotation));
                 Vector2 distanceTraveled = cast();
                 walls3d.Add(generate3dWall(distanceTraveled, i + 10));
             }
