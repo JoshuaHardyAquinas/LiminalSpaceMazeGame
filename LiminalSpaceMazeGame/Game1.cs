@@ -257,7 +257,7 @@ namespace LiminalSpaceMazeGame
         }
         public Vector2 cast(int chAnge)
         {
-            int speed = 20;
+            int speed = 10;
 
             
             TheRay.Location = TheHero.Location;
@@ -291,18 +291,21 @@ namespace LiminalSpaceMazeGame
         }
         public wall3d generate3dWall(Vector2 distance, int slice)
         {
+            int XDist = Convert.ToInt32( Math.Abs(distance.X));
+            int YDist = Convert.ToInt32(Math.Abs(distance.Y));
+
             int hieght;
-            if(Math.Abs(distance.X) > Math.Abs(distance.Y))
+            if(XDist > YDist)
             {
-                hieght = Math.Abs(Convert.ToInt32(distance.X));
+                hieght = XDist;
             }
             else
             {
-                hieght = Math.Abs(Convert.ToInt32(distance.Y));
+                hieght = YDist;
             }
-            Vector2 location = new Vector2(slice * 5+20,(_graphics.PreferredBackBufferHeight+hieght) / 2);
+            Vector2 location = new Vector2(slice * 5+20,_graphics.PreferredBackBufferHeight / 2 + hieght/2);
 
-            wall3d newWall = new wall3d(5, 128/(hieght+1)*8, location, GraphicsDevice, 1);
+            wall3d newWall = new wall3d(5, 128/(hieght)*16, location, GraphicsDevice, 1);
             return newWall;
         }
     }
