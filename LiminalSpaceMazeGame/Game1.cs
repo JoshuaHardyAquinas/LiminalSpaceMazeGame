@@ -126,7 +126,10 @@ namespace LiminalSpaceMazeGame
                             break;
                         }
                     }
-                    rayCast();
+                    if (Dimension == dimension.D3)
+                    {
+                        rayCast();
+                    }
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = gamestate.Dead;
@@ -214,8 +217,8 @@ namespace LiminalSpaceMazeGame
                             spriteBatch.DrawString(GameFont, test, new Vector2(150, 0), Color.Black);
                             break;
                         case dimension.D3://3d representation
-                            TheHero.draw(spriteBatch);
-                            TheRay.draw(spriteBatch);
+                            //TheHero.draw(spriteBatch);
+                            //TheRay.draw(spriteBatch);
                             for (int i = 0; i < walls3d.Count; i++)
                             {
                                 walls3d[i].draw(spriteBatch);
@@ -241,22 +244,28 @@ namespace LiminalSpaceMazeGame
         }
         public void rayCast()
         {
-            walls3d.Clear();
-            for (int i = -10;i< 10; i++)
+            foreach (var wall in walls3d)
             {
-                TheRay.Location = TheHero.Location;//reset ray location
-                TheRay.Location = TheRay.Location * new Vector2(i* (float)Math.Sin(TheRay.rotation), i* (float)Math.Cos(TheRay.rotation));
-                Vector2 distanceTraveled = cast();
-                walls3d.Add(generate3dWall(distanceTraveled, i + 10));
+                wall.rectangle.Dispose();
+            }
+            walls3d.Clear();
+            for (int i = -45;i< 45; i++)
+            {
+                Vector2 distanceTraveled = cast(i);
+                walls3d.Add(generate3dWall(distanceTraveled, i + 45));
             }
         }
-        public Vector2 cast()
+        public Vector2 cast(int chAnge)
         {
-            int speed = 10;
+            int speed = 20;
 
-            Vector2 startloc = TheRay.Location;
-            TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
+            
+            TheRay.Location = TheHero.Location;
+            //TheRay.Location = TheRay.Location + new Vector2(-chAnge * (float)Math.Sin(TheRay.rotation), chAnge * (float)Math.Cos(TheRay.rotation));
             TheRay.rotation = TheHero.rotation;
+            TheRay.rotation = TheRay.rotation + (chAnge/180f)*PI;
+            TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
+            Vector2 startloc = TheRay.Location;
             while (true)
             {
                 TheRay.Location = TheRay.Location + TheRay.Movement;//move ray forward
@@ -283,7 +292,7 @@ namespace LiminalSpaceMazeGame
         public wall3d generate3dWall(Vector2 distance, int slice)
         {
             int hieght;
-            if(distance.X < distance.Y)
+            if(Math.Abs(distance.X) > Math.Abs(distance.Y))
             {
                 hieght = Math.Abs(Convert.ToInt32(distance.X));
             }
@@ -291,9 +300,9 @@ namespace LiminalSpaceMazeGame
             {
                 hieght = Math.Abs(Convert.ToInt32(distance.Y));
             }
-            Vector2 location = new Vector2(slice * 4,(_graphics.PreferredBackBufferHeight+hieght) / 2);
+            Vector2 location = new Vector2(slice * 5+20,(_graphics.PreferredBackBufferHeight+hieght) / 2);
 
-            wall3d newWall = new wall3d(10, hieght+1, location, GraphicsDevice, 1);
+            wall3d newWall = new wall3d(5, 128/(hieght+1)*8, location, GraphicsDevice, 1);
             return newWall;
         }
     }
