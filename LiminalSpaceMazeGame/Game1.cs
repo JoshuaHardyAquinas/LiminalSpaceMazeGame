@@ -12,18 +12,26 @@ namespace LiminalSpaceMazeGame
     {
         KeyboardState ks1, ks2;
         Hero TheHero;
+        Ray TheRay;
         GenerateMaze TheMaze;
         SpriteFont GameFont;
 
         List<Wall> walls = new List<Wall>();
 
-        private GraphicsDeviceManager _graphics;
+        List<wall3d> walls3d = new List<wall3d>();
+
+        public GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
 
         int[,] maze;
         int mazeHieght = 17;
         int mazeWidth = 17;
-        //int mazeHeight;
+
+        Vector2 dist;
+
+        int rayHits = 0;
+
+        float PI = 3.141592f;
 
         //states to switch game between its respective screens
         enum GameState
@@ -42,6 +50,8 @@ namespace LiminalSpaceMazeGame
 
         GameState currentState = GameState.StartMenu;
         Dimension CurrentDimension = Dimension.D2;
+
+        Vector2 gameResolution = new Vector2(720, 720);
         public Game1()
         {
             ks1 = Keyboard.GetState();
@@ -49,29 +59,33 @@ namespace LiminalSpaceMazeGame
             this.IsMouseVisible = true;
             _graphics = new GraphicsDeviceManager(this);
             //change screen size
-            _graphics.PreferredBackBufferWidth = 720;
-            _graphics.PreferredBackBufferHeight = 720; 
+            
+            _graphics.PreferredBackBufferWidth = (int)gameResolution.X;
+            _graphics.PreferredBackBufferHeight = (int)gameResolution.Y;
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
         protected override void Initialize()
         {
             //create hero and maze object
-            TheHero = new Hero();
+            TheHero = new Hero(90);
             TheMaze = new GenerateMaze();
+            TheRay = new Ray();
             // TODO: Add your initialization logic here
 
             //makes 1st maze
-            maze = TheMaze.GenerateNewMaze(mazeWidth,mazeHieght);
+            maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHieght);
             //creats wall entities to be writen to the screen
-            CreateWalllEntities();
+            CreateWallEntities();
             base.Initialize();
+
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             TheHero.LoadContent(Content);
+            TheRay.LoadContent(Content);
             GameFont = Content.Load<SpriteFont>(@"File");
         }
 
@@ -88,7 +102,7 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.LevelGen:
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHieght);
-                    CreateWalllEntities();
+                    CreateWallEntities();
                     TheHero.spawn();//put the hero back at its spawn location
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
@@ -115,6 +129,10 @@ namespace LiminalSpaceMazeGame
                             break;
                         }
                     }
+                    if (Dimension == dimension.D3)
+                    {
+                        rayCast();
+                    }
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = GameState.Dead;
@@ -126,22 +144,29 @@ namespace LiminalSpaceMazeGame
                         currentState = GameState.StartMenu;
                     }
                     break;
-                default: 
+                default:
                     break;
             }
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
             }
+            if (ks1.IsKeyDown(Keys.NumPad1) && ks2.IsKeyUp(Keys.NumPad1))
+            {
+                Dimension = dimension.D2;
+            }
+            if (ks1.IsKeyDown(Keys.NumPad2) && ks2.IsKeyUp(Keys.NumPad2))
+            {
+                Dimension = dimension.D3;
+            }
             ks2 = ks1;
 
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-
         }
 
-        private void CreateWalllEntities()
+        private void CreateWallEntities()
         {
             walls.Clear();
             for (int i = 0; i < mazeWidth; i++)
@@ -179,12 +204,12 @@ namespace LiminalSpaceMazeGame
                     spriteBatch.DrawString(GameFont, "upgrade armour", new Vector2(10, 60), Color.Black);
                     break;
 
-                case GameState.InGame:
+                case gamestate.InGame:
                     this.IsMouseVisible = false;
-                    GraphicsDevice.Clear(Color.CornflowerBlue);
-                    switch (CurrentDimension)
+                    switch (Dimension)
                     {
-                        case Dimension.D2://2d representation
+                        case dimension.D2://2d representation
+                            GraphicsDevice.Clear(Color.CornflowerBlue);
                             //draw walls below player
                             for (int i = 0; i < walls.Count; i++)
                             {
@@ -192,8 +217,13 @@ namespace LiminalSpaceMazeGame
                             }
                             //draw hero on top
                             TheHero.draw(spriteBatch);
+                            TheRay.draw(spriteBatch);
+                            string test = "ray hits" + rayHits.ToString();
+                            spriteBatch.DrawString(GameFont, test, new Vector2(50, 0), Color.Black);
+                            test = "time" + dist.ToString();
+                            spriteBatch.DrawString(GameFont, test, new Vector2(150, 0), Color.Black);
                             break;
-                        case Dimension.D3://3d representation
+                        case dimension.D3://3d representation
                             break;
                     }
                     break;
@@ -212,6 +242,20 @@ namespace LiminalSpaceMazeGame
             }
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+        public void rayCast()
+        {
+            foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+            {
+                wall.rectangle.Dispose();
+            }
+            walls3d.Clear();//clear wall list
+            for (int i = -TheHero.FOV;i< TheHero.FOV; i++)
+            {
+                Vector2 distanceTraveled = Ray.cast(i,TheHero,TheRay,walls);
+                
+                walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV,gameResolution,GraphicsDevice));
+            }
         }
     }
 }

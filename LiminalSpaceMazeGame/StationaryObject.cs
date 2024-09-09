@@ -11,10 +11,10 @@ namespace LiminalSpaceMazeGame
 {
     public class StationaryObject
     {
+        public float PI = 3.141592f;//pie for radians/rotation
         public Vector2 Location;
-        public Vector2 Rotation;
         public Vector2 Movement;
-        public float rotation;
+        public double rotation;
         protected Texture2D Texture;
         public Rectangle Edge;
         public virtual void update()
