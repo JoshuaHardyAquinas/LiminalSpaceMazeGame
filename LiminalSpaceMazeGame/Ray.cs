@@ -45,7 +45,7 @@ namespace LiminalSpaceMazeGame
         }
         static public Vector2 cast(int chAnge, Hero TheHero, Ray TheRay,List<Wall> walls)
         {
-            int speed = 10;
+            int speed = 1;
             TheRay.Location = TheHero.Location;
             //TheRay.Location = TheRay.Location + new Vector2(-chAnge * (float)Math.Sin(TheRay.rotation), chAnge * (float)Math.Cos(TheRay.rotation));
             TheRay.rotation = TheHero.rotation;
