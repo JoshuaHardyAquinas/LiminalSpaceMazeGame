@@ -15,9 +15,9 @@ namespace LiminalSpaceMazeGame
 {
     internal class Hero : MovingObject
     {
-        float PI = 3.141592f;//pie for radians/rotation
-        public double FOV;
-        public Hero(double fov)
+        
+        public int FOV;
+        public Hero(int fov)
         {
             // constructor
             Location = new Vector2(60, 60);//player spawn location
@@ -76,7 +76,7 @@ namespace LiminalSpaceMazeGame
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw player including rotation
-            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, rotation, new Vector2(Texture.Width/2f, Texture.Height/2f), new Vector2(1, 1), SpriteEffects.None, 1);
+            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width/2f, Texture.Height/2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
         public override void LoadContent(ContentManager Content)
         {

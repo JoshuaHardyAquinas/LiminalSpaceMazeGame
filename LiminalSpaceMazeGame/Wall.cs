@@ -32,5 +32,25 @@ namespace LiminalSpaceMazeGame
             //draw in location
             spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, 40, 40), Color.White);
         }
+        public wall3d generate3dWall(Vector2 displacment, int slice, Vector2 gameRes, GraphicsDevice device)
+        {
+            int XDist = Convert.ToInt32(Math.Abs(displacment.X));//turn displacment into distance for easy calculation
+            int YDist = Convert.ToInt32(Math.Abs(displacment.Y));
+
+            int hieght;
+            if (XDist > YDist)//we want to use the longer disatnce to figure out how far away teh wall is as the x and y distances change with rotation
+            {
+                hieght = XDist;
+            }
+            else
+            {
+                hieght = YDist;
+            }
+            int wallHieght = 2048 / hieght; //reciprical function to convert distance of the wall from the player to teh wall hieght, tunes specifically by me
+            Vector2 location = new Vector2(slice * 3 + 50, gameRes.Y / 2 - wallHieght / 2);//move slice to specific place on screen
+
+            wall3d newWall = new wall3d(3, wallHieght, location, device, 1);//create physical wall entity
+            return newWall;//return so it can be added to the list
+        }
     }
 }

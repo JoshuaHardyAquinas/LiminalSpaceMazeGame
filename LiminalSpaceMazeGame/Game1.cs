@@ -50,6 +50,8 @@ namespace LiminalSpaceMazeGame
 
         gamestate currentState = gamestate.StartMenu;
         dimension Dimension = dimension.D2;
+
+        Vector2 gameResolution = new Vector2(720, 720);
         public Game1()
         {
             ks1 = Keyboard.GetState();
@@ -57,15 +59,16 @@ namespace LiminalSpaceMazeGame
             this.IsMouseVisible = true;
             _graphics = new GraphicsDeviceManager(this);
             //change screen size
-            _graphics.PreferredBackBufferWidth = 720;
-            _graphics.PreferredBackBufferHeight = 720;
+            
+            _graphics.PreferredBackBufferWidth = (int)gameResolution.X;
+            _graphics.PreferredBackBufferHeight = (int)gameResolution.Y;
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
         protected override void Initialize()
         {
             //create hero and maze object
-            TheHero = new Hero(PI / 2);
+            TheHero = new Hero(90);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
             // TODO: Add your initialization logic here
@@ -198,7 +201,7 @@ namespace LiminalSpaceMazeGame
                     break;
 
                 case gamestate.InGame:
-                    this.IsMouseVisible = false;
+                    this.IsMouseVisible = true;
                     GraphicsDevice.Clear(Color.CornflowerBlue);
                     switch (Dimension)
                     {
@@ -219,6 +222,7 @@ namespace LiminalSpaceMazeGame
                         case dimension.D3://3d representation
                             //TheHero.draw(spriteBatch);
                             //TheRay.draw(spriteBatch);
+                            spriteBatch.DrawString(GameFont, "welcome", new Vector2(0, 360), Color.Black);
                             for (int i = 0; i < walls3d.Count; i++)
                             {
                                 walls3d[i].draw(spriteBatch);
@@ -244,58 +248,25 @@ namespace LiminalSpaceMazeGame
         }
         public void rayCast()
         {
-            foreach (var wall in walls3d)
+            foreach (var wall in walls3d)// delete all textures to free up ram temp fix
             {
                 wall.rectangle.Dispose();
             }
-            walls3d.Clear();
-            for (int i = -45;i< 45; i++)
+            walls3d.Clear();//clear wall list
+            for (int i = -TheHero.FOV;i< TheHero.FOV; i++)
             {
-                Vector2 distanceTraveled = cast(i);
-                walls3d.Add(generate3dWall(distanceTraveled, i + 45));
+                Vector2 distanceTraveled = Ray.cast(i,TheHero,TheRay,walls);
+                walls3d.Add(generate3dWall(distanceTraveled, i + TheHero.FOV,gameResolution,GraphicsDevice));
             }
         }
-        public Vector2 cast(int chAnge)
+        
+        public wall3d generate3dWall(Vector2 displacment, int slice, Vector2 gameRes, GraphicsDevice device)
         {
-            int speed = 10;
-
-            
-            TheRay.Location = TheHero.Location;
-            //TheRay.Location = TheRay.Location + new Vector2(-chAnge * (float)Math.Sin(TheRay.rotation), chAnge * (float)Math.Cos(TheRay.rotation));
-            TheRay.rotation = TheHero.rotation;
-            TheRay.rotation = TheRay.rotation + (chAnge/180f)*PI;
-            TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
-            Vector2 startloc = TheRay.Location;
-            while (true)
-            {
-                TheRay.Location = TheRay.Location + TheRay.Movement;//move ray forward
-                TheRay.update();//update hitbox
-                foreach (Wall wall in walls)//loop though all wallys (ik its slow but its easy)
-                {
-                    if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
-                    {
-                        TheRay.Location = TheRay.Location - (TheRay.Movement + TheRay.Movement / 10);//move ray backwards a lil further than the last hit
-                        while (true)//increase ray accuracy for a known hit by moving slower to the actual location
-                        {
-                            TheRay.Location = TheRay.Location + TheRay.Movement * 0.1f;//move 
-                            TheRay.update();
-                            if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
-                            {
-                                rayHits++;//increment for testing
-                                return startloc - TheRay.Location;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        public wall3d generate3dWall(Vector2 distance, int slice)
-        {
-            int XDist = Convert.ToInt32( Math.Abs(distance.X));
-            int YDist = Convert.ToInt32(Math.Abs(distance.Y));
+            int XDist = Convert.ToInt32( Math.Abs(displacment.X));//turn displacment into distance for easy calculation
+            int YDist = Convert.ToInt32(Math.Abs(displacment.Y));
 
             int hieght;
-            if(XDist > YDist)
+            if(XDist > YDist)//we want to use the longer disatnce to figure out how far away teh wall is as the x and y distances change with rotation
             {
                 hieght = XDist;
             }
@@ -303,10 +274,12 @@ namespace LiminalSpaceMazeGame
             {
                 hieght = YDist;
             }
-            Vector2 location = new Vector2(slice * 5+20,_graphics.PreferredBackBufferHeight / 2 + hieght/2);
+            int wallHieght = 4096 / hieght +20; //reciprical function to convert distance of the wall from the player to teh wall hieght, tunes specifically by me
+            Vector2 location = new Vector2(slice * 3 +50,_graphics.PreferredBackBufferHeight/2 - wallHieght/2);//move slice to specific place on screen
 
-            wall3d newWall = new wall3d(5, 128/(hieght)*16, location, GraphicsDevice, 1);
-            return newWall;
+            wall3d newWall = new wall3d(3, wallHieght, location, device, 1);//create physical wall entity
+            return newWall;//return so it can be added to the list
         }
+
     }
 }
