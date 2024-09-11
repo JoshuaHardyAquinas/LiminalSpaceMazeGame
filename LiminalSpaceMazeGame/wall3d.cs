@@ -17,7 +17,15 @@ namespace LiminalSpaceMazeGame
         private int Width;
         private int Height;
         public Texture2D rectangle;
-        public wall3d(int width,int hieght, Vector2 location, GraphicsDevice device, int decay)
+        public enum Direction
+        {
+            none,
+            North,
+            South,
+            East,
+            West
+        }
+        public wall3d(int width,int hieght, Vector2 location, GraphicsDevice device, int decay, Direction wallDirection)
         {
             Width = width;
             Height = hieght+1;
@@ -27,14 +35,25 @@ namespace LiminalSpaceMazeGame
             Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectange for printing
             for (int i = 0; i < pixelData.Length; ++i)
             {
-                int num = 0;//rnd.Next(-1, decay);
-                if (num == 0)
+                if (wallDirection == Direction.North)
                 {
-                    pixelData[i] = Color.GreenYellow;//set each pixels data, in future can turn this into a texture map and use math to darken and hue
+                    pixelData[i] = Color.Red;
+                }
+                else if (wallDirection == Direction.South)
+                {
+                    pixelData[i] = Color.Green;
+                }
+                else if (wallDirection == Direction.East)
+                {
+                    pixelData[i] = Color.Blue;
+                }
+                else if (wallDirection == Direction.West)
+                {
+                    pixelData[i] = Color.Yellow;
                 }
                 else
                 {
-                    pixelData[i] = Color.Green;
+                    pixelData[i] = Color.Black;
                 }
             }
             rectangle.SetData(pixelData);
@@ -53,11 +72,12 @@ namespace LiminalSpaceMazeGame
             
             spriteBatch.Draw(rectangle, Location, Color.White);
         }
-        static public wall3d generate3dWall(Vector2 displacment, int slice, Vector2 gameRes, GraphicsDevice device)
+        static public wall3d generate3dWall(Vector2 displacment, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
         {
             int XDist = Convert.ToInt32(Math.Abs(displacment.X));//turn displacment into distance for easy calculation
             int YDist = Convert.ToInt32(Math.Abs(displacment.Y));
 
+            Direction cDirection = Direction.none;
             int hieght;
             if (XDist > YDist)//we want to use the longer disatnce to figure out how far away teh wall is as the x and y distances change with rotation
             {
@@ -67,10 +87,32 @@ namespace LiminalSpaceMazeGame
             {
                 hieght = YDist;
             }
+            
+            if (Math.Abs(centreDis.X)>Math.Abs(centreDis.Y))
+            {
+                if (centreDis.X > 0)
+                {
+                    cDirection = Direction.East;
+                }
+                else
+                {
+                    cDirection = Direction.West;
+                }
+            }
+            else
+            {
+                if (centreDis.Y > 0)
+                {
+                    cDirection = Direction.North;
+                }
+                else
+                {
+                    cDirection = Direction.South;
+                }
+            }
             int wallHieght = 4096 / hieght + 20; //reciprical function to convert distance of the wall from the player to teh wall hieght, tunes specifically by me
             Vector2 location = new Vector2(slice * 3 + 50, gameRes.Y / 2 - wallHieght / 2);//move slice to specific place on screen
-
-            wall3d newWall = new wall3d(3, wallHieght, location, device, 1);//create physical wall entity
+            wall3d newWall = new wall3d(3, wallHieght, location, device, 1, cDirection);//create physical wall entity
             return newWall;//return so it can be added to the list
         }
     }

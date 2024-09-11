@@ -46,11 +46,11 @@ namespace LiminalSpaceMazeGame
             //for player movment and rotation
             if (ks.IsKeyDown(Keys.A))//rotation using radians
             {
-                rotation = rotation - PI / 16f;//used pi/16 for smoother rotation in comparison to a larger value
+                rotation = rotation - PI / 32f;//used pi/16 for smoother rotation in comparison to a larger value
             }
             if (ks.IsKeyDown(Keys.D))
             {
-                rotation = rotation + PI / 16f;
+                rotation = rotation + PI / 32f;
             }
             if (ks.IsKeyDown(Keys.S))
             {

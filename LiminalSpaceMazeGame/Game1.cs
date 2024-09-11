@@ -31,8 +31,6 @@ namespace LiminalSpaceMazeGame
 
         int rayHits = 0;
 
-        float PI = 3.141592f;
-
         //states to switch game between its respective screens
         enum GameState
         {
@@ -47,7 +45,6 @@ namespace LiminalSpaceMazeGame
             D2,
             D3
         }
-
         GameState currentState = GameState.StartMenu;
         Dimension CurrentDimension = Dimension.D2;
 
@@ -129,7 +126,7 @@ namespace LiminalSpaceMazeGame
                             break;
                         }
                     }
-                    if (Dimension == dimension.D3)
+                    if (CurrentDimension == Dimension.D3)
                     {
                         rayCast();
                     }
@@ -153,11 +150,11 @@ namespace LiminalSpaceMazeGame
             }
             if (ks1.IsKeyDown(Keys.NumPad1) && ks2.IsKeyUp(Keys.NumPad1))
             {
-                Dimension = dimension.D2;
+                CurrentDimension = Dimension.D2;
             }
             if (ks1.IsKeyDown(Keys.NumPad2) && ks2.IsKeyUp(Keys.NumPad2))
             {
-                Dimension = dimension.D3;
+                CurrentDimension = Dimension.D3;
             }
             ks2 = ks1;
 
@@ -204,12 +201,13 @@ namespace LiminalSpaceMazeGame
                     spriteBatch.DrawString(GameFont, "upgrade armour", new Vector2(10, 60), Color.Black);
                     break;
 
-                case gamestate.InGame:
+                case GameState.InGame:
                     this.IsMouseVisible = false;
-                    switch (Dimension)
+                    GraphicsDevice.Clear(Color.CornflowerBlue);
+                    switch (CurrentDimension)
                     {
-                        case dimension.D2://2d representation
-                            GraphicsDevice.Clear(Color.CornflowerBlue);
+                        case Dimension.D2://2d representation
+                            
                             //draw walls below player
                             for (int i = 0; i < walls.Count; i++)
                             {
@@ -223,7 +221,12 @@ namespace LiminalSpaceMazeGame
                             test = "time" + dist.ToString();
                             spriteBatch.DrawString(GameFont, test, new Vector2(150, 0), Color.Black);
                             break;
-                        case dimension.D3://3d representation
+                        case Dimension.D3://3d representation
+                            spriteBatch.DrawString(GameFont, "welcome", new Vector2(0, 360), Color.Black);
+                            for (int i = 0; i < walls3d.Count; i++)
+                            {
+                                walls3d[i].draw(spriteBatch);
+                            }
                             break;
                     }
                     break;
@@ -252,9 +255,10 @@ namespace LiminalSpaceMazeGame
             walls3d.Clear();//clear wall list
             for (int i = -TheHero.FOV;i< TheHero.FOV; i++)
             {
-                Vector2 distanceTraveled = Ray.cast(i,TheHero,TheRay,walls);
+                Vector2 centreDis = new Vector2(0,0);
+                Vector2 distanceTraveled = Ray.cast(i,TheHero,TheRay,walls,ref centreDis);
                 
-                walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV,gameResolution,GraphicsDevice));
+                walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV,gameResolution,GraphicsDevice,centreDis));
             }
         }
     }
