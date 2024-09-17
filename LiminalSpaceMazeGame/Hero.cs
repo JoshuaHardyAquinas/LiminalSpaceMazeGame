@@ -22,6 +22,7 @@ namespace LiminalSpaceMazeGame
             // constructor
             Location = new Vector2(60, 60);//player spawn location
             Movement = new Vector2(0, 0);//no movment for player to begin with
+            changeRotation = 1;
             rotation = 0;//starting rotation
             FOV = fov;
         }
@@ -43,14 +44,15 @@ namespace LiminalSpaceMazeGame
             //reset movment
             Movement.X = 0;
             Movement.Y = 0;
+            changeRotation = 0;
             //for player movment and rotation
             if (ks.IsKeyDown(Keys.A))//rotation using radians
             {
-                rotation = rotation - PI / 32f;//used pi/16 for smoother rotation in comparison to a larger value
+                changeRotation = - PI / 32f;//used pi/16 for smoother rotation in comparison to a larger value
             }
             if (ks.IsKeyDown(Keys.D))
             {
-                rotation = rotation + PI / 32f;
+                changeRotation = PI / 32f;
             }
             if (ks.IsKeyDown(Keys.S))
             {
@@ -71,6 +73,7 @@ namespace LiminalSpaceMazeGame
             {
                 rotation = PI * 2f;
             }
+            rotation = rotation + changeRotation;
             Location = Location + Movement;//move player
         }
         public override void draw(SpriteBatch spriteBatch)
