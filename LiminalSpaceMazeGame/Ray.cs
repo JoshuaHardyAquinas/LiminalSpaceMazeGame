@@ -20,7 +20,7 @@ namespace LiminalSpaceMazeGame
         public override void update()
         {
             //creates player edge
-            Edge = new Rectangle((int)Location.X-2, (int)Location.Y-2, Texture.Width+2, Texture.Height+2);
+            Edge = new Rectangle((int)Location.X, (int)Location.Y, Texture.Width-1, Texture.Height-1);
         }
         public override void LoadContent(ContentManager Content)
         {
@@ -45,7 +45,7 @@ namespace LiminalSpaceMazeGame
         }
         static public Vector2 cast(int chAnge, Hero TheHero, Ray TheRay,List<Wall> walls,ref Vector2 centreDis)
         {
-            int speed = 1;
+            float speed = 0.5f;
             TheRay.Location = TheHero.Location;
             //TheRay.Location = TheRay.Location + new Vector2(-chAnge * (float)Math.Sin(TheRay.rotation), chAnge * (float)Math.Cos(TheRay.rotation));
             TheRay.rotation = TheHero.rotation;

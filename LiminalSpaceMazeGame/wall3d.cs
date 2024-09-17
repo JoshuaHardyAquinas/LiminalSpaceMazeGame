@@ -74,19 +74,19 @@ namespace LiminalSpaceMazeGame
         }
         static public wall3d generate3dWall(Vector2 displacment, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
         {
-            int XDist = Convert.ToInt32(Math.Abs(displacment.X));//turn displacment into distance for easy calculation
-            int YDist = Convert.ToInt32(Math.Abs(displacment.Y));
+            float XDist = Convert.ToInt32(Math.Abs(displacment.X));//turn displacment into distance for easy calculation
+            float YDist = Convert.ToInt32(Math.Abs(displacment.Y));
 
             Direction cDirection = Direction.none;
-            int hieght;
-            if (XDist > YDist)//we want to use the longer disatnce to figure out how far away teh wall is as the x and y distances change with rotation
+            double hieght = Math.Sqrt(YDist*YDist + XDist*XDist);
+            /*if (XDist > YDist)//we want to use the longer disatnce to figure out how far away teh wall is as the x and y distances change with rotation
             {
                 hieght = XDist;
             }
             else
             {
                 hieght = YDist;
-            }
+            }*/
             
             if (Math.Abs(centreDis.X)>Math.Abs(centreDis.Y))
             {
@@ -110,9 +110,9 @@ namespace LiminalSpaceMazeGame
                     cDirection = Direction.South;
                 }
             }
-            int wallHieght = 4096 / hieght + 20; //reciprical function to convert distance of the wall from the player to teh wall hieght, tunes specifically by me
-            Vector2 location = new Vector2(slice * 4, gameRes.Y / 2 - wallHieght / 2);//move slice to specific place on screen
-            wall3d newWall = new wall3d(4, wallHieght, location, device, 1, cDirection);//create physical wall entity
+            double wallHieght = 4096 / hieght + 20; //reciprical function to convert distance of the wall from the player to teh wall hieght, tunes specifically by me
+            Vector2 location = new Vector2(slice * 4, gameRes.Y / 2 - (float)wallHieght / 2);//move slice to specific place on screen
+            wall3d newWall = new wall3d(4, Convert.ToInt32(wallHieght), location, device, 1, cDirection);//create physical wall entity
             return newWall;//return so it can be added to the list
         }
     }
