@@ -1,14 +1,8 @@
 using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using SharpDX.XAudio2;
-using System.Threading;
 
 namespace LiminalSpaceMazeGame
 {
@@ -45,7 +39,7 @@ namespace LiminalSpaceMazeGame
         }
         static public Vector2 cast(int chAnge, Hero TheHero, Ray TheRay,List<Wall> walls,ref Vector2 centreDis)
         {
-            int speed = 1;
+            int speed = 2;
             TheRay.Location = TheHero.Location;
             //TheRay.Location = TheRay.Location + new Vector2(-chAnge * (float)Math.Sin(TheRay.rotation), chAnge * (float)Math.Cos(TheRay.rotation));
             TheRay.rotation = TheHero.rotation;
@@ -56,7 +50,7 @@ namespace LiminalSpaceMazeGame
             {
                 TheRay.Location = TheRay.Location + TheRay.Movement;//move ray forward
                 TheRay.update();//update hitbox
-                foreach (Wall wall in walls)//loop though all wallys (ik its slow but its easy)
+                foreach (Wall wall in walls)//loop though all walls (ik its slow but its easy)
                 {
                     if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
                     {

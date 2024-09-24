@@ -25,14 +25,14 @@ namespace LiminalSpaceMazeGame
             East,
             West
         }
-        public wall3d(int width,int hieght, Vector2 location, GraphicsDevice device, int decay, Direction wallDirection)
+        public wall3d(int width,int height, Vector2 location, GraphicsDevice device, int decay, Direction wallDirection)
         {
             Width = width;
-            Height = hieght+1;
+            Height = height+1;
             Location = location;
             rectangle = new Texture2D(device, Width, Height);
 
-            Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectange for printing
+            Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectangle for printing
             for (int i = 0; i < pixelData.Length; ++i)
             {
                 if (wallDirection == Direction.North)
@@ -72,14 +72,14 @@ namespace LiminalSpaceMazeGame
             
             spriteBatch.Draw(rectangle, Location, Color.White);
         }
-        static public wall3d generate3dWall(Vector2 displacment, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
+        static public wall3d generate3dWall(Vector2 displacement, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
         {
-            int XDist = Convert.ToInt32(Math.Abs(displacment.X));//turn displacment into distance for easy calculation
-            int YDist = Convert.ToInt32(Math.Abs(displacment.Y));
+            int XDist = Convert.ToInt32(Math.Abs(displacement.X));//turn displacement into distance for easy calculation
+            int YDist = Convert.ToInt32(Math.Abs(displacement.Y));
 
             Direction cDirection = Direction.none;
             int hieght;
-            if (XDist > YDist)//we want to use the longer disatnce to figure out how far away teh wall is as the x and y distances change with rotation
+            if (XDist > YDist)//we want to use the longer distance to figure out how far away teh wall is as the x and y distances change with rotation
             {
                 hieght = XDist;
             }
@@ -110,7 +110,7 @@ namespace LiminalSpaceMazeGame
                     cDirection = Direction.South;
                 }
             }
-            int wallHieght = 4096 / hieght + 20; //reciprical function to convert distance of the wall from the player to teh wall hieght, tunes specifically by me
+            int wallHieght = 4096 / hieght + 20; //reciprocal function to convert distance of the wall from the player to teh wall height, tunes specifically by me
             Vector2 location = new Vector2(slice * 3 + 50, gameRes.Y / 2 - wallHieght / 2);//move slice to specific place on screen
             wall3d newWall = new wall3d(3, wallHieght, location, device, 1, cDirection);//create physical wall entity
             return newWall;//return so it can be added to the list

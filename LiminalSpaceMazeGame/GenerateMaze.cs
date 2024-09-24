@@ -19,30 +19,30 @@ namespace LiminalSpaceMazeGame
         protected static Random rnd = new Random();
         public int[,] GenerateNewMaze(int mazeWidth,int mazeHeight)
         {
-            //create maze using pre determind sizes
+            //create maze using pre sizes
             int[,] newMaze = new int[mazeWidth, mazeHeight];
-            //sterting coords are 1,1 so there is an outer wall
+            //starting cords are 1,1 so there is an outer wall
             int[] startingCoords = { 1, 1 };
             int[] nextCoords = { 1, 1 };
-            //begin reacursive backtracking using ariables taht are allready pre defined
+            //begin reacursive backtracking using variables that are already pre defined
             newMaze = backtrackingMazeAlg(nextCoords, startingCoords, newMaze, mazeWidth, mazeHeight);
 
             return newMaze;
         }
         protected static int[,] backtrackingMazeAlg(int[] prevCoords, int[] currentCoords, int[,] maze, int length, int width)
         {
-            //array to tell program what random directuion it can pick from
+            //array to tell program what random direction it can pick from
             Direction[] dir = {
                 Direction.North,
                 Direction.South,
                 Direction.East,
                 Direction.West
             };
-            //sneaky hack to make walls on the outside of the play field by atempting to check parts of the map that dont exist and then setting that direction as null
+            //sneaky hack to make walls on the outside of the play field by attempting to check parts of the map that don't exist and then setting that direction as null
             try{
                 if (currentCoords[0] - 2 < 0 || maze[currentCoords[0] - 2, currentCoords[1]] != 0) // check north
                 {
-                    dir[0] = Direction.none;//set respective direction in array to null so it cannot be picked by rng alg as it allready has path #1
+                    dir[0] = Direction.none;//set respective direction in array to null so it cannot be picked by rng alg as it already has path #1
                 }
             }
             catch{dir[0] = Direction.none; }//set respective direction in array to null so it cannot be picked by rng alg as it does not exist #2
@@ -96,14 +96,14 @@ namespace LiminalSpaceMazeGame
                         available.Add(dir[i]);
                     }
                 }
-                do//loop though setting the necesary coords dependiong on direction
+                do//loop though setting the necessary cords depending on direction
                 {
                     breakCase = true;
                     int number = rnd.Next(0, available.Count);
                     switch (available[number])
                     {
                         case Direction.North:
-                            nextCoords[0] = currentCoords[0] - 2;//set x and y coords
+                            nextCoords[0] = currentCoords[0] - 2;//set x and y cords
                             nextCoords[1] = currentCoords[1];
                             maze[currentCoords[0] + 1, currentCoords[1]] = 1;//change null space to 1
                             break;
@@ -127,14 +127,14 @@ namespace LiminalSpaceMazeGame
                             break;
                     }
                 } while (breakCase == false);
-                maze[currentCoords[0], currentCoords[1]] = 1;//adds next coords to maze
+                maze[currentCoords[0], currentCoords[1]] = 1;//adds next cords to maze
                 prevCoords = (int[])currentCoords.Clone();
                 currentCoords = (int[])nextCoords.Clone();
 
                 backtrackingMazeAlg(currentCoords, nextCoords, maze, length, width);//backtracking
                 backtrackingMazeAlg(currentCoords, prevCoords, maze, length, width);//move to next space in maze
             }
-            return maze;//once backracking is complete there is no other space to be than the start so maze is complete!
+            return maze;//once backtracking is complete there is no other space to be than the start so maze is complete!
         }
     }
 }

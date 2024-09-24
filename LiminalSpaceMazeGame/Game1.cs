@@ -24,10 +24,10 @@ namespace LiminalSpaceMazeGame
         SpriteBatch spriteBatch;
 
         int[,] maze;
-        int mazeHieght = 17;
+        int mazeHeight = 17;
         int mazeWidth = 17;
 
-        Vector2 dist;
+        Vector2 distanceMoved;
 
         int rayHits = 0;
 
@@ -39,7 +39,7 @@ namespace LiminalSpaceMazeGame
             InGame,
             Dead
         }
-        //states to swith logic between dimensions
+        //states to switch logic between dimensions
         enum Dimension
         {
             D2,
@@ -71,8 +71,8 @@ namespace LiminalSpaceMazeGame
             // TODO: Add your initialization logic here
 
             //makes 1st maze
-            maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHieght);
-            //creats wall entities to be writen to the screen
+            maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
+            //creates wall entities to be written to the screen
             CreateWallEntities();
             base.Initialize();
 
@@ -98,7 +98,7 @@ namespace LiminalSpaceMazeGame
                     }
                     break;
                 case GameState.LevelGen:
-                    maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHieght);
+                    maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                     CreateWallEntities();
                     TheHero.spawn();//put the hero back at its spawn location
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
@@ -108,13 +108,13 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.InGame:
                     TheHero.update();
-                    //checks every singe wall for a collision, ineficient but not intensive enough that it causes issues since the 1st check is a collision check
+                    //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
                     foreach (Wall wall in walls)
                     {
                         if (wall.Edge.Intersects(TheHero.Edge))
                         {
                             Vector2 centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.Location;//make variable to determine the vector distance away from the center of  the wall in question
-                                                                                                                       //move player away depending on what side is furthur on collision
+                                                                                                                       //move player away depending on what side is further on collision
                             if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))
                             {
                                 TheHero.Location.X += centreDis.X * -0.125f;
@@ -168,7 +168,7 @@ namespace LiminalSpaceMazeGame
             walls.Clear();
             for (int i = 0; i < mazeWidth; i++)
             {
-                for (int j = 0; j < mazeHieght; j++)
+                for (int j = 0; j < mazeHeight; j++)
                 {
                     if (maze[i, j] == 0)
                     {
@@ -218,7 +218,7 @@ namespace LiminalSpaceMazeGame
                             TheRay.draw(spriteBatch);
                             string test = "ray hits" + rayHits.ToString();
                             spriteBatch.DrawString(GameFont, test, new Vector2(50, 0), Color.Black);
-                            test = "time" + dist.ToString();
+                            test = "time" + distanceMoved.ToString();
                             spriteBatch.DrawString(GameFont, test, new Vector2(150, 0), Color.Black);
                             break;
                         case Dimension.D3://3d representation
