@@ -10,6 +10,7 @@ namespace LiminalSpaceMazeGame
         public Vector2 Location;
         public Vector2 Movement;
         public double rotation;
+        public double changeRotation;
         protected Texture2D Texture;
         public Rectangle Edge;
         public virtual void update()

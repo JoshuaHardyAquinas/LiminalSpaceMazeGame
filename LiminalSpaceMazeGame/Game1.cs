@@ -250,17 +250,20 @@ namespace LiminalSpaceMazeGame
         }
         public void rayCast()
         {
-            foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+            if (TheHero.Movement != new Vector2(0, 0) || TheHero.changeRotation != 0)
             {
-                wall.rectangle.Dispose();
-            }
-            walls3d.Clear();//clear wall list
-            for (int i = -TheHero.FOV;i< TheHero.FOV; i++)
-            {
-                Vector2 centreDis = new Vector2(0,0);
-                Vector2 distanceTraveled = Ray.cast(i,TheHero,TheRay,walls,ref centreDis);
-                
-                walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV,gameResolution,GraphicsDevice,centreDis));
+                foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+                {
+                    wall.rectangle.Dispose();
+                }
+                walls3d.Clear();//clear wall list
+                for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
+                {
+                    Vector2 centreDis = new Vector2(0, 0);
+                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, walls, ref centreDis);
+
+                    walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis));
+                }
             }
         }
     }
