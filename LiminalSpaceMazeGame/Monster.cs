@@ -25,7 +25,7 @@ namespace LiminalSpaceMazeGame
         public override void LoadContent(ContentManager Content)
         {
             //load player texture
-            Texture = Content.Load<Texture2D>(@"ray");
+            Texture = Content.Load<Texture2D>(@"Monster2d");
         }
         public void spawn()
         {
