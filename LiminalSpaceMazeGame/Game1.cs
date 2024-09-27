@@ -16,6 +16,8 @@ namespace LiminalSpaceMazeGame
         GenerateMaze TheMaze;
         SpriteFont GameFont;
 
+        List<Monster> monsters = new List<Monster>();
+
         List<Wall> walls = new List<Wall>();
 
         List<wall3d> walls3d = new List<wall3d>();
