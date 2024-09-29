@@ -119,11 +119,11 @@ namespace LiminalSpaceMazeGame
                                                                                                                        //move player away depending on what side is further on collision
                             if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))
                             {
-                                TheHero.Location.X += centreDis.X * -0.125f;
+                                TheHero.Location.X += centreDis.X * -0.1f;
                             }
                             else
                             {
-                                TheHero.Location.Y += centreDis.Y * -0.125f;
+                                TheHero.Location.Y += centreDis.Y * -0.1f;
                             }
                             break;
                         }

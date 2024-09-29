@@ -74,8 +74,8 @@ namespace LiminalSpaceMazeGame
         }
         static public wall3d generate3dWall(Vector2 displacement, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
         {
-            float XDist = Convert.ToInt32(Math.Abs(displacment.X));//turn displacment into distance for easy calculation
-            float YDist = Convert.ToInt32(Math.Abs(displacment.Y));
+            float XDist = Convert.ToInt32(Math.Abs(displacement.X));//turn displacment into distance for easy calculation
+            float YDist = Convert.ToInt32(Math.Abs(displacement.Y));
 
             Direction cDirection = Direction.none;
             double hieght = Math.Sqrt(YDist*YDist + XDist*XDist);
