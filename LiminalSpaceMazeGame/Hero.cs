@@ -41,7 +41,7 @@ namespace LiminalSpaceMazeGame
             int speedMultiplyer = 1;
             int speed = 1;
             speed = speed * speedMultiplyer;
-            //reset movment
+            //reset movement
             Movement.X = 0;
             Movement.Y = 0;
             changeRotation = 0;
@@ -56,7 +56,7 @@ namespace LiminalSpaceMazeGame
             }
             if (ks.IsKeyDown(Keys.S))
             {
-                Movement.X = speed * (float)Math.Sin(rotation);//trig to edit players directional movment
+                Movement.X = speed * (float)Math.Sin(rotation);//trig to edit players directional movement
                 Movement.Y = -speed * (float)Math.Cos(rotation);
             }
             if (ks.IsKeyDown(Keys.W))

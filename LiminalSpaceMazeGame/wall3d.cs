@@ -25,14 +25,14 @@ namespace LiminalSpaceMazeGame
             East,
             West
         }
-        public wall3d(int width,int hieght, Vector2 location, GraphicsDevice device, int decay, Direction wallDirection)
+        public wall3d(int width,int height, Vector2 location, GraphicsDevice device, int decay, Direction wallDirection)
         {
             Width = width;
-            Height = hieght+1;
+            Height = height+1;
             Location = location;
             rectangle = new Texture2D(device, Width, Height);
 
-            Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectange for printing
+            Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectangle for printing
             for (int i = 0; i < pixelData.Length; ++i)
             {
                 if (wallDirection == Direction.North)
@@ -72,7 +72,7 @@ namespace LiminalSpaceMazeGame
             
             spriteBatch.Draw(rectangle, Location, Color.White);
         }
-        static public wall3d generate3dWall(Vector2 displacment, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
+        static public wall3d generate3dWall(Vector2 displacement, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
         {
             float XDist = Convert.ToInt32(Math.Abs(displacment.X));//turn displacment into distance for easy calculation
             float YDist = Convert.ToInt32(Math.Abs(displacment.Y));

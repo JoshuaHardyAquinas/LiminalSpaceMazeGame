@@ -1,14 +1,8 @@
 using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using SharpDX.XAudio2;
-using System.Threading;
 
 namespace LiminalSpaceMazeGame
 {
@@ -20,6 +14,7 @@ namespace LiminalSpaceMazeGame
         public override void update()
         {
             //creates player edge
+            Edge = new Rectangle((int)Location.X, (int)Location.Y, Texture.Width, Texture.Height);
             Edge = new Rectangle((int)Location.X, (int)Location.Y, Texture.Width-1, Texture.Height-1);
         }
         public override void LoadContent(ContentManager Content)
@@ -45,6 +40,7 @@ namespace LiminalSpaceMazeGame
         }
         static public Vector2 cast(int chAnge, Hero TheHero, Ray TheRay,List<Wall> walls,ref Vector2 centreDis)
         {
+            int speed = 2;
             float speed = 0.5f;
             TheRay.Location = TheHero.Location;
             //TheRay.Location = TheRay.Location + new Vector2(-chAnge * (float)Math.Sin(TheRay.rotation), chAnge * (float)Math.Cos(TheRay.rotation));
@@ -56,7 +52,7 @@ namespace LiminalSpaceMazeGame
             {
                 TheRay.Location = TheRay.Location + TheRay.Movement;//move ray forward
                 TheRay.update();//update hitbox
-                foreach (Wall wall in walls)//loop though all wallys (ik its slow but its easy)
+                foreach (Wall wall in walls)//loop though all walls (ik its slow but its easy)
                 {
                     if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
                     {
