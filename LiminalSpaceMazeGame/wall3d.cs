@@ -110,7 +110,7 @@ namespace LiminalSpaceMazeGame
                     cDirection = Direction.South;
                 }
             }
-            double wallHieght = 4096 / hieght + 20; //reciprical function to convert distance of the wall from the player to teh wall hieght, tunes specifically by me
+            double wallHieght = 8192 / hieght + 20; //reciprical function to convert distance of the wall from the player to teh wall hieght, tunes specifically by me
             Vector2 location = new Vector2(slice * 4, gameRes.Y / 2 - (float)wallHieght / 2);//move slice to specific place on screen
             wall3d newWall = new wall3d(4, Convert.ToInt32(wallHieght), location, device, 1, cDirection);//create physical wall entity
             return newWall;//return so it can be added to the list
