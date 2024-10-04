@@ -34,12 +34,13 @@ namespace LiminalSpaceMazeGame
             move();
             die();
         }
-        public bool collide(List<StationaryObject> collObject, ref Vector2 centreDis)
+        public bool collide(List<Wall> collObject, ref Vector2 centreDis)
         {
-            foreach (StationaryObject objects in collObject)
+            foreach (Wall objects in collObject)
             {
                 if (objects.Edge.Intersects(Edge))
                 {
+                    centreDis = new Vector2(objects.Edge.Center.X, objects.Edge.Center.Y) - Location;//make variable to determine the vector distance away from the center of  the wall in question
                     return true;
                 }
             }

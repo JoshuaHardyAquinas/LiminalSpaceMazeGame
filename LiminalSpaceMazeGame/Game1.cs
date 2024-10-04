@@ -111,10 +111,10 @@ namespace LiminalSpaceMazeGame
                 case GameState.InGame:
                     TheHero.update();
                     //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
-                    bool collided = TheHero.collide(walls);
+                    Vector2 centreDis = new Vector2(0, 0);
+                    bool collided = TheHero.collide(walls, ref centreDis);
                     if (collided)
-                    {
-                        Vector2 centreDis = new Vector2(walls.Edge.Center.X, objects.Edge.Center.Y) - TheHero.Location;//make variable to determine the vector distance away from the center of  the wall in question                                                                                               //move player away depending on what side is further on collision
+                    {                                                               //move player away depending on what side is further on collision
                         if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))
                         {
                             TheHero.Location.X += centreDis.X * -0.125f;
