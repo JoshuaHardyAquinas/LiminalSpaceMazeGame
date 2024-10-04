@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Windows.Forms.VisualStyles;
 using SharpDX.Direct3D9;
 using System.Reflection.Metadata.Ecma335;
+using SharpDX.XAudio2;
 
 namespace LiminalSpaceMazeGame
 {
@@ -32,6 +33,17 @@ namespace LiminalSpaceMazeGame
             Edge = new Rectangle((int)Location.X-Texture.Width/2, (int)Location.Y-Texture.Height/2, Texture.Width, Texture.Height);
             move();
             die();
+        }
+        public bool collide(List<StationaryObject> collObject, ref Vector2 centreDis)
+        {
+            foreach (StationaryObject objects in collObject)
+            {
+                if (objects.Edge.Intersects(Edge))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         protected void move()
         {
