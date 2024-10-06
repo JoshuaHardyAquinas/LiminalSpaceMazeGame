@@ -9,12 +9,13 @@ using Microsoft.Xna.Framework;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class Monster : MovingObject
+     class Monster : MovingObject
     {
-        Monster(Vector2 startingLoc, Texture2D texture)
+        private int textnum = 0;
+        public Monster(Vector2 startingLoc, int text)
         {
             Location = startingLoc;
-            Texture = texture;
+            textnum = text;
             rotation = 0f;
         }
         public override void update()
@@ -26,10 +27,6 @@ namespace LiminalSpaceMazeGame
         {
             //load player texture
             Texture = Content.Load<Texture2D>(@"Monster2d");
-        }
-        public void spawn()
-        {
-            Location = new Vector2(60, 60);
         }
         protected override void die()
         {

@@ -27,10 +27,9 @@ namespace LiminalSpaceMazeGame
             Texture = Content.Load<Texture2D>(@"wall");
             Edge = new Rectangle((int)Location.X, (int)Location.Y, Texture.Width, Texture.Height);
         }
-        public new void draw(SpriteBatch spriteBatch)
+        public override void draw(SpriteBatch spriteBatch)
         {
             //draw in location
-            spriteBatch.Draw(Texture, Location, Edge, Color.Wheat);
             spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, 40, 40), Color.White);
         }
     }

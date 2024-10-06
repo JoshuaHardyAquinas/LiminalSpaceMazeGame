@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
 
 namespace LiminalSpaceMazeGame
 {
@@ -76,6 +77,9 @@ namespace LiminalSpaceMazeGame
             maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
             //creates wall entities to be written to the screen
             CreateWallEntities();
+            Monster newMonster = new Monster(new Vector2(600, 600), 1);
+            newMonster.LoadContent(Content);
+            monsters.Add((newMonster));
             base.Initialize();
 
         }
@@ -100,6 +104,13 @@ namespace LiminalSpaceMazeGame
                     }
                     break;
                 case GameState.LevelGen:
+                    monsters.Clear();
+                    foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+                    {
+                        wall.rectangle.Dispose();
+                    }
+                    Monster newMonster = new Monster(new Vector2(600,600),1);
+                    monsters.Add((newMonster));
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                     CreateWallEntities();
                     TheHero.spawn();//put the hero back at its spawn location
@@ -112,19 +123,22 @@ namespace LiminalSpaceMazeGame
                     TheHero.update();
                     //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
                     Vector2 centreDis = new Vector2(0, 0);
-                    bool collided = TheHero.collide(walls, ref centreDis);
-                    if (collided)
+                    foreach (Wall wall in walls)
                     {
-                        //move player away depending on what side is further on collision
-                        if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))
+                        if (wall.Edge.Intersects(TheHero.Edge))
                         {
-                            TheHero.Location.X += centreDis.X * -0.125f;
+                            centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.Location;//make variable to determine the vector distance away from the center of  the wall in question
+                                                                                                               //move player away depending on what side is further on collision
+                            if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))
+                            {
+                                TheHero.Location.X += centreDis.X * -0.125f;
+                            }
+                            else
+                            {
+                                TheHero.Location.Y += centreDis.Y * -0.125f;
+                            }
+                            break;
                         }
-                        else
-                        {
-                            TheHero.Location.Y += centreDis.Y * -0.125f;
-                        }
-                        break;
                     }
                     if (CurrentDimension == Dimension.D3)
                     {

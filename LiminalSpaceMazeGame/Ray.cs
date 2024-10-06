@@ -13,9 +13,8 @@ namespace LiminalSpaceMazeGame
         }
         public override void update()
         {
-            //creates player edge
-            Edge = new Rectangle((int)Location.X, (int)Location.Y, Texture.Width, Texture.Height);
-            Edge = new Rectangle((int)Location.X, (int)Location.Y, Texture.Width-1, Texture.Height-1);
+            Edge = new Rectangle((int)Location.X, (int)Location.Y, Texture.Width/2+1, Texture.Height/2+1);
+            //Edge = new Rectangle((int)Location.X, (int)Location.Y, Texture.Width-1, Texture.Height-1);
         }
         public override void LoadContent(ContentManager Content)
         {
@@ -36,13 +35,12 @@ namespace LiminalSpaceMazeGame
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw player including rotation
-            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
+            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, 0, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
         static public Vector2 cast(int chAnge, Hero TheHero, Ray TheRay,List<Wall> walls,ref Vector2 centreDis)
         {
-            float speed = 2;
+            float speed = 2f;
             TheRay.Location = TheHero.Location;
-            //TheRay.Location = TheRay.Location + new Vector2(-chAnge * (float)Math.Sin(TheRay.rotation), chAnge * (float)Math.Cos(TheRay.rotation));
             TheRay.rotation = TheHero.rotation;
             TheRay.rotation = TheRay.rotation + (chAnge / 180f) * 3.14159265f / 2;//come fix later josh u lazy aaaaaaa....
             TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
@@ -55,7 +53,7 @@ namespace LiminalSpaceMazeGame
                 {
                     if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
                     {
-                        centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheRay.Location;
+                        
                         TheRay.Location = TheRay.Location - (TheRay.Movement + TheRay.Movement / 10);//move ray backwards a lil further than the last hit
                         while (true)//increase ray accuracy for a known hit by moving slower to the actual location
                         {
@@ -63,6 +61,7 @@ namespace LiminalSpaceMazeGame
                             TheRay.update();
                             if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
                             {
+                                centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheRay.Location;
                                 return startloc - TheRay.Location;
                             }
                         }
