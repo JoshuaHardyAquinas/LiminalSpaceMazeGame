@@ -121,15 +121,23 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.InGame:
                     TheHero.update();
-                    //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
                     Vector2 centreDis = new Vector2(0, 0);
+                    foreach (Monster monster in monsters)
+                    {
+                        monster.update();
+                        if (monster.Edge.Intersects(TheHero.Edge))
+                        {
+                            TheHero.lo
+                        }
+                    }
+                        //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
+                        
                     foreach (Wall wall in walls)
                     {
                         if (wall.Edge.Intersects(TheHero.Edge))
                         {
-                            centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.Location;//make variable to determine the vector distance away from the center of  the wall in question
-                                                                                                               //move player away depending on what side is further on collision
-                            if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))
+                            centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.Location;//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                            if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move player away depending on what side is further on collision
                             {
                                 TheHero.Location.X += centreDis.X * -0.125f;
                             }

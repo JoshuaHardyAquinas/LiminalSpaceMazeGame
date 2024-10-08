@@ -21,7 +21,7 @@ namespace LiminalSpaceMazeGame
         {
 
         }
-        protected virtual void die()
+        protected virtual void checkDeath()
         {
 
         }

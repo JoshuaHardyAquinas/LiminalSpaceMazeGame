@@ -21,6 +21,7 @@ namespace LiminalSpaceMazeGame
         public Hero(int fov)
         {
             // constructor
+            Health = 100;
             Location = new Vector2(60, 60);//player spawn location
             Movement = new Vector2(0, 0);//no movment for player to begin with
             changeRotation = 1;
@@ -32,7 +33,7 @@ namespace LiminalSpaceMazeGame
             //creates player edge
             Edge = new Rectangle((int)Location.X-Texture.Width/2, (int)Location.Y-Texture.Height/2, Texture.Width, Texture.Height);
             move();
-            die();
+            checkDeath();
         }
         protected void move()
         {
@@ -91,7 +92,13 @@ namespace LiminalSpaceMazeGame
         {
             Location = new Vector2 (60, 60);
         }
-        protected override void die()
+        public virtual void loseHealth(int value)
+        {
+            Health = -value;
+            checkDeath();
+
+        }
+        protected override void checkDeath()
         {
             if (Health <= 0)//player dies if health reaches 0
             {

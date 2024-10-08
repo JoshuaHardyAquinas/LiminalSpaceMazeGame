@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ namespace LiminalSpaceMazeGame
             //load player texture
             Texture = Content.Load<Texture2D>(@"Monster2d");
         }
-        protected override void die()
+        protected override void checkDeath()
         {
             if (Health <= 0)//monster dies with 0 health
             {

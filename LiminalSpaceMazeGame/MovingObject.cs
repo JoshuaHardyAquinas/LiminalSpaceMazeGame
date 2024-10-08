@@ -45,7 +45,7 @@ namespace LiminalSpaceMazeGame
         public override void LoadContent(ContentManager Content)
         { }
 
-        protected override void die()
+        protected override void checkDeath()
         {
 
         }

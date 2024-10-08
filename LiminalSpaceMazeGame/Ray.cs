@@ -25,7 +25,7 @@ namespace LiminalSpaceMazeGame
         {
             Location = new Vector2(60, 60);
         }
-        protected override void die()
+        protected override void checkDeath()
         {
             if (Health <= 0)//player dies if health reaches 0
             {
