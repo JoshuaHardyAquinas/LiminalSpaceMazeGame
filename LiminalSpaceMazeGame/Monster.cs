@@ -18,12 +18,17 @@ namespace LiminalSpaceMazeGame
             Location = startingLoc;
             textnum = 0;
             rotation = 0f;
+            Texture = null;
         }
         public override void update()
         {
             //creates player edge
             Edge = new Rectangle((int)Location.X - Texture.Width / 2, (int)Location.Y - Texture.Height / 2, Texture.Width, Texture.Height);
-
+            rotation += PI / 32;
+            if (rotation > PI*2)
+            {
+                rotation = 0f;
+            }
         }
         public override void LoadContent(ContentManager Content)
         {

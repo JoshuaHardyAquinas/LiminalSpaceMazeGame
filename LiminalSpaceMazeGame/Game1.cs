@@ -110,7 +110,8 @@ namespace LiminalSpaceMazeGame
                         wall.rectangle.Dispose();
                     }
                     Monster newMonster = new Monster(new Vector2(600,600),1);
-                    monsters.Add((newMonster));
+                    newMonster.LoadContent(Content);
+                    monsters.Add(newMonster);
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                     CreateWallEntities();
                     TheHero.spawn();//put the hero back at its spawn location
@@ -125,10 +126,10 @@ namespace LiminalSpaceMazeGame
                     foreach (Monster monster in monsters)
                     {
                         monster.update();
-                        if (monster.Edge.Intersects(TheHero.Edge))
+                        /*if (monster.Edge.Intersects(TheHero.Edge))
                         {
                             
-                        }
+                        }*/
                     }
                         //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
                         
@@ -234,6 +235,10 @@ namespace LiminalSpaceMazeGame
                             for (int i = 0; i < walls.Count; i++)
                             {
                                 walls[i].draw(spriteBatch);
+                            }
+                            for (int i = 0; i < monsters.Count; i++)
+                            {
+                                monsters[i].draw(spriteBatch);
                             }
                             //draw hero on top
                             TheHero.draw(spriteBatch);
