@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using System.Windows.Forms;
 
 namespace LiminalSpaceMazeGame
 {
@@ -15,7 +16,7 @@ namespace LiminalSpaceMazeGame
         public Monster(Vector2 startingLoc, int text)
         {
             Location = startingLoc;
-            textnum = text;
+            textnum = 0;
             rotation = 0f;
         }
         public override void update()
@@ -26,7 +27,14 @@ namespace LiminalSpaceMazeGame
         public override void LoadContent(ContentManager Content)
         {
             //load player texture
-            Texture = Content.Load<Texture2D>(@"Monster2d");
+            if (textnum == 0)
+            {
+                Texture = Content.Load<Texture2D>(@"Monster2d");
+            }
+            else
+            {
+                throw new Exception("ID10T");
+            }
         }
         protected override void checkDeath()
         {
