@@ -23,6 +23,7 @@ namespace LiminalSpaceMazeGame
         {
             //creates player edge
             Edge = new Rectangle((int)Location.X - Texture.Width / 2, (int)Location.Y - Texture.Height / 2, Texture.Width, Texture.Height);
+
         }
         public override void LoadContent(ContentManager Content)
         {
@@ -36,7 +37,7 @@ namespace LiminalSpaceMazeGame
                 throw new Exception("ID10T");
             }
         }
-        protected override void checkDeath()
+        protected void checkDeath()
         {
             if (Health <= 0)//monster dies with 0 health
             {

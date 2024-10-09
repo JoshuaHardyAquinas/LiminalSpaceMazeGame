@@ -127,7 +127,7 @@ namespace LiminalSpaceMazeGame
                         monster.update();
                         if (monster.Edge.Intersects(TheHero.Edge))
                         {
-                            TheHero.lo
+                            
                         }
                     }
                         //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
