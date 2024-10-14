@@ -88,9 +88,9 @@ namespace LiminalSpaceMazeGame
                 hieght = YDist;
             }*/
             
-            if (Math.Abs(centreDis.X)>Math.Abs(centreDis.Y))
+            if (Math.Abs(centreDis.X)>=Math.Abs(centreDis.Y))
             {
-                if (centreDis.X > 0)
+                if (centreDis.X >= 0)
                 {
                     cDirection = Direction.East;
                 }
