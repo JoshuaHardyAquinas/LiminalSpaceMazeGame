@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.ComponentModel.Design.Serialization;
 
 namespace LiminalSpaceMazeGame
 {
@@ -52,7 +53,6 @@ namespace LiminalSpaceMazeGame
                 {
                     if (wall.Edge.Intersects(TheRay.Edge))//check collision with hitbox
                     {
-                        
                         TheRay.Location = TheRay.Location - TheRay.Movement*1.1f;//move ray backwards a lil further than the last hit
                         while (true)//increase ray accuracy for a known hit by moving slower to the actual location
                         {
@@ -65,6 +65,11 @@ namespace LiminalSpaceMazeGame
                             }
                         }
                     }
+                    
+                }
+                if(Math.Abs(TheRay.Location.X) >700  || Math.Abs(TheRay.Location.Y) > 700)
+                {
+                    return new Vector2(1000,1000);
                 }
             }
         }
