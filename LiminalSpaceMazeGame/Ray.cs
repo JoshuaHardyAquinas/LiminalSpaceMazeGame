@@ -14,7 +14,6 @@ namespace LiminalSpaceMazeGame
         public override void update()
         {
             Edge = new Rectangle((int)Location.X, (int)Location.Y, 1, 1);
-            //Edge = new Rectangle((int)Location.X, (int)Location.Y, Texture.Width-1, Texture.Height-1);
         }
         public override void LoadContent(ContentManager Content)
         {
