@@ -112,8 +112,8 @@ namespace LiminalSpaceMazeGame
                     Monster newMonster = new Monster(new Vector2(600,600),1);
                     newMonster.LoadContent(Content);
                     monsters.Add(newMonster);
-                    //maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
-                    maze = new int[mazeWidth, mazeHeight];
+                    maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
+                    //maze = new int[mazeWidth, mazeHeight];
                     CreateWallEntities();
                     TheHero.spawn();//put the hero back at its spawn location
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
@@ -283,13 +283,32 @@ namespace LiminalSpaceMazeGame
                     wall.rectangle.Dispose();
                 }
                 walls3d.Clear();//clear wall list
+
+                List<ObjInGame> gameObjects = new List<ObjInGame>();
+
+                foreach (Wall wall in walls)// delete all textures to free up ram temp fix
+                {
+                    ObjInGame newObj = new ObjInGame();
+                    newObj.objectEdge = wall.Edge;
+                    newObj.objectLocation = wall.Location;
+                    newObj.objName = "W";
+                    gameObjects.Add(newObj);
+                }
+                 
                 for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
                 {
                     Vector2 centreDis = new Vector2(0, 0);
-                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, walls, ref centreDis);
+                    char objHit = ' ';
+                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, ref objHit);
                     walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis));
                 }
             }
+        }
+        public struct ObjInGame()
+        {
+            public Rectangle objectEdge;
+            public Vector2 objectLocation;
+            public string objName;
         }
     }
 }
