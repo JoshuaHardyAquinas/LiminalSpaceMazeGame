@@ -38,7 +38,7 @@ namespace LiminalSpaceMazeGame
             //draw player including rotation
             //spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, 0, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
-        static public Vector2 cast(int chAnge, Hero TheHero, Ray TheRay,List<ObjInGame> ingameObjects,ref Vector2 centreDis, ref char objName)
+        static public Vector2 cast(int chAnge, Hero TheHero, Ray TheRay,List<ObjInGame> ingameObjects,ref Vector2 centreDis, ref char objToHit)
         {
             float speed = 2f;
             TheRay.Location = TheHero.Location;
@@ -52,7 +52,7 @@ namespace LiminalSpaceMazeGame
                 TheRay.update();//update hitbox
                 foreach (ObjInGame Obj in ingameObjects)//loop though all walls (ik its slow but its easy)
                 {
-                    if (Obj.objectEdge.Intersects(TheRay.Edge))//check collision with hitbox
+                    if (Obj.objectEdge.Intersects(TheRay.Edge) && Obj.objName == objToHit)//check collision with hitbox
                     {
                         TheRay.Location = TheRay.Location - TheRay.Movement*1.1f;//move ray backwards a lil further than the last hit
                         while (true)//increase ray accuracy for a known hit by moving slower to the actual location
@@ -68,7 +68,7 @@ namespace LiminalSpaceMazeGame
                     }
                     
                 }
-                if(Math.Abs(TheRay.Location.X) >700  || Math.Abs(TheRay.Location.Y) > 700)
+                if(Math.Abs(TheRay.Location.X-TheHero.Location.X) >600  || Math.Abs(TheRay.Location.Y - TheHero.Location.Y) > 600)
                 {
                     return new Vector2(1000,1000);
                 }

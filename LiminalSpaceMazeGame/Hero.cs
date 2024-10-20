@@ -102,7 +102,7 @@ namespace LiminalSpaceMazeGame
         {
             if (Health <= 0)//player dies if health reaches 0
             {
-                //die
+               Location = new Vector2 (40, 40);
             }
         }
     }

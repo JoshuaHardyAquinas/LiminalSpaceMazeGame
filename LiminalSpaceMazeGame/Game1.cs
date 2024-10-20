@@ -71,13 +71,12 @@ namespace LiminalSpaceMazeGame
             TheHero = new Hero(90);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
-            // TODO: Add your initialization logic here
 
             //makes 1st maze
             maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
             //creates wall entities to be written to the screen
             CreateWallEntities();
-            Monster newMonster = new Monster(new Vector2(600, 600), 1);
+            Monster newMonster = new Monster(new Vector2(620, 620), 1);
             newMonster.LoadContent(Content);
             monsters.Add((newMonster));
             base.Initialize();
@@ -127,10 +126,10 @@ namespace LiminalSpaceMazeGame
                     foreach (Monster monster in monsters)
                     {
                         monster.update();
-                        /*if (monster.Edge.Intersects(TheHero.Edge))
+                        if (monster.Edge.Intersects(TheHero.Edge))
                         {
-                            
-                        }*/
+                            TheHero.loseHealth(100);
+                        }
                     }
                         //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
                         
@@ -291,15 +290,23 @@ namespace LiminalSpaceMazeGame
                     ObjInGame newObj = new ObjInGame();
                     newObj.objectEdge = wall.Edge;
                     newObj.objectLocation = wall.Location;
-                    newObj.objName = "W";
+                    newObj.objName = 'W';
                     gameObjects.Add(newObj);
                 }
-                 
+                foreach (Monster monster in monsters)
+                {
+                    ObjInGame newObj = new ObjInGame();
+                    newObj.objectEdge = monster.Edge;
+                    newObj.objectLocation = monster.Location;
+                    newObj.objName = 'M';
+                    gameObjects.Add(newObj);
+                }
+
                 for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
                 {
                     Vector2 centreDis = new Vector2(0, 0);
-                    char objHit = ' ';
-                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, ref objHit);
+                    char objToHit = 'W';
+                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, ref objToHit);
                     walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis));
                 }
             }
@@ -308,7 +315,7 @@ namespace LiminalSpaceMazeGame
         {
             public Rectangle objectEdge;
             public Vector2 objectLocation;
-            public string objName;
+            public char objName;
         }
     }
 }
