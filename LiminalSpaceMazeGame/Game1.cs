@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms.VisualStyles;
+
 
 namespace LiminalSpaceMazeGame
 {
@@ -14,6 +13,7 @@ namespace LiminalSpaceMazeGame
         KeyboardState ks1, ks2;
         Hero TheHero;
         Ray TheRay;
+        UI TheUI;
         GenerateMaze TheMaze;
         SpriteFont GameFont;
 
@@ -71,6 +71,7 @@ namespace LiminalSpaceMazeGame
             TheHero = new Hero(90);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
+            TheUI = new UI();
 
             //makes 1st maze
             maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
@@ -88,6 +89,7 @@ namespace LiminalSpaceMazeGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
             TheHero.LoadContent(Content);
             TheRay.LoadContent(Content);
+            TheUI.LoadContent(Content);
             GameFont = Content.Load<SpriteFont>(@"File");
         }
 
@@ -254,6 +256,7 @@ namespace LiminalSpaceMazeGame
                             {
                                 walls3d[i].draw(spriteBatch);
                             }
+                            TheUI.draw(spriteBatch);
                             break;
                     }
                     break;
