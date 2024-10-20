@@ -22,7 +22,7 @@ namespace LiminalSpaceMazeGame
         {
             // constructor
             Health = 100;
-            Location = new Vector2(60, 60);//player spawn location
+            spawn(new Vector2(60, 60));
             Movement = new Vector2(0, 0);//no movment for player to begin with
             changeRotation = 1;
             rotation = 0;//starting rotation
@@ -31,9 +31,8 @@ namespace LiminalSpaceMazeGame
         public override void update()
         {
             //creates player edge
-            Edge = new Rectangle((int)Location.X-Texture.Width/2, (int)Location.Y-Texture.Height/2, Texture.Width, Texture.Height);
+            Edge = new Rectangle((int)getLocation().X-Texture.Width/2, (int)getLocation().Y-Texture.Height/2, Texture.Width, Texture.Height);
             move();
-            checkDeath();
         }
         protected void move()
         {
@@ -76,33 +75,40 @@ namespace LiminalSpaceMazeGame
                 rotation = PI * 2f;
             }
             rotation = rotation + changeRotation;
-            Location = Location + Movement;//move player
+            setLocation(getLocation() + Movement);//movePlayer
         }
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw player including rotation
-            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width/2f, Texture.Height/2f), new Vector2(1, 1), SpriteEffects.None, 1);
+            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width/2f, Texture.Height/2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
         public override void LoadContent(ContentManager Content)
         {
             //load player texture
             Texture = Content.Load<Texture2D>(@"2d_Hero");
         }
-        public void spawn()
+        public void loseHealth(int value)
         {
-            Location = new Vector2 (60, 60);
-        }
-        public virtual void loseHealth(int value)
-        {
-            Health = -value;
+            Health -= value;
             checkDeath();
 
+        }
+        public int checkHealth()
+        {
+            return Health;
+        }
+
+        
+
+        public void gainHealth(int value)
+        {
+            Health += value;
         }
         protected override void checkDeath()
         {
             if (Health <= 0)//player dies if health reaches 0
             {
-               Location = new Vector2 (40, 40);
+                spawn(new Vector2(40,40));
             }
         }
     }

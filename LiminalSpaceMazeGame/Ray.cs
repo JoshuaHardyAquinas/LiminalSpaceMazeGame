@@ -12,19 +12,16 @@ namespace LiminalSpaceMazeGame
     {
         public Ray()
         {
+            
         }
         public override void update()
         {
-            Edge = new Rectangle((int)Location.X, (int)Location.Y, 1, 1);
+            Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, 1, 1);
         }
         public override void LoadContent(ContentManager Content)
         {
             //load player texture
             Texture = Content.Load<Texture2D>(@"ray");
-        }
-        public void spawn()
-        {
-            Location = new Vector2(60, 60);
         }
         protected override void checkDeath()
         {
@@ -41,34 +38,34 @@ namespace LiminalSpaceMazeGame
         static public Vector2 cast(int chAnge, Hero TheHero, Ray TheRay,List<ObjInGame> ingameObjects,ref Vector2 centreDis, ref char objToHit)
         {
             float speed = 2f;
-            TheRay.Location = TheHero.Location;
+            TheRay.setLocation(TheHero.getLocation());
             TheRay.rotation = TheHero.rotation;
             TheRay.rotation = TheRay.rotation + (chAnge / 180f) * 3.14159265f / 2;
             TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
-            Vector2 startloc = TheRay.Location;
+            Vector2 startloc = TheRay.getLocation();
             while (true)
             {
-                TheRay.Location = TheRay.Location + TheRay.Movement;//move ray forward
+                TheRay.setLocation(TheRay.getLocation() + TheRay.Movement);//move ray forward
                 TheRay.update();//update hitbox
                 foreach (ObjInGame Obj in ingameObjects)//loop though all walls (ik its slow but its easy)
                 {
                     if (Obj.objectEdge.Intersects(TheRay.Edge) && Obj.objName == objToHit)//check collision with hitbox
                     {
-                        TheRay.Location = TheRay.Location - TheRay.Movement*1.1f;//move ray backwards a lil further than the last hit
+                        TheRay.setLocation(TheRay.getLocation() - TheRay.Movement * 1.1f);//move ray backwards a lil further than the last hit
                         while (true)//increase ray accuracy for a known hit by moving slower to the actual location
                         {
-                            TheRay.Location = TheRay.Location + TheRay.Movement * 0.1f;//move 
+                            TheRay.setLocation(TheRay.getLocation() + TheRay.Movement*0.1f);//move 
                             TheRay.update();
                             if (Obj.objectEdge.Intersects(TheRay.Edge))//check collision with hitbox
                             {
-                                centreDis = new Vector2(Obj.objectEdge.Center.X, Obj.objectEdge.Center.Y) - TheRay.Location;
-                                return startloc - TheRay.Location;
+                                centreDis = new Vector2(Obj.objectEdge.Center.X, Obj.objectEdge.Center.Y) - TheRay.getLocation();
+                                return startloc - TheRay.getLocation();
                             }
                         }
                     }
                     
                 }
-                if(Math.Abs(TheRay.Location.X-TheHero.Location.X) >600  || Math.Abs(TheRay.Location.Y - TheHero.Location.Y) > 600)
+                if(Math.Abs(TheRay.getLocation().X-TheHero.getLocation().X) >600  || Math.Abs(TheRay.getLocation().Y - TheHero.getLocation().Y) > 600)
                 {
                     return new Vector2(1000,1000);
                 }

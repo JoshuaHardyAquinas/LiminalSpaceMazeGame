@@ -1,22 +1,23 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace LiminalSpaceMazeGame
 {
-    public class UI:StationaryObject
+    internal class UIElement:StationaryObject
     {
-       bool displayElement = false;
-        public UI()
+        public UIElement()
         {
-            spawn(new Vector2(0, 670));
+            spawn(new Vector2(0, 695));
         }
         public override void update()
         {
-            
+
         }
         public override void LoadContent(ContentManager Content)
         {
@@ -25,8 +26,7 @@ namespace LiminalSpaceMazeGame
         }
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture,getLocation(),Color.AliceBlue);
+            spriteBatch.Draw(Texture, getLocation(), Color.AliceBlue);
         }
-
     }
 }

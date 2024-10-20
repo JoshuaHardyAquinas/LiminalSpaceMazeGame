@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 
 namespace LiminalSpaceMazeGame
@@ -28,7 +29,8 @@ namespace LiminalSpaceMazeGame
 
         public override void update()
         {
-
+            Edge = new Rectangle((int)getLocation().X - Texture.Width / 2, (int)getLocation().Y - Texture.Height / 2, Texture.Width, Texture.Height);
+            checkDeath();
         }
         protected virtual void SendAttack()
         {

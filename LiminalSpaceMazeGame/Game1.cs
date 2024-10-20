@@ -116,7 +116,7 @@ namespace LiminalSpaceMazeGame
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                     //maze = new int[mazeWidth, mazeHeight];
                     CreateWallEntities();
-                    TheHero.spawn();//put the hero back at its spawn location
+                    TheHero.spawn(new Vector2(60,60));//put the hero back at its spawn location
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = GameState.InGame;
@@ -139,14 +139,14 @@ namespace LiminalSpaceMazeGame
                     {
                         if (wall.Edge.Intersects(TheHero.Edge))
                         {
-                            centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.Location;//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                            centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
                             if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move player away depending on what side is further on collision
                             {
-                                TheHero.Location.X += centreDis.X * -0.125f;
+                                TheHero.setLocation(new Vector2(centreDis.X * -0.125f+TheHero.getLocation().X, TheHero.getLocation().Y));
                             }
                             else
                             {
-                                TheHero.Location.Y += centreDis.Y * -0.125f;
+                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * -0.125f+TheHero.getLocation().Y));
                             }
                             break;
                         }
@@ -292,7 +292,7 @@ namespace LiminalSpaceMazeGame
                 {
                     ObjInGame newObj = new ObjInGame();
                     newObj.objectEdge = wall.Edge;
-                    newObj.objectLocation = wall.Location;
+                    newObj.objectLocation = wall.getLocation();
                     newObj.objName = 'W';
                     gameObjects.Add(newObj);
                 }
@@ -300,7 +300,7 @@ namespace LiminalSpaceMazeGame
                 {
                     ObjInGame newObj = new ObjInGame();
                     newObj.objectEdge = monster.Edge;
-                    newObj.objectLocation = monster.Location;
+                    newObj.objectLocation = monster.getLocation();
                     newObj.objName = 'M';
                     gameObjects.Add(newObj);
                 }

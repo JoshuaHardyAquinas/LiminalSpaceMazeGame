@@ -1,4 +1,4 @@
-﻿ using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace LiminalSpaceMazeGame
         private int textnum = 0;
         public Monster(Vector2 startingLoc, int text)
         {
-            Location = startingLoc;
+            spawn(startingLoc);
             textnum = 0;
             rotation = 0f;
             Texture = null;
@@ -23,7 +23,7 @@ namespace LiminalSpaceMazeGame
         public override void update()
         {
             //creates player edge
-            Edge = new Rectangle((int)Location.X - Texture.Width / 2, (int)Location.Y - Texture.Height / 2, Texture.Width, Texture.Height);
+            base.update();
             rotation += PI / 32;
             if (rotation > PI*2)
             {
@@ -42,17 +42,10 @@ namespace LiminalSpaceMazeGame
                 throw new Exception("ID10T");
             }
         }
-        protected void checkDeath()
-        {
-            if (Health <= 0)//monster dies with 0 health
-            {
-                //die
-            }
-        }
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw player including rotation
-            spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
+            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
 
     }

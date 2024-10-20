@@ -29,7 +29,7 @@ namespace LiminalSpaceMazeGame
         {
             Width = width;
             Height = height+1;
-            Location = location;
+            setLocation(location);
             rectangle = new Texture2D(device, Width, Height);
 
             Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectangle for printing
@@ -70,7 +70,7 @@ namespace LiminalSpaceMazeGame
         {
             //draw in location
             
-            spriteBatch.Draw(rectangle, Location, Color.White);
+            spriteBatch.Draw(rectangle, getLocation(), Color.White);
         }
         static public wall3d generate3dWall(Vector2 displacement, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
         {
