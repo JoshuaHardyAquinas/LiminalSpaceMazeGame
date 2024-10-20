@@ -9,9 +9,10 @@ namespace LiminalSpaceMazeGame
 {
     internal class UI:StationaryObject
     {
-        Vector2 Location = new Vector2(0, 670);
+       
         public UI()
         {
+            Location = new Vector2(0, 670);
         }
         public override void update()
         {
