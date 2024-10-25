@@ -29,6 +29,9 @@ namespace LiminalSpaceMazeGame
             {
                 rotation = 0f;
             }
+            Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
+            Movement.Y = -1* (float)Math.Cos(rotation);
+            setLocation(getLocation()+Movement);
         }
         public override void LoadContent(ContentManager Content)
         {

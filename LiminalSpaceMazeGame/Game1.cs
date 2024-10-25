@@ -110,7 +110,7 @@ namespace LiminalSpaceMazeGame
                     {
                         wall.rectangle.Dispose();
                     }
-                    Monster newMonster = new Monster(new Vector2(600,600),1);
+                    Monster newMonster = new Monster(new Vector2(300,300),1);
                     newMonster.LoadContent(Content);
                     monsters.Add(newMonster);
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
@@ -124,6 +124,10 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.InGame:
                     TheHero.update();
+                    foreach(Monster monster in monsters)
+                    {
+                        monster.update();
+                    }
                     Vector2 centreDis = new Vector2(0, 0);
                     foreach (Monster monster in monsters)
                     {
@@ -149,6 +153,22 @@ namespace LiminalSpaceMazeGame
                                 TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * -0.125f+TheHero.getLocation().Y));
                             }
                             break;
+                        }
+                        foreach (Monster monster in monsters)
+                        {
+                            if (wall.Edge.Intersects(monster.Edge))
+                            {
+                                centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
+                                {
+                                    monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
+                                }
+                                else
+                                {
+                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
+                                }
+                                break;
+                            }
                         }
                     }
                     if (CurrentDimension == Dimension.D3)
@@ -278,8 +298,6 @@ namespace LiminalSpaceMazeGame
         }
         public void rayCast()
         {
-            if (TheHero.Movement != new Vector2(0, 0) || TheHero.changeRotation != 0)
-            {
                 foreach (var wall in walls3d)// delete all textures to free up ram temp fix
                 {
                     wall.rectangle.Dispose();
@@ -321,10 +339,6 @@ namespace LiminalSpaceMazeGame
                     }
                 }
                 gameObjects.Clear();
-                
-
-
-            }
         }
         public struct ObjInGame()
         {
