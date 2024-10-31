@@ -106,10 +106,10 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.LevelGen:
                     monsters.Clear();
-                    foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+                    /*foreach (var wall in walls3d)// delete all textures to free up ram temp fix
                     {
                         wall.rectangle.Dispose();
-                    }
+                    }*/
                     Monster newMonster = new Monster(new Vector2(100,100),1);
                     newMonster.LoadContent(Content);
                     monsters.Add(newMonster);
@@ -298,10 +298,10 @@ namespace LiminalSpaceMazeGame
         }
         public void rayCast()
         {
-            foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+            /*foreach (var wall in walls3d)// delete all textures to free up ram temp fix
             {
                 wall.rectangle.Dispose();
-            }
+            }*/
             walls3d.Clear();//clear wall list
 
             List<ObjInGame> gameObjects = new List<ObjInGame>();
@@ -335,8 +335,12 @@ namespace LiminalSpaceMazeGame
                 Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 660);
                 if (distanceTraveled != new Vector2(660, 660))
                 {
-                    walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis, Content.Load<Texture2D>(@"wall")));
+                    walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis, Content.Load<Texture2D>(@"3DWallTest")));
                 }
+            }
+            foreach (wall3d wall in walls3d)
+            {
+                wall.LoadContent(Content);
             }
             gameObjects.Clear();
         }
