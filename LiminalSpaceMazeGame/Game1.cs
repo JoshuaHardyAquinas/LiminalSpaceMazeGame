@@ -105,12 +105,12 @@ namespace LiminalSpaceMazeGame
                     }
                     break;
                 case GameState.LevelGen:
-                    monsters.Clear();
                     foreach (var wall in walls3d)// delete all textures to free up ram temp fix
                     {
                         wall.rectangle.Dispose();
                     }
-                    Monster newMonster = new Monster(new Vector2(300,300),1);
+                    monsters.Clear();
+                    Monster newMonster = new Monster(new Vector2(180,60),1);
                     newMonster.LoadContent(Content);
                     monsters.Add(newMonster);
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
@@ -126,7 +126,7 @@ namespace LiminalSpaceMazeGame
                     TheHero.update();
                     foreach(Monster monster in monsters)
                     {
-                        monster.update();
+                        monster.update(TheHero);
                     }
                     Vector2 centreDis = new Vector2(0, 0);
                     foreach (Monster monster in monsters)
@@ -181,6 +181,7 @@ namespace LiminalSpaceMazeGame
                     }
                     break;
                 case GameState.Dead:
+                    monsters.Clear();
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = GameState.StartMenu;
@@ -271,7 +272,6 @@ namespace LiminalSpaceMazeGame
                             spriteBatch.DrawString(GameFont, test, new Vector2(150, 0), Color.Black);
                             break;
                         case Dimension.D3://3d representation
-                            spriteBatch.DrawString(GameFont, "welcome", new Vector2(0, 360), Color.Black);
                             for (int i = 0; i < walls3d.Count; i++)
                             {
                                 walls3d[i].draw(spriteBatch);
