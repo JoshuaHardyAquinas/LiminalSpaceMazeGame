@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Windows.Forms;
+using System.Net.Security;
 
 
 namespace LiminalSpaceMazeGame
@@ -27,6 +28,7 @@ namespace LiminalSpaceMazeGame
         }
         public wall3d(int width,int height, Vector2 location, GraphicsDevice device, int decay, Direction wallDirection)
         {
+            
             Width = width;
             Height = height+1;
             setLocation(location);
@@ -46,8 +48,8 @@ namespace LiminalSpaceMazeGame
         public new void draw(SpriteBatch spriteBatch)
         {
             //draw in location
-            
-            spriteBatch.Draw(Texture,,, getLocation(), Color.White);
+            spriteBatch.Draw(Texture,new Rectangle((int)getLocation().X,(int)getLocation().Y,4,Height),rectangle, Color.White);
+            spriteBatch.Draw(Texture,new Rectangle((int)getLocation().X, (int)getLocation().Y, 4, Height),rectangle,Color.Wheat)
         }
         static public wall3d generate3dWall(Vector2 displacement, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
         {

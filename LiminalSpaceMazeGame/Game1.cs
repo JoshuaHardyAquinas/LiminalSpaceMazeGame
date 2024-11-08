@@ -337,7 +337,7 @@ namespace LiminalSpaceMazeGame
                 if (distanceTraveled != new Vector2(600, 600))
                 {
                     wall3d newSlice = wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis);
-                    newSlice.LoadContent(Content,"")
+                    newSlice.LoadContent(Content, "");
                     walls3d.Add(newSlice);
                 }
             }
