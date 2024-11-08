@@ -105,12 +105,20 @@ namespace LiminalSpaceMazeGame
                     }
                     break;
                 case GameState.LevelGen:
+<<<<<<< HEAD
                     monsters.Clear();
+=======
+>>>>>>> custom-texturing-can-die-for-now
                     /*foreach (var wall in walls3d)// delete all textures to free up ram temp fix
                     {
                         wall.rectangle.Dispose();
                     }*/
+<<<<<<< HEAD
                     Monster newMonster = new Monster(new Vector2(100,100),1);
+=======
+                    monsters.Clear();
+                    Monster newMonster = new Monster(new Vector2(180,60),1);
+>>>>>>> custom-texturing-can-die-for-now
                     newMonster.LoadContent(Content);
                     monsters.Add(newMonster);
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
@@ -126,7 +134,7 @@ namespace LiminalSpaceMazeGame
                     TheHero.update();
                     foreach(Monster monster in monsters)
                     {
-                        monster.update();
+                        monster.update(TheHero);
                     }
                     Vector2 centreDis = new Vector2(0, 0);
                     foreach (Monster monster in monsters)
@@ -181,6 +189,7 @@ namespace LiminalSpaceMazeGame
                     }
                     break;
                 case GameState.Dead:
+                    monsters.Clear();
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = GameState.StartMenu;
@@ -271,7 +280,6 @@ namespace LiminalSpaceMazeGame
                             spriteBatch.DrawString(GameFont, test, new Vector2(150, 0), Color.Black);
                             break;
                         case Dimension.D3://3d representation
-                            spriteBatch.DrawString(GameFont, "welcome", new Vector2(0, 360), Color.Black);
                             for (int i = 0; i < walls3d.Count; i++)
                             {
                                 walls3d[i].draw(spriteBatch);
@@ -297,8 +305,13 @@ namespace LiminalSpaceMazeGame
             base.Draw(gameTime);
         }
         public void rayCast()
+<<<<<<< HEAD
         {
             /*foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+=======
+        {/*
+            foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+>>>>>>> custom-texturing-can-die-for-now
             {
                 wall.rectangle.Dispose();
             }*/
@@ -335,6 +348,7 @@ namespace LiminalSpaceMazeGame
                 Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 660);
                 if (distanceTraveled != new Vector2(660, 660))
                 {
+<<<<<<< HEAD
                     walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, Content.Load<Texture2D>(@"3DWallTest")));
                 }
             }
@@ -343,11 +357,39 @@ namespace LiminalSpaceMazeGame
                 wall.LoadContent(Content);
             }
             gameObjects.Clear();
+=======
+                    Vector2 centreDis = new Vector2(0, 0);
+                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 300);
+                    if (distanceTraveled != new Vector2(300, 300))
+                    {
+                        walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis,"M"));
+                    }
+                }
+                gameObjects.Clear();
+                foreach (Wall wall in walls)// delete all textures to free up ram temp fix
+                {
+                    ObjInGame newObj = new ObjInGame();
+                    newObj.objectEdge = wall.Edge;
+                    newObj.objectLocation = wall.getLocation();
+                    gameObjects.Add(newObj);
+                }
+                for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
+                {
+                    Vector2 centreDis = new Vector2(0, 0);
+                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis,600);
+                    if (distanceTraveled != new Vector2(600, 600))
+                    {
+                        walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis,"W"));
+                    }
+                }
+                gameObjects.Clear();
+>>>>>>> custom-texturing-can-die-for-now
         }
         public struct ObjInGame()
         {
             public Rectangle objectEdge;
             public Vector2 objectLocation;
+            public char name;
         }
     }
 }

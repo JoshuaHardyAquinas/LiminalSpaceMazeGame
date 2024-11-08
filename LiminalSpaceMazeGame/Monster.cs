@@ -20,17 +20,29 @@ namespace LiminalSpaceMazeGame
             rotation = 0f;
             Texture = null;
         }
-        public override void update()
+        public void update(Hero theHero)
         {
             //creates player edge
-            base.update();
-            rotation += PI / 32;
-            if (rotation > PI*2)
+            if (theHero.getLocation().X>getLocation().X)
             {
-                rotation = 0f;
+                Movement.X = 1;
             }
-            Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
-            Movement.Y = -1* (float)Math.Cos(rotation);
+            else
+            {
+                Movement.X = -1;
+            }
+            if (theHero.getLocation().Y > getLocation().Y)
+            {
+                Movement.Y = 1;
+            }
+            else
+            {
+                Movement.Y = -1;
+            }
+            base.update();
+            //rotation = PI / 32;
+            //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
+            //Movement.Y = -1* (float)Math.Cos(rotation);
             setLocation(getLocation()+Movement);
         }
         public override void LoadContent(ContentManager Content)
