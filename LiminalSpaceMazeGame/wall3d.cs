@@ -33,29 +33,6 @@ namespace LiminalSpaceMazeGame
             rectangle = new Texture2D(device, Width, Height);
 
             Color[] pixelData = new Color[Width * Height];//upload texture of pixels to the rectangle for printing
-            for (int i = 0; i < pixelData.Length; ++i)
-            {
-                if (wallDirection == Direction.North)
-                {
-                    pixelData[i] = Color.Red;
-                }
-                else if (wallDirection == Direction.South)
-                {
-                    pixelData[i] = Color.Green;
-                }
-                else if (wallDirection == Direction.East)
-                {
-                    pixelData[i] = Color.Blue;
-                }
-                else if (wallDirection == Direction.West)
-                {
-                    pixelData[i] = Color.Yellow;
-                }
-                else
-                {
-                    pixelData[i] = Color.Black;
-                }
-            }
             rectangle.SetData(pixelData);
         }
         public override void update()
@@ -64,43 +41,20 @@ namespace LiminalSpaceMazeGame
         }
         public override void LoadContent(ContentManager Content)
         {
-            base.LoadContent(Content);
+            
         }
         public new void draw(SpriteBatch spriteBatch)
         {
             //draw in location
             
-            spriteBatch.Draw(rectangle, getLocation(), Color.White);
+            spriteBatch.Draw(Texture,,, getLocation(), Color.White);
         }
         static public wall3d generate3dWall(Vector2 displacement, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis)
         {
-            Direction cDirection = Direction.none;
             double hieght = Math.Sqrt(displacement.Y * displacement.Y +  displacement.X * displacement.X);
-            if (Math.Abs(centreDis.X)>=Math.Abs(centreDis.Y))
-            {
-                if (centreDis.X >= 0)
-                {
-                    cDirection = Direction.East;
-                }
-                else
-                {
-                    cDirection = Direction.West;
-                }
-            }
-            else
-            {
-                if (centreDis.Y >= 0)
-                {
-                    cDirection = Direction.North;
-                }
-                else
-                {
-                    cDirection = Direction.South;
-                }
-            }
             double wallHieght = 8192 / hieght; //reciprical function to convert distance of the wall from the player to teh wall hieght
             Vector2 location = new Vector2(slice * 4, gameRes.Y / 2 - (float)wallHieght / 2);//move slice to specific place on screen
-            return new wall3d(4, Convert.ToInt32(wallHieght), location, device, 1, cDirection); ;//return so it can be added to the list
+            return new wall3d(4, Convert.ToInt32(wallHieght), location, device, 1); ;//return so it can be added to the list
         }
     }
 }

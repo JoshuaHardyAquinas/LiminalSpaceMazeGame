@@ -298,52 +298,56 @@ namespace LiminalSpaceMazeGame
         }
         public void rayCast()
         {
-                foreach (var wall in walls3d)// delete all textures to free up ram temp fix
-                {
-                    wall.rectangle.Dispose();
-                }
-                walls3d.Clear();//clear wall list
+            foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+            {
+                wall.rectangle.Dispose();
+            }
+            walls3d.Clear();//clear wall list
 
-                List<ObjInGame> gameObjects = new List<ObjInGame>();
+            List<ObjInGame> gameObjects = new List<ObjInGame>();
 
-                foreach (Monster monster in monsters)
+            foreach (Monster monster in monsters)
+            {
+                ObjInGame newObj = new ObjInGame();
+                newObj.objectEdge = monster.Edge;
+                newObj.objectLocation = monster.getLocation();
+                gameObjects.Add(newObj);
+            }
+            for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
+            {
+                Vector2 centreDis = new Vector2(0, 0);
+                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 300);
+                if (distanceTraveled != new Vector2(300, 300))
                 {
-                    ObjInGame newObj = new ObjInGame();
-                    newObj.objectEdge = monster.Edge;
-                    newObj.objectLocation = monster.getLocation();
-                    gameObjects.Add(newObj);
+                    walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis));
                 }
-                for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
+            }
+            gameObjects.Clear();
+            foreach (Wall wall in walls)// delete all textures to free up ram temp fix
+            {
+                ObjInGame newObj = new ObjInGame();
+                newObj.objectEdge = wall.Edge;
+                newObj.objectLocation = wall.getLocation();
+                gameObjects.Add(newObj);
+            }
+            for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
+            {
+                Vector2 centreDis = new Vector2(0, 0);
+                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 600);
+                if (distanceTraveled != new Vector2(600, 600))
                 {
-                    Vector2 centreDis = new Vector2(0, 0);
-                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 300);
-                    if (distanceTraveled != new Vector2(300, 300))
-                    {
-                        walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis));
-                    }
+                    wall3d newSlice = wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis);
+                    newSlice.LoadContent(Content,"")
+                    walls3d.Add(newSlice);
                 }
-                foreach (Wall wall in walls)// delete all textures to free up ram temp fix
-                {
-                    ObjInGame newObj = new ObjInGame();
-                    newObj.objectEdge = wall.Edge;
-                    newObj.objectLocation = wall.getLocation();
-                    gameObjects.Add(newObj);
-                }
-                for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
-                {
-                    Vector2 centreDis = new Vector2(0, 0);
-                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis,600);
-                    if (distanceTraveled != new Vector2(600, 600))
-                    {
-                        walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis));
-                    }
-                }
-                gameObjects.Clear();
+            }
+            gameObjects.Clear();
         }
         public struct ObjInGame()
         {
             public Rectangle objectEdge;
             public Vector2 objectLocation;
+            public char name;
         }
     }
 }
