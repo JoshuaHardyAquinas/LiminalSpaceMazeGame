@@ -319,9 +319,10 @@ namespace LiminalSpaceMazeGame
                 Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 300);
                 if (distanceTraveled != new Vector2(300, 300))
                 {
-                    walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis, Content.Load<Texture2D>(@"Monster2d")));
+                    walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, Content.Load<Texture2D>(@"Monster2d")));
                 }
             }
+            gameObjects.Clear();
             foreach (var wall in walls)// delete all textures to free up ram temp fix
             {
                 ObjInGame newObj = new ObjInGame();
@@ -335,7 +336,7 @@ namespace LiminalSpaceMazeGame
                 Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 660);
                 if (distanceTraveled != new Vector2(660, 660))
                 {
-                    walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis, Content.Load<Texture2D>(@"3DWallTest")));
+                    walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, Content.Load<Texture2D>(@"3DWallTest")));
                 }
             }
             foreach (wall3d wall in walls3d)
