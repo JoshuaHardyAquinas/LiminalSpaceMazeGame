@@ -49,7 +49,7 @@ namespace LiminalSpaceMazeGame
                 TheRay.update();//update hitbox
                 foreach (ObjInGame Obj in ingameObjects)//loop though all walls (ik its slow but its easy)
                 {
-                    if (Obj.objectEdge.Intersects(TheRay.Edge) && Obj.name)//check collision with hitbox
+                    if (Obj.objectEdge.Intersects(TheRay.Edge))//check collision with hitbox
                     {
                         TheRay.setLocation(TheRay.getLocation() - TheRay.Movement * 1.1f);//move ray backwards a lil further than the last hit
                         while (true)//increase ray accuracy for a known hit by moving slower to the actual location

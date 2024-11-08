@@ -105,10 +105,10 @@ namespace LiminalSpaceMazeGame
                     }
                     break;
                 case GameState.LevelGen:
-                    foreach (var wall in walls3d)// delete all textures to free up ram temp fix
+                    /*foreach (var wall in walls3d)// delete all textures to free up ram temp fix
                     {
                         wall.rectangle.Dispose();
-                    }
+                    }*/
                     monsters.Clear();
                     Monster newMonster = new Monster(new Vector2(180,60),1);
                     newMonster.LoadContent(Content);
@@ -297,51 +297,49 @@ namespace LiminalSpaceMazeGame
             base.Draw(gameTime);
         }
         public void rayCast()
-        {
+        {/*
             foreach (var wall in walls3d)// delete all textures to free up ram temp fix
             {
                 wall.rectangle.Dispose();
-            }
+            }*/
             walls3d.Clear();//clear wall list
 
             List<ObjInGame> gameObjects = new List<ObjInGame>();
 
-            foreach (Monster monster in monsters)
-            {
-                ObjInGame newObj = new ObjInGame();
-                newObj.objectEdge = monster.Edge;
-                newObj.objectLocation = monster.getLocation();
-                gameObjects.Add(newObj);
-            }
-            for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
-            {
-                Vector2 centreDis = new Vector2(0, 0);
-                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 300);
-                if (distanceTraveled != new Vector2(300, 300))
+                foreach (Monster monster in monsters)
                 {
-                    walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis));
+                    ObjInGame newObj = new ObjInGame();
+                    newObj.objectEdge = monster.Edge;
+                    newObj.objectLocation = monster.getLocation();
+                    gameObjects.Add(newObj);
                 }
-            }
-            gameObjects.Clear();
-            foreach (Wall wall in walls)// delete all textures to free up ram temp fix
-            {
-                ObjInGame newObj = new ObjInGame();
-                newObj.objectEdge = wall.Edge;
-                newObj.objectLocation = wall.getLocation();
-                gameObjects.Add(newObj);
-            }
-            for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
-            {
-                Vector2 centreDis = new Vector2(0, 0);
-                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 600);
-                if (distanceTraveled != new Vector2(600, 600))
+                for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
                 {
-                    wall3d newSlice = wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis);
-                    newSlice.LoadContent(Content, "");
-                    walls3d.Add(newSlice);
+                    Vector2 centreDis = new Vector2(0, 0);
+                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 300);
+                    if (distanceTraveled != new Vector2(300, 300))
+                    {
+                        walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis,"M"));
+                    }
                 }
-            }
-            gameObjects.Clear();
+                gameObjects.Clear();
+                foreach (Wall wall in walls)// delete all textures to free up ram temp fix
+                {
+                    ObjInGame newObj = new ObjInGame();
+                    newObj.objectEdge = wall.Edge;
+                    newObj.objectLocation = wall.getLocation();
+                    gameObjects.Add(newObj);
+                }
+                for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
+                {
+                    Vector2 centreDis = new Vector2(0, 0);
+                    Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis,600);
+                    if (distanceTraveled != new Vector2(600, 600))
+                    {
+                        walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, GraphicsDevice, centreDis,"W"));
+                    }
+                }
+                gameObjects.Clear();
         }
         public struct ObjInGame()
         {
