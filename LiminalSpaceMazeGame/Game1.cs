@@ -322,7 +322,6 @@ namespace LiminalSpaceMazeGame
                     walls3d.Add(wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, Content.Load<Texture2D>(@"Monster2d")));
                 }
             }
-            gameObjects.Clear();
             foreach (var wall in walls)// delete all textures to free up ram temp fix
             {
                 ObjInGame newObj = new ObjInGame();

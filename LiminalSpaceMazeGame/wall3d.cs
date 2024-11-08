@@ -30,7 +30,7 @@ namespace LiminalSpaceMazeGame
         {
             Height = height;
             setLocation(location);
-            rectangle = new Rectangle(0,textureSlice,width,height);
+            rectangle = new Rectangle(textureSlice,0,width,texture.Height);
         }
         public override void update()
         {
