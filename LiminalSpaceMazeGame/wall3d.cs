@@ -47,6 +47,9 @@ namespace LiminalSpaceMazeGame
                 case "M":
                     Texture = Content.Load<Texture2D>(@"wall");
                     break;
+                default:
+                    Texture = Content.Load<Texture2D>(@"wall");
+                    break;
             }
         }
         public new void draw(SpriteBatch spriteBatch)
