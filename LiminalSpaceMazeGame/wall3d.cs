@@ -18,7 +18,7 @@ namespace LiminalSpaceMazeGame
         protected static Random rnd = new Random();
         private int Width;
         private int Height;
-        private string WallType;
+        public string WallType;
         public Rectangle rectangle;
         public enum Direction
         {
@@ -28,27 +28,26 @@ namespace LiminalSpaceMazeGame
             East,
             West
         }
-        public wall3d(int width,int height, Vector2 location, int textureSlice, string type )
+        public wall3d(int width,int height, Vector2 location, int textureSlice)
         {
 
             Height = height;
             setLocation(location);
-            rectangle = new Rectangle(textureSlice*4,0,width,400);
+            rectangle = new Rectangle(textureSlice*4,0,4,400);
         }
         public override void update()
         {
 
         }
-        public override void LoadContent(ContentManager Content)
+        public void LoadContent(ContentManager Content, char type)
         {
-            Texture = Content.Load<Texture2D>(@"3dWallTest");
-            switch(WallType)
+            switch(type)
             {
-                case "M":
-                    Texture = Content.Load<Texture2D>(@"wall");
+                case 'M':
+                    Texture = Content.Load<Texture2D>(@"216123");
                     break;
                 default:
-                    Texture = Content.Load<Texture2D>(@"wall");
+                    Texture = Content.Load<Texture2D>(@"3dWallTest");
                     break;
             }
         }
@@ -57,7 +56,7 @@ namespace LiminalSpaceMazeGame
             //draw in location
             spriteBatch.Draw(Texture, new Rectangle((int)getLocation().X,(int)getLocation().Y,4,Height), rectangle, Color.White);
         }
-        static public wall3d generate3dWall(Vector2 displacement, int slice, Vector2 gameRes, GraphicsDevice device,Vector2 centreDis,string type)
+        static public wall3d generate3dWall(Vector2 displacement, int slice, Vector2 gameRes,Vector2 centreDis)
         {
             double hieght = Math.Sqrt(displacement.Y * displacement.Y +  displacement.X * displacement.X);
             double wallHieght = 8192 / hieght; //reciprical function to convert distance of the wall from the player to teh wall hieght
@@ -71,8 +70,8 @@ namespace LiminalSpaceMazeGame
             {
                 textureSlice = 40 - (int)centreDis.Y;
             }
-            Vector2 location = new Vector2(slice * 4, gameRes.Y / 2 - (float)wallHieght / 2);//move slice to specific place on screen
-            return new wall3d(4, Convert.ToInt32(wallHieght), location,textureSlice, type); ;//return so it can be added to the list
+            Vector2 location = new Vector2(slice*4, gameRes.Y / 2 - (float)wallHieght / 2);//move slice to specific place on screen
+            return new wall3d(4, Convert.ToInt32(wallHieght), location,textureSlice); ;//return so it can be added to the list
         }
     }
 }
