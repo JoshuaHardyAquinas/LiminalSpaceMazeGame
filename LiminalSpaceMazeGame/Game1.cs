@@ -22,6 +22,7 @@ namespace LiminalSpaceMazeGame
         List<Wall> walls = new List<Wall>();
 
         List<wall3d> walls3d = new List<wall3d>();
+        List<wall3d> object3d = new List<wall3d>();
 
         public GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
@@ -268,9 +269,30 @@ namespace LiminalSpaceMazeGame
                             spriteBatch.DrawString(GameFont, test, new Vector2(150, 0), Color.Black);
                             break;
                         case Dimension.D3://3d representation
-                            for (int i = 0; i < walls3d.Count; i++)
+                            List<wall3d> CURRENT = new List<wall3d>();
+                            foreach (wall3d wall in walls3d)
                             {
-                                walls3d[i].draw(spriteBatch);
+                                if (wall.type == 'W')
+                                {
+                                    wall.draw(spriteBatch);
+                                }
+                                CURRENT.Add(wall);
+                            }
+                            foreach (wall3d wall in walls3d)
+                            {
+                                if (wall.type != 'W')
+                                {
+                                    foreach(wall3d pre in CURRENT)
+                                    {
+                                        if (wall.getLocation().X == pre.getLocation().X)
+                                        {
+                                            if(wall.Height > pre.Height)
+                                            {
+                                                wall.draw(spriteBatch);
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             TheUI.draw(spriteBatch);
                             break;
@@ -307,7 +329,20 @@ namespace LiminalSpaceMazeGame
                 newObj.name = 'M';
                 gameObjects.Add(newObj);
             }
-            foreach (var wall in walls)// delete all textures to free up ram temp fix
+            for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
+            {
+                char objHit = ' ';
+                Vector2 centreDis = new Vector2(0, 0);
+                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 660,ref objHit);
+                if (distanceTraveled != new Vector2(660, 660))
+                {
+                    wall3d newSlice = wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
+                    newSlice.LoadContent(Content);
+                    walls3d.Add(newSlice);
+                }
+            }
+            gameObjects.Clear();
+            foreach (var wall in walls)
             {
                 ObjInGame newObj = new ObjInGame();
                 newObj.objectEdge = wall.Edge;
@@ -319,11 +354,11 @@ namespace LiminalSpaceMazeGame
             {
                 char objHit = ' ';
                 Vector2 centreDis = new Vector2(0, 0);
-                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 660,ref objHit);
+                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 300, ref objHit);
                 if (distanceTraveled != new Vector2(660, 660))
                 {
-                    wall3d newSlice = wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis);
-                    newSlice.LoadContent(Content,objHit);
+                    wall3d newSlice = wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
+                    newSlice.LoadContent(Content);
                     walls3d.Add(newSlice);
                 }
             }
