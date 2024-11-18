@@ -114,15 +114,6 @@ namespace LiminalSpaceMazeGame
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                     //maze = new int[mazeWidth, mazeHeight];
                     CreateWallEntities();
-                    
-                    foreach (var wall in walls)
-                    {
-                        ObjInGame newObj = new ObjInGame();
-                        newObj.objectEdge = wall.Edge;
-                        newObj.objectLocation = wall.getLocation();
-                        newObj.name = 'W';
-                        gameObjects.Add(newObj);
-                    }
                     TheHero.spawn(new Vector2(60,60));//put the hero back at its spawn location
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
@@ -352,25 +343,23 @@ namespace LiminalSpaceMazeGame
                 Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castlength, ref objHit, toHit);
                 if (distanceTraveled != new Vector2(castlength, castlength))
                 {
-                    wall3d newSlice = wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
-                    newSlice.LoadContent(Content);
-                    walls3d.Add(newSlice);
+                    try
+                    {
+                        wall3d newSlice = new wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit); //wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
+                        newSlice.LoadContent(Content);
+                        walls3d.Add(newSlice);
+                    }
+                    catch
+                    {
+                        TheHero.setLocation(new Vector2(600, 600));
+                    }
+                    
                 }
             }
             foreach (wall3d wall in walls3d)
             {
                 wall.LoadContent(Content);
             }
-            int t = 0;
-            for (int j = 0; j < gameObjects.Count; j++)
-            {
-                if (gameObjects[j].name != 'W')
-                {
-                    t = j-1;
-                    break;
-                }
-            }
-            //gameObjects.RemoveRange(t, gameObjects.Count);
             gameObjects.Clear();
         }
         public struct ObjInGame()

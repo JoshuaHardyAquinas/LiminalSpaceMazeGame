@@ -52,9 +52,9 @@ namespace LiminalSpaceMazeGame
                     if (Obj.objectEdge.Intersects(TheRay.Edge) && Obj.name == toHit)//check collision with hitbox
                     {
                         TheRay.setLocation(TheRay.getLocation() - TheRay.Movement * 1.1f);//move ray backwards a lil further than the last hit
-                        while (true)//increase ray accuracy for a known hit by moving slower to the actual location
+                        for (int i = 0; i<11;i++)//increase ray accuracy for a known hit by moving slower to the actual location
                         {
-                            TheRay.setLocation(TheRay.getLocation() + TheRay.Movement*0.01f);//move 
+                            TheRay.setLocation(TheRay.getLocation() + TheRay.Movement*0.1f);//move 
                             TheRay.update();
                             if (Obj.objectEdge.Intersects(TheRay.Edge))//check collision with hitbox
                             {
