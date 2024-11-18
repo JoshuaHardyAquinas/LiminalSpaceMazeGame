@@ -20,6 +20,7 @@ namespace LiminalSpaceMazeGame
         List<Monster> monsters = new List<Monster>();
 
         List<Wall> walls = new List<Wall>();
+        List<ObjInGame> gameObjects = new List<ObjInGame>();
 
         List<wall3d> walls3d = new List<wall3d>();
         List<wall3d> object3d = new List<wall3d>();
@@ -113,6 +114,15 @@ namespace LiminalSpaceMazeGame
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                     //maze = new int[mazeWidth, mazeHeight];
                     CreateWallEntities();
+                    
+                    foreach (var wall in walls)
+                    {
+                        ObjInGame newObj = new ObjInGame();
+                        newObj.objectEdge = wall.Edge;
+                        newObj.objectLocation = wall.getLocation();
+                        newObj.name = 'W';
+                        gameObjects.Add(newObj);
+                    }
                     TheHero.spawn(new Vector2(60,60));//put the hero back at its spawn location
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
@@ -170,7 +180,26 @@ namespace LiminalSpaceMazeGame
                     }
                     if (CurrentDimension == Dimension.D3)
                     {
-                        rayCast();
+                        walls3d.Clear();//clear wall list
+                        
+                        foreach (var monster in monsters)
+                        {
+                            ObjInGame newObj = new ObjInGame();
+                            newObj.objectEdge = monster.Edge;
+                            newObj.objectLocation = monster.getLocation();
+                            newObj.name = 'M';
+                            gameObjects.Add(newObj);
+                        }
+                        rayCast(330, 'M');
+                        foreach (var wall in walls)
+                        {
+                            ObjInGame newObj = new ObjInGame();
+                            newObj.objectEdge = wall.Edge;
+                            newObj.objectLocation = wall.getLocation();
+                            newObj.name = 'W';
+                            gameObjects.Add(newObj);
+                        }
+                        rayCast(660, 'W');
                     }
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
@@ -314,48 +343,14 @@ namespace LiminalSpaceMazeGame
             spriteBatch.End();
             base.Draw(gameTime);
         }
-        public void rayCast()
+        public void rayCast(int castlength,char toHit)
         {
-            
-            walls3d.Clear();//clear wall list
-
-            List<ObjInGame> gameObjects = new List<ObjInGame>();
-
-            foreach (var monster in monsters)
-            {
-                ObjInGame newObj = new ObjInGame();
-                newObj.objectEdge = monster.Edge;
-                newObj.objectLocation = monster.getLocation();
-                newObj.name = 'M';
-                gameObjects.Add(newObj);
-            }
             for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
             {
                 char objHit = ' ';
                 Vector2 centreDis = new Vector2(0, 0);
-                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 660,ref objHit);
-                if (distanceTraveled != new Vector2(660, 660))
-                {
-                    wall3d newSlice = wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
-                    newSlice.LoadContent(Content);
-                    walls3d.Add(newSlice);
-                }
-            }
-            gameObjects.Clear();
-            foreach (var wall in walls)
-            {
-                ObjInGame newObj = new ObjInGame();
-                newObj.objectEdge = wall.Edge;
-                newObj.objectLocation = wall.getLocation();
-                newObj.name = 'W';
-                gameObjects.Add(newObj);
-            }
-            for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
-            {
-                char objHit = ' ';
-                Vector2 centreDis = new Vector2(0, 0);
-                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, 300, ref objHit);
-                if (distanceTraveled != new Vector2(660, 660))
+                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castlength, ref objHit, toHit);
+                if (distanceTraveled != new Vector2(castlength, castlength))
                 {
                     wall3d newSlice = wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
                     newSlice.LoadContent(Content);
@@ -366,6 +361,16 @@ namespace LiminalSpaceMazeGame
             {
                 wall.LoadContent(Content);
             }
+            int t = 0;
+            for (int j = 0; j < gameObjects.Count; j++)
+            {
+                if (gameObjects[j].name != 'W')
+                {
+                    t = j-1;
+                    break;
+                }
+            }
+            //gameObjects.RemoveRange(t, gameObjects.Count);
             gameObjects.Clear();
         }
         public struct ObjInGame()
