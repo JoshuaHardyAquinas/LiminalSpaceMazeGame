@@ -24,7 +24,7 @@ namespace LiminalSpaceMazeGame
             //starting cords are 1,1 so there is an outer wall
             int[] startingCoords = { 1, 1 };
             int[] nextCoords = { 1, 1 };
-            //begin reacursive backtracking using variables that are already pre defined
+            //begin recursive backtracking using variables that are already pre defined
             newMaze = backtrackingMazeAlg(nextCoords, startingCoords, newMaze, mazeWidth, mazeHeight);
 
             return newMaze;
@@ -72,9 +72,9 @@ namespace LiminalSpaceMazeGame
             catch { dir[3] = Direction.none; }// --//-- #2
 
             bool nullCase = true;
-            for (int i = 0; i < dir.Length; i++)//check if any direction is achievable
+            foreach (Direction checkFree in dir)
             {
-                if (dir[i] != Direction.none)
+                if (checkFree != Direction.none)
                 {
                     nullCase = false;
                     break;
@@ -82,6 +82,7 @@ namespace LiminalSpaceMazeGame
             }
             if (nullCase)//if there is no locations then backtrack to prec location
             {
+                maze[currentCoords[0], currentCoords[1]] = 3;
                 return maze;
             }
             else//if tehre is

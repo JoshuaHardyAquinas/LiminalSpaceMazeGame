@@ -23,7 +23,6 @@ namespace LiminalSpaceMazeGame
         List<ObjInGame> gameObjects = new List<ObjInGame>();
 
         List<wall3d> walls3d = new List<wall3d>();
-        List<wall3d> object3d = new List<wall3d>();
 
         public GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
@@ -31,10 +30,6 @@ namespace LiminalSpaceMazeGame
         int[,] maze;
         int mazeHeight = 17;
         int mazeWidth = 17;
-
-        Vector2 distanceMoved;
-
-        int rayHits = 0;
 
         //states to switch game between its respective screens
         enum GameState
@@ -283,10 +278,6 @@ namespace LiminalSpaceMazeGame
                             //draw hero on top
                             TheHero.draw(spriteBatch);
                             TheRay.draw(spriteBatch);
-                            string test = "ray hits" + rayHits.ToString();
-                            spriteBatch.DrawString(GameFont, test, new Vector2(50, 0), Color.Black);
-                            test = "time" + distanceMoved.ToString();
-                            spriteBatch.DrawString(GameFont, test, new Vector2(150, 0), Color.Black);
                             break;
                         case Dimension.D3://3d representation
                             List<wall3d> CURRENT = new List<wall3d>();
@@ -362,11 +353,11 @@ namespace LiminalSpaceMazeGame
             }
             gameObjects.Clear();
         }
-        public struct ObjInGame()
+        public struct ObjInGame()//simplified list of all entities that will be in the game
         {
-            public Rectangle objectEdge;
+            public Rectangle objectEdge;//for raycasting
             public Vector2 objectLocation;
-            public char name;
+            public char name;//for when an object it to be searched for/hit
         }
     }
 }

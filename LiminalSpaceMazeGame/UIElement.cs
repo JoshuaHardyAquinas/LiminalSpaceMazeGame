@@ -21,8 +21,6 @@ namespace LiminalSpaceMazeGame
         }
         public override void LoadContent(ContentManager Content)
         {
-            //load player texture
-            Texture = Content.Load<Texture2D>(@"ui");
         }
         public override void draw(SpriteBatch spriteBatch)
         {
