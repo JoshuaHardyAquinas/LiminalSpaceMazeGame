@@ -16,8 +16,9 @@ namespace LiminalSpaceMazeGame
 {
     internal class Hero : MovingObject
     {
-        
+        private int stamina;
         public int FOV;
+        bool cooldown;
         public Hero(int fov)
         {
             // constructor
@@ -27,6 +28,9 @@ namespace LiminalSpaceMazeGame
             changeRotation = 1;
             rotation = 0;//starting rotation
             FOV = fov;
+            stamina = 600;
+            cooldown = false;
+            
         }
         public override void update()
         {
@@ -41,6 +45,27 @@ namespace LiminalSpaceMazeGame
             //calculates layer speed with possibility to add sprinting
             int speedMultiplyer = 1;
             int speed = 1;
+            if (stamina < 1200 && cooldown == false)
+            {
+                stamina = stamina+2;
+            }
+            if (ks.IsKeyDown(Keys.LeftShift) && !cooldown)
+            {
+                speedMultiplyer = 2;
+                stamina = stamina - 20;
+            }
+            if (stamina < 0)
+            {
+                cooldown = true;
+            }
+            if (cooldown == true)
+            {
+                stamina++;
+            }
+            if (stamina > 180)
+            {
+                cooldown = false;
+            }
             speed = speed * speedMultiplyer;
             //reset movement
             Movement.X = 0;
