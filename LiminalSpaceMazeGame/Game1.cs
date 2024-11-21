@@ -102,12 +102,7 @@ namespace LiminalSpaceMazeGame
                     }
                     break;
                 case GameState.LevelGen:
-                    monsters.Clear();
-                    Monster newMonster = new Monster(new Vector2(180,100),1);
-                    newMonster.LoadContent(Content);
-                    monsters.Add(newMonster);
                     maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
-                    //maze = new int[mazeWidth, mazeHeight];
                     CreateWallEntities();
                     TheHero.spawn(new Vector2(60,60));//put the hero back at its spawn location
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
@@ -223,6 +218,7 @@ namespace LiminalSpaceMazeGame
 
         private void CreateWallEntities()
         {
+            monsters.Clear();
             walls.Clear();
             for (int i = 0; i < mazeWidth; i++)
             {
@@ -233,6 +229,12 @@ namespace LiminalSpaceMazeGame
                         Wall newWall = new Wall(i, j);
                         newWall.LoadContent(Content);
                         walls.Add(newWall);
+                    }
+                    if (maze[i,j] == 3 && new Vector2(i,j) != new Vector2(1,1))
+                    {
+                        Monster newMonster = new Monster(new Vector2(i*40, j*40), 1);
+                        newMonster.LoadContent(Content);
+                        monsters.Add(newMonster);
                     }
                 }
             }

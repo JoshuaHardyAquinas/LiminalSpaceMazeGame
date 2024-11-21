@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace LiminalSpaceMazeGame
 {
@@ -22,6 +25,7 @@ namespace LiminalSpaceMazeGame
             //create maze using pre sizes
             int[,] newMaze = new int[mazeWidth, mazeHeight];
             //starting cords are 1,1 so there is an outer wall
+            
             int[] startingCoords = { 1, 1 };
             int[] nextCoords = { 1, 1 };
             //begin recursive backtracking using variables that are already pre defined
@@ -82,10 +86,10 @@ namespace LiminalSpaceMazeGame
             }
             if (nullCase)//if there is no locations then backtrack to prec location
             {
-                maze[currentCoords[0], currentCoords[1]] = 3;
+                maze[currentCoords[0], currentCoords[1]] += 1;
                 return maze;
             }
-            else//if tehre is
+            else//if there is
             {
                 int[] nextCoords = currentCoords;
                 bool breakCase = true;
