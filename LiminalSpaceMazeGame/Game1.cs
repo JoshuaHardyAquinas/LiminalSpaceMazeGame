@@ -65,7 +65,7 @@ namespace LiminalSpaceMazeGame
         protected override void Initialize()
         {
             //create hero and maze object
-            TheHero = new Hero(90);
+            TheHero = new Hero(90,1200);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
             TheUI = new UI();

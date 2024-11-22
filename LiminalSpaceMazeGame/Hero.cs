@@ -16,19 +16,21 @@ namespace LiminalSpaceMazeGame
 {
     internal class Hero : MovingObject
     {
+        private int staminaMax;
         private int stamina;
         public int FOV;
         bool cooldown;
-        public Hero(int fov)
+        public Hero(int fov,int MxSt)
         {
             // constructor
+            staminaMax = MxSt;
             Health = 100;
             spawn(new Vector2(60, 60));
             Movement = new Vector2(0, 0);//no movment for player to begin with
             changeRotation = 1;
             rotation = 0;//starting rotation
             FOV = fov;
-            stamina = 600;
+            stamina = staminaMax/2;
             cooldown = false;
             
         }
@@ -122,8 +124,12 @@ namespace LiminalSpaceMazeGame
         {
             return Health;
         }
+        public int checkStamina()
+        {
+            return stamina;
+        }
 
-        
+
 
         public void gainHealth(int value)
         {

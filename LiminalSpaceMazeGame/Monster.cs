@@ -18,7 +18,6 @@ namespace LiminalSpaceMazeGame
             spawn(startingLoc);
             textnum = 0;
             rotation = 0f;
-            Texture = null;
         }
         public void update(Hero theHero)
         {
@@ -47,7 +46,7 @@ namespace LiminalSpaceMazeGame
         }
         public override void LoadContent(ContentManager Content)
         {
-            //load player texture
+            //load monster texture
             if (textnum == 0)
             {
                 Texture = Content.Load<Texture2D>(@"Monster2d");

@@ -9,7 +9,6 @@ namespace LiminalSpaceMazeGame
 {
     public class UI:StationaryObject
     {
-       bool displayElement = false;
         public UI()
         {
             spawn(new Vector2(0, 670));

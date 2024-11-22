@@ -33,7 +33,7 @@ namespace LiminalSpaceMazeGame
 
             return newMaze;
         }
-        protected static int[,] backtrackingMazeAlg(int[] prevCoords, int[] currentCoords, int[,] maze, int length, int width)
+        protected static int[,] backtrackingMazeAlg(int[] nextCoords, int[] currentCoords, int[,] maze, int length, int width)
         {
             //array to tell program what random direction it can pick from
             Direction[] dir = {
@@ -91,8 +91,8 @@ namespace LiminalSpaceMazeGame
             }
             else//if there is
             {
-                int[] nextCoords = currentCoords;
-                bool breakCase = true;
+                nextCoords = currentCoords;
+                bool breakCase;
                 List<Direction> available = new List<Direction>();
                 for (int i = 0;i < dir.Length;i++)//optimization to stop rng calls for directions that are not possible
                 {
@@ -133,11 +133,10 @@ namespace LiminalSpaceMazeGame
                     }
                 } while (breakCase == false);
                 maze[currentCoords[0], currentCoords[1]] = 1;//adds next cords to maze
-                prevCoords = (int[])currentCoords.Clone();
                 currentCoords = (int[])nextCoords.Clone();
 
-                backtrackingMazeAlg(currentCoords, nextCoords, maze, length, width);//backtracking
-                backtrackingMazeAlg(currentCoords, prevCoords, maze, length, width);//move to next space in maze
+                backtrackingMazeAlg((int[])nextCoords.Clone(), nextCoords, maze, length, width);//backtracking
+                backtrackingMazeAlg(currentCoords, (int[])currentCoords.Clone(), maze, length, width);//move to next space in maze
             }
             return maze;//once backtracking is complete there is no other space to be than the start so maze is complete!
         }
