@@ -16,6 +16,7 @@ namespace LiminalSpaceMazeGame
         UI TheUI;
         GenerateMaze TheMaze;
         SpriteFont GameFont;
+        UILoadingBar Stamina;
 
         List<Monster> monsters = new List<Monster>();
 
@@ -69,14 +70,7 @@ namespace LiminalSpaceMazeGame
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
             TheUI = new UI();
-
-            //makes 1st maze
-            maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
-            //creates wall entities to be written to the screen
-            CreateWallEntities();
-            Monster newMonster = new Monster(new Vector2(620, 620), 1);
-            newMonster.LoadContent(Content);
-            monsters.Add((newMonster));
+            Stamina = new UILoadingBar(new Vector2(500,500),TheHero.StaminaMax,50,20);
             base.Initialize();
 
         }
@@ -88,6 +82,7 @@ namespace LiminalSpaceMazeGame
             TheRay.LoadContent(Content);
             TheUI.LoadContent(Content);
             GameFont = Content.Load<SpriteFont>(@"File");
+            Stamina.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -140,13 +135,30 @@ namespace LiminalSpaceMazeGame
                             {
                                 TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * -0.125f+TheHero.getLocation().Y));
                             }
-                            break;
                         }
                         foreach (Monster monster in monsters)
                         {
                             if (wall.Edge.Intersects(monster.Edge))
                             {
                                 centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
+                                {
+                                    monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
+                                }
+                                else
+                                {
+                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
+                                }
+                            }
+                        }
+                    }
+                    foreach (Monster monster in monsters)
+                    {
+                        foreach (Monster mns in monsters)
+                        {
+                            if (mns.Edge.Intersects(monster.Edge) && mns.getLocation() != monster.getLocation())
+                            {
+                                centreDis = new Vector2(mns.Edge.Center.X, mns.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
                                 if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
                                 {
                                     monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));

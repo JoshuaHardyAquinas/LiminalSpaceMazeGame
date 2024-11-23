@@ -18,8 +18,13 @@ namespace LiminalSpaceMazeGame
     {
         private int staminaMax;
         private int stamina;
-        public int FOV;
+        private int fOV;
         bool cooldown;
+
+        public int FOV { get => fOV; set => fOV = value; }
+        public int Stamina { get => stamina; set => stamina = value; }
+        public int StaminaMax { get => staminaMax; set => staminaMax = value; }
+
         public Hero(int fov,int MxSt)
         {
             // constructor
@@ -129,7 +134,8 @@ namespace LiminalSpaceMazeGame
             return stamina;
         }
 
-
+        public void editStats(char stat, int vaue) { 
+        }
 
         public void gainHealth(int value)
         {

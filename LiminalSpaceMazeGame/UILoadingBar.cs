@@ -33,11 +33,11 @@ namespace LiminalSpaceMazeGame
         }
         public override void LoadContent(ContentManager Content)
         {
-
+            Texture = Content.Load<Texture2D>(@"rts");//load 
         }
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, getLocation(), Color.AliceBlue);
+            spriteBatch.Draw(Texture, rectangle,new Rectangle(0,0,100,50), Color.Red);
         }
     }
 }

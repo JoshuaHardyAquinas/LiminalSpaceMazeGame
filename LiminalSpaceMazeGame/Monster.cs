@@ -21,6 +21,7 @@ namespace LiminalSpaceMazeGame
         }
         public void update(Hero theHero)
         {
+            base.update();
             //creates player edge
             if (theHero.getLocation().X>getLocation().X)
             {
@@ -38,7 +39,7 @@ namespace LiminalSpaceMazeGame
             {
                 Movement.Y = -1;
             }
-            base.update();
+            
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
             //Movement.Y = -1* (float)Math.Cos(rotation);
