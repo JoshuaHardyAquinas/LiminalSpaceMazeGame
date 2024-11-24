@@ -17,19 +17,18 @@ namespace LiminalSpaceMazeGame
         private int currentValue;
         private int Height;
         private Rectangle rectangle;
-        
-        public UILoadingBar(Vector2 startingLocation, int maxV, int maxL,int height)
+
+        public UILoadingBar(Vector2 startingLocation, int maxV, int maxL, int height)
         {
             maxLength = maxL;
             maxValue = maxV;
             Height = height;
-            spawn(startingLocation);
+            setLocation(startingLocation);
         }
         public void update(int current)
         {
-            currentValue = current*(maxLength/maxValue);
+            currentValue = (current*maxLength)/maxValue;
             rectangle = new Rectangle((int)getLocation().X, (int)getLocation().Y, currentValue, Height);
-            
         }
         public override void LoadContent(ContentManager Content)
         {
@@ -37,7 +36,8 @@ namespace LiminalSpaceMazeGame
         }
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, rectangle,new Rectangle(0,0,100,50), Color.Red);
+            
+            spriteBatch.Draw(Texture, rectangle, new Rectangle(0,0,100,50), Color.Red);
         }
     }
 }

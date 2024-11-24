@@ -16,6 +16,7 @@ namespace LiminalSpaceMazeGame
 {
     internal class Hero : MovingObject
     {
+        private int MaxHealth;
         private int staminaMax;
         private int stamina;
         private int fOV;
@@ -24,8 +25,9 @@ namespace LiminalSpaceMazeGame
         public int FOV { get => fOV; set => fOV = value; }
         public int Stamina { get => stamina; set => stamina = value; }
         public int StaminaMax { get => staminaMax; set => staminaMax = value; }
+        public int maxHealth { get => MaxHealth; set => MaxHealth = value; }
 
-        public Hero(int fov,int MxSt)
+        public Hero(int fov, int MxSt, int MxHlth)
         {
             // constructor
             staminaMax = MxSt;
@@ -52,7 +54,7 @@ namespace LiminalSpaceMazeGame
             //calculates layer speed with possibility to add sprinting
             int speedMultiplyer = 1;
             int speed = 1;
-            if (stamina < 1200 && cooldown == false)
+            if (stamina < 1200 && (stamina>20 || !cooldown))
             {
                 stamina = stamina+2;
             }

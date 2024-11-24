@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace LiminalSpaceMazeGame
@@ -17,6 +18,10 @@ namespace LiminalSpaceMazeGame
         GenerateMaze TheMaze;
         SpriteFont GameFont;
         UILoadingBar Stamina;
+        UILoadingBar Health;
+        UILoadingBar Shield;
+
+
 
         List<Monster> monsters = new List<Monster>();
 
@@ -66,11 +71,15 @@ namespace LiminalSpaceMazeGame
         protected override void Initialize()
         {
             //create hero and maze object
-            TheHero = new Hero(90,1200);
+            TheHero = new Hero(90,1200,100);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
-            TheUI = new UI();
-            Stamina = new UILoadingBar(new Vector2(500,500),TheHero.StaminaMax,50,20);
+            TheUI = new UI(); 
+            Stamina = new UILoadingBar(new Vector2(TheUI.getLocation().X+590f,TheUI.getLocation().Y+20f),TheHero.StaminaMax,120,20);
+            Health = new UILoadingBar(new Vector2(TheUI.getLocation().X + 20f, TheUI.getLocation().Y), TheHero.maxHealth, 120, 20);
+            Shield = new UILoadingBar(new Vector2(TheUI.getLocation().X + 20f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 120, 20);
+
+
             base.Initialize();
 
         }
@@ -107,7 +116,8 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.InGame:
                     TheHero.update();
-                    foreach(Monster monster in monsters)
+                    Stamina.update(TheHero.Stamina);
+                    foreach (Monster monster in monsters)
                     {
                         monster.update(TheHero);
                     }
@@ -258,6 +268,7 @@ namespace LiminalSpaceMazeGame
             switch (currentState)
             {
                 case GameState.StartMenu:
+                    
                     this.IsMouseVisible = true;
                     GraphicsDevice.Clear(Color.Yellow);
                     spriteBatch.DrawString(GameFont, "welcome", new Vector2(0, 0), Color.Black);
@@ -320,6 +331,7 @@ namespace LiminalSpaceMazeGame
                                 }
                             }
                             TheUI.draw(spriteBatch);
+                            Stamina.draw(spriteBatch);
                             break;
                     }
                     break;
