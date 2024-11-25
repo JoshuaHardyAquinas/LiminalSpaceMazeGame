@@ -13,8 +13,14 @@ namespace LiminalSpaceMazeGame
      class Monster : MovingObject
     {
         private int textnum = 0;
-        public Monster(Vector2 startingLoc, int text)
+        private int damage;
+
+        public int Damage { get => damage; set => damage = value; }
+
+        public Monster(Vector2 startingLoc, int text, int MaxDamage)
         {
+            Random random = new Random();
+            damage = random.Next(4,MaxDamage+1);
             spawn(startingLoc);
             textnum = 0;
             rotation = 0f;

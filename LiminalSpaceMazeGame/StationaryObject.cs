@@ -37,7 +37,7 @@ namespace LiminalSpaceMazeGame
         {
             Location = location;
         }
-        public void spawn(Vector2 loc)
+        public virtual void spawn(Vector2 loc)
         {
             setLocation(loc);
         }

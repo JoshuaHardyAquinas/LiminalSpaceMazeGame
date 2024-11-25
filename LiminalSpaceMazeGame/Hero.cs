@@ -19,6 +19,8 @@ namespace LiminalSpaceMazeGame
         private int MaxHealth;
         private int staminaMax;
         private int stamina;
+        private int MaxShield = 100;
+        private int Shield;
         private int fOV;
         bool cooldown;
 
@@ -26,15 +28,17 @@ namespace LiminalSpaceMazeGame
         public int Stamina { get => stamina; set => stamina = value; }
         public int StaminaMax { get => staminaMax; set => staminaMax = value; }
         public int maxHealth { get => MaxHealth; set => MaxHealth = value; }
+        public int shield { get => Shield; set => Shield = value; }
 
         public Hero(int fov, int MxSt, int MxHlth)
         {
             // constructor
             staminaMax = MxSt;
-            Health = 100;
+            Health = MxHlth;
+            MaxHealth = MxHlth;
             spawn(new Vector2(60, 60));
             Movement = new Vector2(0, 0);//no movment for player to begin with
-            changeRotation = 1;
+            changeRotation = 0;
             rotation = 0;//starting rotation
             FOV = fov;
             stamina = staminaMax/2;
@@ -124,7 +128,6 @@ namespace LiminalSpaceMazeGame
         public void loseHealth(int value)
         {
             Health -= value;
-            checkDeath();
 
         }
         public int checkHealth()
@@ -142,13 +145,16 @@ namespace LiminalSpaceMazeGame
         public void gainHealth(int value)
         {
             Health += value;
-        }
-        protected override void checkDeath()
-        {
-            if (Health <= 0)//player dies if health reaches 0
+            if (Health > maxHealth)
             {
-                spawn(new Vector2(40,40));
+                Health = maxHealth;
             }
+        }
+
+        public override void spawn(Vector2 loc)
+        {
+            base.spawn(loc);
+            Health = maxHealth;
         }
     }
 }
