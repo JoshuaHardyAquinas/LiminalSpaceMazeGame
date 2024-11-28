@@ -34,6 +34,9 @@ namespace LiminalSpaceMazeGame
         public GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
 
+        List<ExitDoor> Exits = new List<ExitDoor>();
+
+
         int[,] maze;
         int mazeHeight = 17;
         int mazeWidth = 17;
@@ -264,8 +267,10 @@ namespace LiminalSpaceMazeGame
 
         private void createEntities()
         {
+            Random rnd = new Random();
             monsters.Clear();
             walls.Clear();
+            Exits.Clear();
             for (int i = 0; i < mazeWidth; i++)
             {
                 for (int j = 0; j < mazeHeight; j++)
@@ -278,9 +283,18 @@ namespace LiminalSpaceMazeGame
                     }
                     if (maze[i,j] == 3 && new Vector2(i,j) != new Vector2(1,1))
                     {
-                        Monster newMonster = new Monster(new Vector2(i*40, j*40), 1,5*(int)levelNumber);
-                        newMonster.LoadContent(Content);
-                        monsters.Add(newMonster);
+                        if (rnd.Next(2) == 1)
+                        {
+                            Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
+                            newMonster.LoadContent(Content);
+                            monsters.Add(newMonster);
+                        }
+                        else
+                        {
+                            ExitDoor newDoor = new ExitDoor(new Vector2((i * 40) + 5, (j * 40) + 5));//spawn door at end of corridor and offset to centre of a tile
+                            newDoor.LoadContent(Content);
+                            Exits.Add(newDoor);
+                        }
                     }
                 }
             }
@@ -320,9 +334,13 @@ namespace LiminalSpaceMazeGame
                             {
                                 walls[i].draw(spriteBatch);
                             }
-                            for (int i = 0; i < monsters.Count; i++)
+                            for (int i = 0; i< monsters.Count; i++)
                             {
                                 monsters[i].draw(spriteBatch);
+                            }
+                            for (int i = 0; i < Exits.Count; i++)
+                            {
+                                Exits[i].draw(spriteBatch);
                             }
                             //draw hero on top
                             TheHero.draw(spriteBatch);

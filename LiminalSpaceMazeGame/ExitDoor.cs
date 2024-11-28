@@ -12,13 +12,13 @@ using Microsoft.Xna.Framework.Content;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class Exit: StationaryObject
+    internal class ExitDoor: StationaryObject
     {
         public bool exitAvailable = false;
-        public int texturenumber = 1;
-        public Exit(int i,int j)
+        public int textureNumber = 1;
+        public ExitDoor(Vector2 loc)
         {
-            spawn(new Vector2(i * 40, j * 40));
+            spawn(loc);
         }
         public void update(GameTime gameTime)
         {
@@ -26,18 +26,22 @@ namespace LiminalSpaceMazeGame
             {
                 if (gameTime.ElapsedGameTime.Seconds % 5 == 0)
                 {
-                    texturenumber++;
-                    if (texturenumber < 3)
+                    textureNumber++;
+                    if (textureNumber < 3)
                     {
-                        texturenumber = 1;
+                        textureNumber = 1;
                     }
                 }
             }
+
         }
         public override void LoadContent(ContentManager Content)
         {
-            Texture = Content.Load<Texture2D>("@2dDoor");
+            Texture = Content.Load<Texture2D>(@"2dDoor");
         }
-
+        public override void draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Texture, new Rectangle((int)getLocation().X, (int)getLocation().Y, 30, 30), new Rectangle(30 * textureNumber - 30, 0, 30, 30), Color.White);
+        }
     }
 }
