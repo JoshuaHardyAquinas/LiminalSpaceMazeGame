@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:2d_Hero.png
 
+#begin 2dDoor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:2dDoor.png
+
 #begin 3dWallTest.png
 /importer:TextureImporter
 /processor:TextureProcessor

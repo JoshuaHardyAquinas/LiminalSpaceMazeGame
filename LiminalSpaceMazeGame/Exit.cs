@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Content;
 
 namespace LiminalSpaceMazeGame
 {
@@ -32,7 +33,10 @@ namespace LiminalSpaceMazeGame
                     }
                 }
             }
-            
+        }
+        public override void LoadContent(ContentManager Content)
+        {
+            Texture = Content.Load<Texture2D>("@2dDoor");
         }
 
     }
