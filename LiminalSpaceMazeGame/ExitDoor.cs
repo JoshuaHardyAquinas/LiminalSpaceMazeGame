@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.VisualBasic.Logging;
 
 namespace LiminalSpaceMazeGame
 {
@@ -19,9 +20,11 @@ namespace LiminalSpaceMazeGame
         public ExitDoor(Vector2 loc)
         {
             spawn(loc);
+            Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, 30, 30);
         }
         public void update(GameTime gameTime)
         {
+            
             if (exitAvailable == true)
             {
                 if (gameTime.ElapsedGameTime.Seconds % 5 == 0)

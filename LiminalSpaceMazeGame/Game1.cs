@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 
 namespace LiminalSpaceMazeGame
@@ -129,9 +130,14 @@ namespace LiminalSpaceMazeGame
                     StaminaBar.update(TheHero.Stamina);
                     HealthBar.update(TheHero.checkHealth());
                     ShieldBar.update(TheHero.shield);
+                    
                     foreach (Monster monster in monsters)
                     {
                         monster.update(TheHero);
+                    }
+                    foreach (ExitDoor exitDoor in Exits)
+                    {
+                        exitDoor.update();
                     }
                     Vector2 centreDis = new Vector2(0, 0);
                     foreach (Monster monster in monsters)
@@ -150,10 +156,39 @@ namespace LiminalSpaceMazeGame
                             {
                                 monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.25f + monster.getLocation().Y));
                                 TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * +0.125f + TheHero.getLocation().Y));
-
-
                             }
                             TheHero.loseHealth(monster.Damage);
+                        }
+                        foreach (Monster mns in monsters)
+                        {
+                            if (mns.Edge.Intersects(monster.Edge) && mns.getLocation() != monster.getLocation())
+                            {
+                                centreDis = new Vector2(mns.Edge.Center.X, mns.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
+                                {
+                                    monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
+                                }
+                                else
+                                {
+                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
+                                }
+                            }
+                        }
+                        foreach(ExitDoor exit in Exits)
+                        {
+                            if (monster.Edge.Intersects(exit.Edge))
+                            {
+                                centreDis = TheHero.getLocation() - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
+                                {
+                                    monster.setLocation(new Vector2(centreDis.X * +0.25f + exit.getLocation().X, monster.getLocation().Y));
+                                }
+                                else
+                                {
+                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * +0.25f + monster.getLocation().Y));
+                                }
+                                TheHero.loseHealth(monster.Damage);
+                            }
                         }
                     }
                         //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
@@ -188,22 +223,18 @@ namespace LiminalSpaceMazeGame
                             }
                         }
                     }
-                    foreach (Monster monster in monsters)
+                    foreach (ExitDoor exit in Exits)
                     {
-                        foreach (Monster mns in monsters)
+                        if (TheHero.Edge.Intersects(exit.Edge))
                         {
-                            if (mns.Edge.Intersects(monster.Edge) && mns.getLocation() != monster.getLocation())
+                            centreDis = TheHero.getLocation() - exit.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                            if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
                             {
-                                centreDis = new Vector2(mns.Edge.Center.X, mns.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
-                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
-                                {
-                                    monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
-                                }
-                                else
-                                {
-                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
-                                }
-                                break;
+                                TheHero.setLocation(new Vector2(centreDis.X * +0.25f + exit.getLocation().X, TheHero.getLocation().Y));
+                            }
+                            else
+                            {
+                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * +0.25f + TheHero.getLocation().Y));
                             }
                         }
                     }
@@ -219,7 +250,16 @@ namespace LiminalSpaceMazeGame
                             newObj.name = 'M';
                             gameObjects.Add(newObj);
                         }
-                        rayCast(330, 'M');
+                        rayCast(400, 'M');
+                        foreach (var exit in Exits)
+                        {
+                            ObjInGame newObj = new ObjInGame();
+                            newObj.objectEdge = exit.Edge;
+                            newObj.objectLocation = exit.getLocation();
+                            newObj.name = 'E';
+                            gameObjects.Add(newObj);
+                        }
+                        rayCast(200, 'E');
                         foreach (var wall in walls)
                         {
                             ObjInGame newObj = new ObjInGame();
@@ -229,6 +269,7 @@ namespace LiminalSpaceMazeGame
                             gameObjects.Add(newObj);
                         }
                         rayCast(660, 'W');
+                        
                     }
                     if (TheHero.checkHealth() <= 0 || (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter)))
                     {
@@ -404,17 +445,10 @@ namespace LiminalSpaceMazeGame
                 Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castlength, ref objHit, toHit);
                 if (distanceTraveled != new Vector2(castlength, castlength))
                 {
-                    try
-                    {
-                        wall3d newSlice = new wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit); //wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
-                        newSlice.LoadContent(Content);
-                        walls3d.Add(newSlice);
-                    }
-                    catch
-                    {
-                        
-                    }
-                    
+                    wall3d newSlice = new wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit); //wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
+                    newSlice.LoadContent(Content);
+                    walls3d.Add(newSlice);
+
                 }
             }
             foreach (wall3d wall in walls3d)

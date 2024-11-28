@@ -12,6 +12,8 @@ namespace LiminalSpaceMazeGame
         public double rotation;
         public double changeRotation;
         protected Texture2D Texture;
+        protected int objWidth;
+        protected int objHeight;
         public Rectangle Edge;
         public virtual void update()
         {
