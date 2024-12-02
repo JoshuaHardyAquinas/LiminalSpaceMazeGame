@@ -52,6 +52,10 @@ namespace LiminalSpaceMazeGame
                     Texture = Content.Load<Texture2D>(@"216123");//load 
                     Width = 50;
                     break;
+                case 'E':
+                    Texture = Content.Load<Texture2D>(@"2dDoor");//load 
+                    Width = 30;
+                    break;
                 default:
                     Texture = Content.Load<Texture2D>(@"3dWallTest");//load wall teaxure for wall slices
                     Width = 40;

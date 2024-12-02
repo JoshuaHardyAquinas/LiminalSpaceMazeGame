@@ -167,10 +167,12 @@ namespace LiminalSpaceMazeGame
                                 if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
                                 {
                                     monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
+                                    mns.setLocation(new Vector2(centreDis.X * +0.25f + mns.getLocation().X, mns.getLocation().Y));
                                 }
                                 else
                                 {
                                     monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
+                                    mns.setLocation(new Vector2(mns.getLocation().X, centreDis.Y * +0.25f + mns.getLocation().Y));
                                 }
                             }
                         }
@@ -230,11 +232,11 @@ namespace LiminalSpaceMazeGame
                             centreDis = TheHero.getLocation() - exit.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
                             if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
                             {
-                                TheHero.setLocation(new Vector2(centreDis.X * +0.25f + exit.getLocation().X, TheHero.getLocation().Y));
+                                TheHero.setLocation(new Vector2(centreDis.X * -0.25f + exit.getLocation().X, TheHero.getLocation().Y));
                             }
                             else
                             {
-                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * +0.25f + TheHero.getLocation().Y));
+                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * -0.25f + TheHero.getLocation().Y));
                             }
                         }
                     }
@@ -450,10 +452,6 @@ namespace LiminalSpaceMazeGame
                     walls3d.Add(newSlice);
 
                 }
-            }
-            foreach (wall3d wall in walls3d)
-            {
-                wall.LoadContent(Content);
             }
             gameObjects.Clear();
         }
