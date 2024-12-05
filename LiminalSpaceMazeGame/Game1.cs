@@ -176,20 +176,19 @@ namespace LiminalSpaceMazeGame
                                 }
                             }
                         }
-                        foreach(ExitDoor exit in Exits)
+                        foreach (ExitDoor exit in Exits)
                         {
                             if (monster.Edge.Intersects(exit.Edge))
                             {
-                                centreDis = TheHero.getLocation() - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
-                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
+                                centreDis = new Vector2(exit.Edge.Center.X, exit.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move player away depending on what side is further on collision
                                 {
-                                    monster.setLocation(new Vector2(centreDis.X * +0.25f + exit.getLocation().X, monster.getLocation().Y));
+                                    monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
                                 }
                                 else
                                 {
-                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * +0.25f + monster.getLocation().Y));
+                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
                                 }
-                                TheHero.loseHealth(monster.Damage);
                             }
                         }
                     }
@@ -227,23 +226,31 @@ namespace LiminalSpaceMazeGame
                     }
                     foreach (ExitDoor exit in Exits)
                     {
-                        if (TheHero.Edge.Intersects(exit.Edge))
+                        if (exit.Edge.Intersects(TheHero.Edge))
                         {
-                            centreDis = TheHero.getLocation() - exit.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
-                            if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
+                            centreDis = new Vector2(exit.Edge.Center.X, exit.Edge.Center.Y) - TheHero.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                            if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move player away depending on what side is further on collision
                             {
-                                TheHero.setLocation(new Vector2(centreDis.X * -0.25f + exit.getLocation().X, TheHero.getLocation().Y));
+                                TheHero.setLocation(new Vector2(centreDis.X * -0.125f + TheHero.getLocation().X, TheHero.getLocation().Y));
                             }
                             else
                             {
-                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * -0.25f + TheHero.getLocation().Y));
+                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * -0.125f + TheHero.getLocation().Y));
                             }
                         }
                     }
                     if (CurrentDimension == Dimension.D3)
                     {
                         walls3d.Clear();//clear wall list
-                        
+                        foreach (var wall in walls)
+                        {
+                            ObjInGame newObj = new ObjInGame();
+                            newObj.objectEdge = wall.Edge;
+                            newObj.objectLocation = wall.getLocation();
+                            newObj.name = 'W';
+                            gameObjects.Add(newObj);
+                        }
+                        rayCast(660, 'W');
                         foreach (var monster in monsters)
                         {
                             ObjInGame newObj = new ObjInGame();
@@ -262,16 +269,7 @@ namespace LiminalSpaceMazeGame
                             gameObjects.Add(newObj);
                         }
                         rayCast(200, 'E');
-                        foreach (var wall in walls)
-                        {
-                            ObjInGame newObj = new ObjInGame();
-                            newObj.objectEdge = wall.Edge;
-                            newObj.objectLocation = wall.getLocation();
-                            newObj.name = 'W';
-                            gameObjects.Add(newObj);
-                        }
-                        rayCast(660, 'W');
-                        
+                        gameObjects.Clear();
                     }
                     if (TheHero.checkHealth() <= 0 || (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter)))
                     {
@@ -453,7 +451,6 @@ namespace LiminalSpaceMazeGame
 
                 }
             }
-            gameObjects.Clear();
         }
         public struct ObjInGame()//simplified list of all entities that will be in the game
         {
