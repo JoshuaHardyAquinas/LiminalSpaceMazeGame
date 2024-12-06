@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using System.Windows.Forms;
+using System.Security.Permissions;
 
 namespace LiminalSpaceMazeGame
 {
@@ -14,6 +15,8 @@ namespace LiminalSpaceMazeGame
     {
         private int textnum = 0;
         private int damage;
+        public bool lineOfSight = false;
+        public int memory;
 
         public int Damage { get => damage; set => damage = value; }
 
@@ -27,24 +30,37 @@ namespace LiminalSpaceMazeGame
         }
         public void update(Hero theHero)
         {
+            
             base.update();
             //creates player edge
-            if (theHero.getLocation().X>getLocation().X)
+            Vector2 centreDis = theHero.getLocation() - getLocation();
+            double tangent = (double)Math.Sqrt(centreDis.X* centreDis.X + centreDis.Y* centreDis.Y);
+            if (tangent<200 || lineOfSight == true)
             {
-                Movement.X = 1;
+                if (theHero.getLocation().X > getLocation().X)
+                {
+                    Movement.X = 1;
+                }
+                else
+                {
+                    Movement.X = -1;
+                }
+                if (theHero.getLocation().Y > getLocation().Y)
+                {
+                    Movement.Y = 1;
+                }
+                else
+                {
+                    Movement.Y = -1;
+                }
             }
             else
             {
-                Movement.X = -1;
+                Random rnd = new Random();
+                Movement.X = rnd.Next(-1,2);
+                Movement.Y = rnd.Next(-1,2);
             }
-            if (theHero.getLocation().Y > getLocation().Y)
-            {
-                Movement.Y = 1;
-            }
-            else
-            {
-                Movement.Y = -1;
-            }
+            
             
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement

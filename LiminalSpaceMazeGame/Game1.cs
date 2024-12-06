@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Threading;
 
 
@@ -23,6 +24,7 @@ namespace LiminalSpaceMazeGame
 
         public float levelNumber = 0;
         public bool levelGen = false;
+        public bool experimental;
 
 
         List<Monster> monsters = new List<Monster>();
@@ -130,16 +132,57 @@ namespace LiminalSpaceMazeGame
                     StaminaBar.update(TheHero.Stamina);
                     HealthBar.update(TheHero.checkHealth());
                     ShieldBar.update(TheHero.shield);
-                    
+
                     foreach (Monster monster in monsters)
                     {
                         monster.update(TheHero);
+                        if (experimental == true)
+                        {
+                            gameObjects.Clear();
+                            ObjInGame player = new ObjInGame();
+                            player.objectEdge = TheHero.Edge;
+                            player.objectLocation = TheHero.getLocation();
+                            player.name = 'P';
+                            shotFired(monster.rotation, monster.getLocation());
+                            gameObjects.Clear();
+                        }
+                       
                     }
                     foreach (ExitDoor exitDoor in Exits)
                     {
                         exitDoor.update();
                     }
                     Vector2 centreDis = new Vector2(0, 0);
+                    foreach (Wall wall in walls)
+                    {
+                        if (wall.Edge.Intersects(TheHero.Edge))
+                        {
+                            centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                            if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move player away depending on what side is further on collision
+                            {
+                                TheHero.setLocation(new Vector2(centreDis.X * -0.125f + TheHero.getLocation().X, TheHero.getLocation().Y));
+                            }
+                            else
+                            {
+                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * -0.125f + TheHero.getLocation().Y));
+                            }
+                        }
+                        foreach (Monster monster in monsters)
+                        {
+                            if (wall.Edge.Intersects(monster.Edge))
+                            {
+                                centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
+                                {
+                                    monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
+                                }
+                                else
+                                {
+                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
+                                }
+                            }
+                        }
+                    }
                     foreach (Monster monster in monsters)
                     {
                         monster.update();
@@ -194,36 +237,7 @@ namespace LiminalSpaceMazeGame
                     }
                         //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
                         
-                    foreach (Wall wall in walls)
-                    {
-                        if (wall.Edge.Intersects(TheHero.Edge))
-                        {
-                            centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - TheHero.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
-                            if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move player away depending on what side is further on collision
-                            {
-                                TheHero.setLocation(new Vector2(centreDis.X * -0.125f+TheHero.getLocation().X, TheHero.getLocation().Y));
-                            }
-                            else
-                            {
-                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * -0.125f+TheHero.getLocation().Y));
-                            }
-                        }
-                        foreach (Monster monster in monsters)
-                        {
-                            if (wall.Edge.Intersects(monster.Edge))
-                            {
-                                centreDis = new Vector2(wall.Edge.Center.X, wall.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
-                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
-                                {
-                                    monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
-                                }
-                                else
-                                {
-                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
-                                }
-                            }
-                        }
-                    }
+                    
                     foreach (ExitDoor exit in Exits)
                     {
                         if (exit.Edge.Intersects(TheHero.Edge))
@@ -436,19 +450,45 @@ namespace LiminalSpaceMazeGame
             spriteBatch.End();
             base.Draw(gameTime);
         }
-        public void rayCast(int castlength,char toHit)
+        public void rayCast(int castLength,char toHit)
         {
             for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
             {
                 char objHit = ' ';
                 Vector2 centreDis = new Vector2(0, 0);
-                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castlength, ref objHit, toHit);
-                if (distanceTraveled != new Vector2(castlength, castlength))
+                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castLength, ref objHit, toHit);
+                if (distanceTraveled != new Vector2(castLength, castLength))
                 {
                     wall3d newSlice = new wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit); //wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
                     newSlice.LoadContent(Content);
                     walls3d.Add(newSlice);
 
+                }
+            }
+        }
+        public bool shotFired(double rotation, Vector2 loc)
+        {
+            float speed = 3f;
+            TheRay.setLocation(loc);
+            TheRay.rotation = rotation;
+            TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
+            while (true)
+            {
+                TheRay.setLocation(TheRay.getLocation() + TheRay.Movement);//move ray forward
+                TheRay.update();//update hitbox
+                foreach (Wall wall in walls)
+                {
+                    if (wall.Edge.Intersects(TheRay.Edge) || (Math.Abs(TheRay.getLocation().X - TheHero.getLocation().X) > 300 || Math.Abs(TheRay.getLocation().Y - TheHero.getLocation().Y) > 300))
+                    {
+                        return false;
+                    }
+                }
+                foreach (ObjInGame Obj in gameObjects)//loop though all walls (ik its slow but its easy)
+                {
+                    if (Obj.objectEdge.Intersects(TheRay.Edge))//check collision with hitbox
+                    {
+                        return true;
+                    }
                 }
             }
         }
