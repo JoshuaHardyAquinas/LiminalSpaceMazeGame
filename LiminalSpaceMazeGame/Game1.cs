@@ -24,7 +24,7 @@ namespace LiminalSpaceMazeGame
 
         public float levelNumber = 0;
         public bool levelGen = false;
-        public bool experimental;
+        public bool experimental = true;
 
 
         List<Monster> monsters = new List<Monster>();
@@ -143,7 +143,18 @@ namespace LiminalSpaceMazeGame
                             player.objectEdge = TheHero.Edge;
                             player.objectLocation = TheHero.getLocation();
                             player.name = 'P';
-                            shotFired(monster.rotation, monster.getLocation());
+                            Vector2 anglemath = monster.getLocation() - TheHero.getLocation();
+                            double angle = Math.Atan(anglemath.X / anglemath.Y);
+                            if (angle > 0)
+                            {
+                                monster.rotation =+ angle;
+                            }
+                            else
+                            {
+                                monster.rotation = -angle;
+
+                            }
+                            shotsFired(monster.rotation, monster.getLocation());
                             gameObjects.Clear();
                         }
                        
@@ -466,7 +477,7 @@ namespace LiminalSpaceMazeGame
                 }
             }
         }
-        public bool shotFired(double rotation, Vector2 loc)
+        public bool shotsFired(double rotation, Vector2 loc)
         {
             float speed = 3f;
             TheRay.setLocation(loc);
