@@ -144,15 +144,15 @@ namespace LiminalSpaceMazeGame
                             player.objectLocation = TheHero.getLocation();
                             player.name = 'P';
                             Vector2 anglemath = monster.getLocation() - TheHero.getLocation();
-                            double angle = Math.Atan(anglemath.X / anglemath.Y);
-                            if (angle > 0)
+                            double angle = Math.Atan( anglemath.X/ -anglemath.Y);
+                            monster.rotation =+ angle;
+                            if (monster.rotation > 3.14/2 && monster.rotation < (3 * 3.14) / 2)
                             {
-                                monster.rotation =+ angle;
+                                monster.rotation = +3.14;
                             }
-                            else
+                            if (monster.rotation > 3.14 * 2)
                             {
-                                monster.rotation = -angle;
-
+                                monster.rotation =- (3.14 / 2);
                             }
                             shotsFired(monster.rotation, monster.getLocation());
                             gameObjects.Clear();

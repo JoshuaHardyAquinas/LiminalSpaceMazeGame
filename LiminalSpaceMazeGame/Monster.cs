@@ -35,24 +35,11 @@ namespace LiminalSpaceMazeGame
             //creates player edge
             Vector2 centreDis = theHero.getLocation() - getLocation();
             double tangent = (double)Math.Sqrt(centreDis.X* centreDis.X + centreDis.Y* centreDis.Y);
+            int speed = 1;
             if (tangent<200 || lineOfSight == true)
             {
-                if (theHero.getLocation().X > getLocation().X)
-                {
-                    Movement.X = 1;
-                }
-                else
-                {
-                    Movement.X = -1;
-                }
-                if (theHero.getLocation().Y > getLocation().Y)
-                {
-                    Movement.Y = 1;
-                }
-                else
-                {
-                    Movement.Y = -1;
-                }
+                Movement.X = speed * (float)Math.Sin(rotation);//trig to edit players directional movement
+                Movement.Y = -speed * (float)Math.Cos(rotation);
             }
             else
             {
