@@ -17,6 +17,8 @@ namespace LiminalSpaceMazeGame
         private int damage;
         public bool lineOfSight = false;
         public int memory;
+        private bool newNode = false;
+        private int[] nextCoords = {0,0 };
 
         public int Damage { get => damage; set => damage = value; }
 
@@ -27,8 +29,10 @@ namespace LiminalSpaceMazeGame
             spawn(startingLoc);
             textnum = 0;
             rotation = 0f;
+            nextCoords[0] = (int)Math.Round(getLocation().X / 40, 0);
+            nextCoords[1] = (int)Math.Round(getLocation().Y / 40, 0);
         }
-        public void update(Hero theHero)
+        public void update(Hero theHero, int [,] theMaze)
         {
             
             base.update();
@@ -43,16 +47,111 @@ namespace LiminalSpaceMazeGame
             }
             else
             {
-                Random rnd = new Random();
-                Movement.X = rnd.Next(-1,2);
-                Movement.Y = rnd.Next(-1,2);
+                move(theMaze);
             }
-            
-            
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
             //Movement.Y = -1* (float)Math.Cos(rotation);
-            setLocation(getLocation()+Movement);
+            setLocation(getLocation() + Movement);
+        }
+        public void move(int[,] maze)
+        {
+            Random rnd = new Random();
+            Vector2 tile = new Vector2((float)Math.Round(getLocation().X/40,0), (float)Math.Round(getLocation().Y/40,0));
+
+            int[] currentCoords = { (int)tile.X, (int)tile.Y };
+            if (currentCoords[0] != nextCoords[0] || currentCoords[1] != nextCoords[1])
+            {
+                Vector2 distance = new Vector2(-1*(nextCoords[1] - currentCoords[1]), -1*(nextCoords[0] - currentCoords[0]));
+                Movement = distance;
+                return;
+            }
+            Direction[] dir = {
+                Direction.North,
+                Direction.South,
+                Direction.East,
+                Direction.West
+            };
+            //sneaky hack to make walls on the outside of the play field by attempting to check parts of the map that don't exist and then setting that direction as null
+            try
+            {
+                if (currentCoords[0] - 1 < 0 || maze[currentCoords[0] - 1, currentCoords[1]] != 0) // check north
+                {
+                    dir[0] = Direction.none;//set respective direction in array to null so it cannot be picked by rng alg as it already has path #1
+                }
+            }
+            catch { dir[0] = Direction.none; }//set respective direction in array to null so it cannot be picked by rng alg as it does not exist #2
+            try
+            {
+                if (currentCoords[0] + 1 > 17 - 1 || maze[currentCoords[0] + 1, currentCoords[1]] != 0) // check south 
+                {
+                    dir[1] = Direction.none;// --//-- #1
+                }
+            }
+            catch { dir[1] = Direction.none; }//--//-- #2
+            try
+            {
+                if (currentCoords[1] + 1 > 17 - 1 || maze[currentCoords[0], currentCoords[1] + 1] != 0) // check east 
+                {
+                    dir[2] = Direction.none;// --//-- #1
+                }
+            }
+            catch { dir[2] = Direction.none; }// --//-- #2
+            try
+            {
+                if (currentCoords[1] - 1 < 0 || maze[currentCoords[0], currentCoords[1] - 1] != 0) // check west 
+                {
+                    dir[3] = Direction.none;// --//-- #1
+                }
+            }
+            catch { dir[3] = Direction.none; }
+            bool nullCase = true;
+            foreach (Direction checkFree in dir)
+            {
+                if (checkFree != Direction.none)
+                {
+                    nullCase = false;
+                    break;
+                }
+            }
+            List<Direction> available = new List<Direction>();
+            bool breakCase = true;
+            for (int i = 0; i < dir.Length; i++)//optimization to stop rng calls for directions that are not possible
+            {
+                if (dir[i] != Direction.none)
+                {
+                    available.Add(dir[i]);
+                }
+            }
+            
+            do//loop though setting the necessary cords depending on direction
+            {
+                breakCase = true;
+                int number = rnd.Next(0, available.Count);
+                switch (available[number])
+                {
+                    case Direction.North:
+                        nextCoords[0] = currentCoords[0] - 1;//set x and y cords
+                        nextCoords[1] = currentCoords[1];
+                        break;
+                    case Direction.South:
+                        nextCoords[0] = currentCoords[0] + 1;
+                        nextCoords[1] = currentCoords[1];
+                        break;
+                    case Direction.East:
+                        nextCoords[0] = currentCoords[0];
+                        nextCoords[1] = currentCoords[1] + 1;
+                        break;
+                    case Direction.West:
+                        nextCoords[0] = currentCoords[0];
+                        nextCoords[1] = currentCoords[1] - 1;
+                        break;
+                    case Direction.none:
+                        breakCase = false;
+                        break;
+                }
+            } while (breakCase == false);
+
         }
         public override void LoadContent(ContentManager Content)
         {
@@ -71,6 +170,13 @@ namespace LiminalSpaceMazeGame
             //draw player including rotation
             spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
-
+        protected enum Direction
+        {
+            none,
+            North,
+            East,
+            South,
+            West
+        }
     }
 }

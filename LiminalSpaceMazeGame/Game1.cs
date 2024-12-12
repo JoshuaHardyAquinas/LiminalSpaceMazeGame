@@ -135,7 +135,7 @@ namespace LiminalSpaceMazeGame
 
                     foreach (Monster monster in monsters)
                     {
-                        monster.update(TheHero);
+                        monster.update(TheHero, maze);
                         if (experimental == true)
                         {
                             gameObjects.Clear();
@@ -351,7 +351,7 @@ namespace LiminalSpaceMazeGame
                     {
                         if (rnd.Next(2) == 1)
                         {
-                            Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
+                            Monster newMonster = new Monster(new Vector2((i * 40)+20, (j * 40)+20), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
                             newMonster.LoadContent(Content);
                             monsters.Add(newMonster);
                         }
