@@ -43,6 +43,7 @@ namespace LiminalSpaceMazeGame
         int[,] maze;
         int mazeHeight = 17;
         int mazeWidth = 17;
+        int monstermax = 1;
 
         //states to switch game between its respective screens
         enum GameState
@@ -136,7 +137,7 @@ namespace LiminalSpaceMazeGame
                     foreach (Monster monster in monsters)
                     {
                         monster.update(TheHero, maze);
-                        if (experimental == true)
+                        if (experimental == false)
                         {
                             gameObjects.Clear();
                             ObjInGame player = new ObjInGame();
@@ -337,6 +338,7 @@ namespace LiminalSpaceMazeGame
             monsters.Clear();
             walls.Clear();
             Exits.Clear();
+            int monstercount = 0;
             for (int i = 0; i < mazeWidth; i++)
             {
                 for (int j = 0; j < mazeHeight; j++)
@@ -349,11 +351,12 @@ namespace LiminalSpaceMazeGame
                     }
                     if (maze[i,j] == 3 && new Vector2(i,j) != new Vector2(1,1))
                     {
-                        if (rnd.Next(2) == 1)
+                        if (rnd.Next(2) == 1 && monstercount<monstermax)
                         {
                             Monster newMonster = new Monster(new Vector2((i * 40)+20, (j * 40)+20), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
                             newMonster.LoadContent(Content);
                             monsters.Add(newMonster);
+                            monstercount++;
                         }
                         else
                         {

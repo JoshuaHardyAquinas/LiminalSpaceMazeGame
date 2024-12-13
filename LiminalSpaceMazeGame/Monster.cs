@@ -19,6 +19,7 @@ namespace LiminalSpaceMazeGame
         public int memory;
         private bool newNode = false;
         private int[] nextCoords = {0,0 };
+        int[] currentCoords = { 0,0 };
 
         public int Damage { get => damage; set => damage = value; }
 
@@ -31,6 +32,10 @@ namespace LiminalSpaceMazeGame
             rotation = 0f;
             nextCoords[0] = (int)Math.Round(getLocation().X / 40, 0);
             nextCoords[1] = (int)Math.Round(getLocation().Y / 40, 0);
+            Vector2 tile = new Vector2((float)Math.Round(getLocation().X / 40, 0), (float)Math.Round(getLocation().Y / 40, 0));
+
+            currentCoords[0] = (int)tile.X;
+            currentCoords[1] = (int)tile.Y;
         }
         public void update(Hero theHero, int [,] theMaze)
         {
@@ -52,17 +57,19 @@ namespace LiminalSpaceMazeGame
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
             //Movement.Y = -1* (float)Math.Cos(rotation);
-            setLocation(getLocation() + Movement);
+            setLocation(getLocation() - Movement);
         }
         public void move(int[,] maze)
         {
             Random rnd = new Random();
-            Vector2 tile = new Vector2((float)Math.Round(getLocation().X/40,0), (float)Math.Round(getLocation().Y/40,0));
+            Vector2 tile = new Vector2((float)Math.Truncate((getLocation().X+20)/40), (float)Math.Truncate((getLocation().Y+20)/40));
 
-            int[] currentCoords = { (int)tile.X, (int)tile.Y };
+            currentCoords[0] = (int)tile.X;
+            currentCoords[1] = (int)tile.Y;
+
             if (currentCoords[0] != nextCoords[0] || currentCoords[1] != nextCoords[1])
             {
-                Vector2 distance = new Vector2(-1*(nextCoords[1] - currentCoords[1]), -1*(nextCoords[0] - currentCoords[0]));
+                Vector2 distance = new Vector2(currentCoords[0] - nextCoords[0], currentCoords[1] - nextCoords[1]);
                 Movement = distance;
                 return;
             }
@@ -72,39 +79,23 @@ namespace LiminalSpaceMazeGame
                 Direction.East,
                 Direction.West
             };
-            //sneaky hack to make walls on the outside of the play field by attempting to check parts of the map that don't exist and then setting that direction as null
-            try
+            
+            if (maze[currentCoords[0], currentCoords[1]-1] != 0) // check north
             {
-                if (currentCoords[0] - 1 < 0 || maze[currentCoords[0] - 1, currentCoords[1]] != 0) // check north
-                {
-                    dir[0] = Direction.none;//set respective direction in array to null so it cannot be picked by rng alg as it already has path #1
-                }
+                dir[0] = Direction.none;//set respective direction in array to null so it cannot be picked by rng alg as it already has path #1
             }
-            catch { dir[0] = Direction.none; }//set respective direction in array to null so it cannot be picked by rng alg as it does not exist #2
-            try
+            if (maze[currentCoords[0], currentCoords[1]+1] != 0) // check south 
             {
-                if (currentCoords[0] + 1 > 17 - 1 || maze[currentCoords[0] + 1, currentCoords[1]] != 0) // check south 
-                {
-                    dir[1] = Direction.none;// --//-- #1
-                }
+                dir[1] = Direction.none;// --//-- #1
             }
-            catch { dir[1] = Direction.none; }//--//-- #2
-            try
+            if (maze[currentCoords[0]+1, currentCoords[1]] != 0) // check east 
             {
-                if (currentCoords[1] + 1 > 17 - 1 || maze[currentCoords[0], currentCoords[1] + 1] != 0) // check east 
-                {
-                    dir[2] = Direction.none;// --//-- #1
-                }
+                dir[2] = Direction.none;// --//-- #1
             }
-            catch { dir[2] = Direction.none; }// --//-- #2
-            try
+            if (maze[currentCoords[0]-1, currentCoords[1]] != 0) // check west 
             {
-                if (currentCoords[1] - 1 < 0 || maze[currentCoords[0], currentCoords[1] - 1] != 0) // check west 
-                {
-                    dir[3] = Direction.none;// --//-- #1
-                }
+                dir[3] = Direction.none;// --//-- #1
             }
-            catch { dir[3] = Direction.none; }
             bool nullCase = true;
             foreach (Direction checkFree in dir)
             {
@@ -131,20 +122,20 @@ namespace LiminalSpaceMazeGame
                 switch (available[number])
                 {
                     case Direction.North:
-                        nextCoords[0] = currentCoords[0] - 1;//set x and y cords
-                        nextCoords[1] = currentCoords[1];
+                        nextCoords[0] = currentCoords[0];//set x and y cords
+                        nextCoords[1] = currentCoords[1] - 1;
                         break;
                     case Direction.South:
-                        nextCoords[0] = currentCoords[0] + 1;
-                        nextCoords[1] = currentCoords[1];
-                        break;
-                    case Direction.East:
                         nextCoords[0] = currentCoords[0];
                         nextCoords[1] = currentCoords[1] + 1;
                         break;
+                    case Direction.East:
+                        nextCoords[0] = currentCoords[0] + 1;
+                        nextCoords[1] = currentCoords[1];
+                        break;
                     case Direction.West:
-                        nextCoords[0] = currentCoords[0];
-                        nextCoords[1] = currentCoords[1] - 1;
+                        nextCoords[0] = currentCoords[0] - 1;
+                        nextCoords[1] = currentCoords[1];
                         break;
                     case Direction.none:
                         breakCase = false;
