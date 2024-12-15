@@ -15,7 +15,7 @@ namespace LiminalSpaceMazeGame
         public Wall(int i,int j)
         {
             //set location and use the texture size as a grid
-            spawn(new Vector2(i * 40, j * 40));
+            spawn(new Vector2(i * 40-20, j * 40-20));
         }
         public override void update()
         {

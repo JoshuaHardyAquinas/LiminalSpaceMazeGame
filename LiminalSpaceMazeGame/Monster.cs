@@ -30,8 +30,8 @@ namespace LiminalSpaceMazeGame
             spawn(startingLoc);
             textnum = 0;
             rotation = 0f;
-            nextCoords[0] = (int)Math.Round(getLocation().X / 40, 0);
-            nextCoords[1] = (int)Math.Round(getLocation().Y / 40, 0);
+            nextCoords[0] = (int)(getLocation().X / 40);
+            nextCoords[1] = (int)(getLocation().Y / 40);
             Vector2 tile = new Vector2((float)Math.Round(getLocation().X / 40, 0), (float)Math.Round(getLocation().Y / 40, 0));
 
             currentCoords[0] = (int)tile.X;
@@ -45,24 +45,21 @@ namespace LiminalSpaceMazeGame
             Vector2 centreDis = theHero.getLocation() - getLocation();
             double tangent = (double)Math.Sqrt(centreDis.X* centreDis.X + centreDis.Y* centreDis.Y);
             int speed = 1;
-            if (tangent<200 || lineOfSight == true)
+            /*if (tangent<200 || lineOfSight == true)
             {
                 Movement.X = speed * (float)Math.Sin(rotation);//trig to edit players directional movement
                 Movement.Y = -speed * (float)Math.Cos(rotation);
-            }
-            else
-            {
-                move(theMaze);
-            }
+            }*/
+            move(theMaze);
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
             //Movement.Y = -1* (float)Math.Cos(rotation);
-            setLocation(getLocation() - Movement);
+            setLocation(getLocation() + Movement);
         }
         public void move(int[,] maze)
         {
             Random rnd = new Random();
-            Vector2 tile = new Vector2((float)Math.Truncate((getLocation().X+20)/40), (float)Math.Truncate((getLocation().Y+20)/40));
+            Vector2 tile = new Vector2((getLocation().X/40),(getLocation().Y/40));
 
             currentCoords[0] = (int)tile.X;
             currentCoords[1] = (int)tile.Y;
@@ -79,70 +76,54 @@ namespace LiminalSpaceMazeGame
                 Direction.East,
                 Direction.West
             };
-            
-            if (maze[currentCoords[0], currentCoords[1]-1] != 0) // check north
+            if(maze[currentCoords[0], currentCoords[1] - 1] == 0)
             {
-                dir[0] = Direction.none;//set respective direction in array to null so it cannot be picked by rng alg as it already has path #1
+                dir[0] = Direction.none;
             }
-            if (maze[currentCoords[0], currentCoords[1]+1] != 0) // check south 
+            if (maze[currentCoords[0], currentCoords[1] + 1] == 0)
             {
-                dir[1] = Direction.none;// --//-- #1
+                dir[1] = Direction.none;
             }
-            if (maze[currentCoords[0]+1, currentCoords[1]] != 0) // check east 
+            if (maze[currentCoords[0] + 1, currentCoords[1]] == 0)
             {
-                dir[2] = Direction.none;// --//-- #1
+                dir[2] = Direction.none;
             }
-            if (maze[currentCoords[0]-1, currentCoords[1]] != 0) // check west 
+            if (maze[currentCoords[0] - 1, currentCoords[1]] == 0)
             {
-                dir[3] = Direction.none;// --//-- #1
+                dir[3] = Direction.none;
             }
-            bool nullCase = true;
-            foreach (Direction checkFree in dir)
+            int value;
+            while (true)
             {
-                if (checkFree != Direction.none)
+                value = rnd.Next(4);
+                if (dir[value] != Direction.none)
                 {
-                    nullCase = false;
                     break;
                 }
             }
-            List<Direction> available = new List<Direction>();
-            bool breakCase = true;
-            for (int i = 0; i < dir.Length; i++)//optimization to stop rng calls for directions that are not possible
+            switch (dir[value])
             {
-                if (dir[i] != Direction.none)
-                {
-                    available.Add(dir[i]);
-                }
+                case Direction.North:
+                    nextCoords[0] = 0;
+                    nextCoords[1] -= 1;
+                    break;
+                case Direction.South:
+                    nextCoords[0] += 0;
+                    nextCoords[1] += 1;
+                    break;
+                case Direction.East:
+                    nextCoords[0] += 1;
+                    nextCoords[1] += 0;
+                    break;
+                case Direction.West:
+                    nextCoords[0] -= 1;
+                    nextCoords[1] += 0;
+                    break;
+                default:
+                    nextCoords[0] = 0;
+                    nextCoords[1] = 0;
+                    break;
             }
-            
-            do//loop though setting the necessary cords depending on direction
-            {
-                breakCase = true;
-                int number = rnd.Next(0, available.Count);
-                switch (available[number])
-                {
-                    case Direction.North:
-                        nextCoords[0] = currentCoords[0];//set x and y cords
-                        nextCoords[1] = currentCoords[1] - 1;
-                        break;
-                    case Direction.South:
-                        nextCoords[0] = currentCoords[0];
-                        nextCoords[1] = currentCoords[1] + 1;
-                        break;
-                    case Direction.East:
-                        nextCoords[0] = currentCoords[0] + 1;
-                        nextCoords[1] = currentCoords[1];
-                        break;
-                    case Direction.West:
-                        nextCoords[0] = currentCoords[0] - 1;
-                        nextCoords[1] = currentCoords[1];
-                        break;
-                    case Direction.none:
-                        breakCase = false;
-                        break;
-                }
-            } while (breakCase == false);
-
         }
         public override void LoadContent(ContentManager Content)
         {

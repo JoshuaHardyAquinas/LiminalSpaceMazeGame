@@ -119,7 +119,7 @@ namespace LiminalSpaceMazeGame
                         levelNumber++;
                         maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                         createEntities();
-                        TheHero.spawn(new Vector2(60, 60));//put the hero back at its spawn location
+                        TheHero.spawn(new Vector2(40, 40));//put the hero back at its spawn location
                         levelGen = true;
                         
                     }
@@ -353,14 +353,14 @@ namespace LiminalSpaceMazeGame
                     {
                         if (rnd.Next(2) == 1 && monstercount<monstermax)
                         {
-                            Monster newMonster = new Monster(new Vector2((i * 40)+20, (j * 40)+20), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
+                            Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
                             newMonster.LoadContent(Content);
                             monsters.Add(newMonster);
                             monstercount++;
                         }
                         else
                         {
-                            ExitDoor newDoor = new ExitDoor(new Vector2((i * 40) + 5, (j * 40) + 5));//spawn door at end of corridor and offset to centre of a tile
+                            ExitDoor newDoor = new ExitDoor(new Vector2((i * 40) -15, (j * 40) - 15));//spawn door at end of corridor and offset to centre of a tile
                             newDoor.LoadContent(Content);
                             Exits.Add(newDoor);
                         }
