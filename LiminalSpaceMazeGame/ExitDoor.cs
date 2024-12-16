@@ -13,7 +13,7 @@ namespace LiminalSpaceMazeGame
 {
     internal class ExitDoor: StationaryObject
     {
-        public bool exitAvailable = false;
+        public bool Available = false;
         public int textureNumber = 1;
         public ExitDoor(Vector2 loc)
         {
@@ -23,7 +23,7 @@ namespace LiminalSpaceMazeGame
         public void update(GameTime gameTime)
         {
             
-            if (exitAvailable == true)
+            if (Available == true)
             {
                 if (gameTime.ElapsedGameTime.Seconds % 5 == 0)
                 {

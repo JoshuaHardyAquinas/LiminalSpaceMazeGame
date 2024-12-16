@@ -23,6 +23,7 @@ namespace LiminalSpaceMazeGame
         private int Shield;
         private int fOV;
         bool cooldown;
+        public List<char> collected = new List<char>();
 
         public int FOV { get => fOV; set => fOV = value; }
         public int Stamina { get => stamina; set => stamina = value; }

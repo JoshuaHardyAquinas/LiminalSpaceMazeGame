@@ -118,6 +118,7 @@ namespace LiminalSpaceMazeGame
                     {
                         levelNumber++;
                         maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
+                        maze[1, 1] = 1;
                         createEntities();
                         TheHero.spawn(new Vector2(40, 40));//put the hero back at its spawn location
                         levelGen = true;
@@ -137,28 +138,25 @@ namespace LiminalSpaceMazeGame
                     foreach (Monster monster in monsters)
                     {
                         monster.update(TheHero, maze);
-                        if (experimental == false)
+                        gameObjects.Clear();
+                        ObjInGame player = new ObjInGame();
+                        player.objectEdge = TheHero.Edge;
+                        player.objectLocation = TheHero.getLocation();
+                        player.name = 'P';
+                        Vector2 anglemath = monster.getLocation() - TheHero.getLocation();
+                        double angle = Math.Atan(anglemath.X / -anglemath.Y);
+                        monster.rotation = +angle;
+                        if (monster.rotation > 3.14 / 2 && monster.rotation < (3 * 3.14) / 2)
                         {
-                            gameObjects.Clear();
-                            ObjInGame player = new ObjInGame();
-                            player.objectEdge = TheHero.Edge;
-                            player.objectLocation = TheHero.getLocation();
-                            player.name = 'P';
-                            Vector2 anglemath = monster.getLocation() - TheHero.getLocation();
-                            double angle = Math.Atan( anglemath.X/ -anglemath.Y);
-                            monster.rotation =+ angle;
-                            if (monster.rotation > 3.14/2 && monster.rotation < (3 * 3.14) / 2)
-                            {
-                                monster.rotation = +3.14;
-                            }
-                            if (monster.rotation > 3.14 * 2)
-                            {
-                                monster.rotation =- (3.14 / 2);
-                            }
-                            shotsFired(monster.rotation, monster.getLocation());
-                            gameObjects.Clear();
+                            monster.rotation = +3.14;
                         }
-                       
+                        if (monster.rotation > 3.14 * 2)
+                        {
+                            monster.rotation = -(3.14 / 2);
+                        }
+                        shotsFired(monster.rotation, monster.getLocation());
+                        gameObjects.Clear();
+
                     }
                     foreach (ExitDoor exitDoor in Exits)
                     {
@@ -343,27 +341,32 @@ namespace LiminalSpaceMazeGame
             {
                 for (int j = 0; j < mazeHeight; j++)
                 {
-                    if (maze[i, j] == 0)
+                    switch (maze[i, j])
                     {
-                        Wall newWall = new Wall(i, j);
-                        newWall.LoadContent(Content);
-                        walls.Add(newWall);
-                    }
-                    if (maze[i,j] == 3 && new Vector2(i,j) != new Vector2(1,1))
-                    {
-                        if (rnd.Next(2) == 1 && monstercount<monstermax)
-                        {
-                            Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
-                            newMonster.LoadContent(Content);
-                            monsters.Add(newMonster);
-                            monstercount++;
-                        }
-                        else
-                        {
-                            ExitDoor newDoor = new ExitDoor(new Vector2((i * 40) -15, (j * 40) - 15));//spawn door at end of corridor and offset to centre of a tile
-                            newDoor.LoadContent(Content);
-                            Exits.Add(newDoor);
-                        }
+                        case 0:
+                            Wall newWall = new Wall(i, j);
+                            newWall.LoadContent(Content);
+                            walls.Add(newWall);
+                            break;
+                        case 2:
+                            
+                        case 3:
+                            if (rnd.Next(2) == 1 && monstercount < monstermax)
+                            {
+                                Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
+                                newMonster.LoadContent(Content);
+                                monsters.Add(newMonster);
+                                monstercount++;
+                            }
+                            else
+                            {
+                                ExitDoor newDoor = new ExitDoor(new Vector2((i * 40) - 15, (j * 40) - 15));//spawn door at end of corridor and offset to centre of a tile
+                                newDoor.LoadContent(Content);
+                                Exits.Add(newDoor);
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
