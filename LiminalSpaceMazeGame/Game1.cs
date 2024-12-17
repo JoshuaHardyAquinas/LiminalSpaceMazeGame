@@ -349,7 +349,7 @@ namespace LiminalSpaceMazeGame
                             walls.Add(newWall);
                             break;
                         case 2:
-                            
+                            break;
                         case 3:
                             if (rnd.Next(2) == 1 && monstercount < monstermax)
                             {

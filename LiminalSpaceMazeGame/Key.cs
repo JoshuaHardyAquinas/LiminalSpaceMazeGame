@@ -1,19 +1,17 @@
-﻿using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using System.Numerics;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class Collectable : StationaryObject
+    internal class Key : Collectable
     {
-        protected char CollectableType;
-        protected bool collected;
-        public Collectable(Vector2 spawnLoc ,char type)
+        public Key(Vector2 spawnLoc, char type)
         {
             spawn(spawnLoc);
             CollectableType = type;

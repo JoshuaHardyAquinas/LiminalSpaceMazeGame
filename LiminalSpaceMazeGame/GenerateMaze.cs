@@ -93,19 +93,11 @@ namespace LiminalSpaceMazeGame
             {
                 nextCoords = currentCoords;
                 bool breakCase;
-                List<Direction> available = new List<Direction>();
-                for (int i = 0;i < dir.Length;i++)//optimization to stop rng calls for directions that are not possible
-                {
-                    if (dir[i] != Direction.none)
-                    {
-                        available.Add(dir[i]);
-                    }
-                }
                 do//loop though setting the necessary cords depending on direction
                 {
                     breakCase = true;
-                    int number = rnd.Next(0, available.Count);
-                    switch (available[number])
+                    int number = rnd.Next(0, 4);
+                    switch (dir[number])
                     {
                         case Direction.North:
                             nextCoords[0] = currentCoords[0] - 2;//set x and y cords
