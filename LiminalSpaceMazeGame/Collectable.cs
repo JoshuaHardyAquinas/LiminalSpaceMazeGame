@@ -13,10 +13,9 @@ namespace LiminalSpaceMazeGame
     {
         protected char CollectableType;
         protected bool collected;
-        public Collectable(Vector2 spawnLoc ,char type)
+        public Collectable()
         {
-            spawn(spawnLoc);
-            CollectableType = type;
+            
         }
         public override void update()
         {
@@ -25,10 +24,10 @@ namespace LiminalSpaceMazeGame
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            base.draw(spriteBatch);
+            
         }
 
-        public override void LoadContent(ContentManager Content)
+        public virtual void LoadContent(ContentManager Content)
         {
             base.LoadContent(Content);
         }

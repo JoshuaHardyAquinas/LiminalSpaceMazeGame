@@ -16,6 +16,8 @@ namespace LiminalSpaceMazeGame
         {
             //set location and use the texture size as a grid
             spawn(new Vector2(i * 40-20, j * 40-20));
+            objWidth = 40;
+            objHeight = 40;
         }
         public override void update()
         {
@@ -25,12 +27,12 @@ namespace LiminalSpaceMazeGame
         {
             //texture and hitbox
             Texture = Content.Load<Texture2D>(@"wall");
-            Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, Texture.Width, Texture.Height);
+            base.LoadContent(Content);
         }
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw in location
-            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, 40, 40), Color.White);
+            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, objWidth, objHeight), Color.White);
         }
     }
 }

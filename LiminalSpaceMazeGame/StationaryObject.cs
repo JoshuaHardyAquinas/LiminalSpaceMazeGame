@@ -17,11 +17,10 @@ namespace LiminalSpaceMazeGame
         public Rectangle Edge;
         public virtual void update()
         {
-
         }
         public virtual void LoadContent(ContentManager Content)
         {
-
+            Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, objWidth, objHeight);
         }
         protected virtual void checkDeath()
         {
@@ -29,7 +28,7 @@ namespace LiminalSpaceMazeGame
         }
         public virtual void draw(SpriteBatch spriteBatch)
         {
-            
+            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, objWidth, objHeight), Color.White);
         }
         public Vector2 getLocation()
         {
