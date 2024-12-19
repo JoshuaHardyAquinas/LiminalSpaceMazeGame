@@ -33,6 +33,7 @@ namespace LiminalSpaceMazeGame
         List<ObjInGame> gameObjects = new List<ObjInGame>();
 
         List<wall3d> walls3d = new List<wall3d>();
+        List<Collectable> collectables = new List<Collectable>();
 
         public GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
@@ -43,7 +44,7 @@ namespace LiminalSpaceMazeGame
         int[,] maze;
         int mazeHeight = 17;
         int mazeWidth = 17;
-        int monstermax = 1;
+        int monstermax = 0;
 
         //states to switch game between its respective screens
         enum GameState
@@ -325,8 +326,6 @@ namespace LiminalSpaceMazeGame
             }
             ks2 = ks1;
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -337,6 +336,7 @@ namespace LiminalSpaceMazeGame
             walls.Clear();
             Exits.Clear();
             int monstercount = 0;
+            monstermax++;
             for (int i = 0; i < mazeWidth; i++)
             {
                 for (int j = 0; j < mazeHeight; j++)
@@ -349,6 +349,9 @@ namespace LiminalSpaceMazeGame
                             walls.Add(newWall);
                             break;
                         case 2:
+                            Key newKey = new Key(new Vector2(i, j),'K');
+                            newKey.LoadContent(Content);
+                            collectables.Add(newKey);
                             break;
                         case 3:
                             if (rnd.Next(2) == 1 && monstercount < monstermax)

@@ -43,37 +43,22 @@ namespace LiminalSpaceMazeGame
                 Direction.West
             };
             //sneaky hack to make walls on the outside of the play field by attempting to check parts of the map that don't exist and then setting that direction as null
-            try{
-                if (currentCoords[0] - 2 < 0 || maze[currentCoords[0] - 2, currentCoords[1]] != 0) // check north
-                {
-                    dir[0] = Direction.none;//set respective direction in array to null so it cannot be picked by rng alg as it already has path #1
-                }
-            }
-            catch{dir[0] = Direction.none; }//set respective direction in array to null so it cannot be picked by rng alg as it does not exist #2
-            try
+            if (currentCoords[0] - 2 < 0 || maze[currentCoords[0] - 2, currentCoords[1]] != 0) // check north
             {
-                if(currentCoords[0] + 2 > length - 1 || maze[currentCoords[0] + 2, currentCoords[1]] != 0) // check south 
-                {
-                    dir[1] = Direction.none;// --//-- #1
-                }
+                dir[0] = Direction.none;//set respective direction in array to null so it cannot be picked by rng alg as it already has path #1
             }
-            catch { dir[1] = Direction.none; }//--//-- #2
-            try
+            if (currentCoords[0] + 2 > length - 1 || maze[currentCoords[0] + 2, currentCoords[1]] != 0) // check south 
             {
-                if (currentCoords[1] + 2 > width - 1 || maze[currentCoords[0], currentCoords[1] + 2] != 0) // check east 
-                {
-                    dir[2] = Direction.none;// --//-- #1
-                }
+                dir[1] = Direction.none;// --//-- #1
             }
-            catch { dir[2] = Direction.none; }// --//-- #2
-            try
+            if (currentCoords[1] + 2 > width - 1 || maze[currentCoords[0], currentCoords[1] + 2] != 0) // check east 
             {
-                if (currentCoords[1] - 2 < 0 || maze[currentCoords[0], currentCoords[1] - 2] != 0) // check west 
-                {
-                    dir[3] = Direction.none;// --//-- #1
-                }
+                dir[2] = Direction.none;// --//-- #1
             }
-            catch { dir[3] = Direction.none; }// --//-- #2
+            if (currentCoords[1] - 2 < 0 || maze[currentCoords[0], currentCoords[1] - 2] != 0) // check west 
+            {
+                dir[3] = Direction.none;// --//-- #1
+            }
 
             bool nullCase = true;
             foreach (Direction checkFree in dir)

@@ -12,7 +12,7 @@ namespace LiminalSpaceMazeGame
 {
     internal class Key : Collectable
     {
-        Key (Vector2 spawnLoc, char type)
+        public Key (Vector2 spawnLoc, char type)
         {
             collected = false;
             spawn(spawnLoc);
