@@ -22,21 +22,25 @@ namespace LiminalSpaceMazeGame
         }
         public override void update()
         {
-            if (collected)
-            {
-                Edge = new Rectangle(0, 0, 0, 0);
-            }
         }
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            base.draw(spriteBatch);
+            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, objWidth, objHeight), Color.Yellow);
         }
 
         public override void LoadContent(ContentManager Content)
         {
             base.LoadContent(Content);
-            Texture = Content.Load<Texture2D>(@"2dDoor");
+            try
+            {
+                Texture = Content.Load<Texture2D>(@"nullVoidDead");
+            }
+            catch
+            {
+                Texture = Content.Load<Texture2D>(@"nullVoidDead");
+            }
+            
         }
         public void collect(Hero theHero)
         {

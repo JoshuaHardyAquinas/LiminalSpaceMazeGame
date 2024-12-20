@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace LiminalSpaceMazeGame
 {
@@ -24,7 +25,7 @@ namespace LiminalSpaceMazeGame
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            
+            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, objWidth, objHeight), Color.Yellow);
         }
 
         public virtual void LoadContent(ContentManager Content)

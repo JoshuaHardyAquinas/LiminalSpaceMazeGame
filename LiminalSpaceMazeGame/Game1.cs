@@ -349,7 +349,7 @@ namespace LiminalSpaceMazeGame
                             walls.Add(newWall);
                             break;
                         case 2:
-                            Key newKey = new Key(new Vector2(i, j),'K');
+                            Key newKey = new Key(new Vector2(i*40, j*40),'K');
                             newKey.LoadContent(Content);
                             collectables.Add(newKey);
                             break;
@@ -416,6 +416,10 @@ namespace LiminalSpaceMazeGame
                             for (int i = 0; i < Exits.Count; i++)
                             {
                                 Exits[i].draw(spriteBatch);
+                            }
+                            for (int i = 0; i < collectables.Count; i++)
+                            {
+                                collectables[i].draw(spriteBatch);
                             }
                             //draw hero on top
                             TheHero.draw(spriteBatch);

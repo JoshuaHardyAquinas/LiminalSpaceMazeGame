@@ -28,7 +28,7 @@ namespace LiminalSpaceMazeGame
         }
         public virtual void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, objWidth, objHeight), Color.White);
+            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, objWidth, objHeight), Color.Yellow);
         }
         public Vector2 getLocation()
         {
