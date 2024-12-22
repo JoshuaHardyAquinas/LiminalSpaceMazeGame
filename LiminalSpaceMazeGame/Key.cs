@@ -15,7 +15,7 @@ namespace LiminalSpaceMazeGame
         public Key (Vector2 spawnLoc, char type)
         {
             collected = false;
-            spawn(spawnLoc);
+            spawn(spawnLoc-new Vector2(10,10));
             CollectableType = type;
             objWidth = 20;
             objHeight = objWidth;
@@ -26,7 +26,7 @@ namespace LiminalSpaceMazeGame
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, objWidth, objHeight), Color.Yellow);
+            spriteBatch.Draw(Texture, new Rectangle((int)getLocation().X, (int)getLocation().Y, objWidth, objHeight), null, Color.White);
         }
 
         public override void LoadContent(ContentManager Content)
@@ -34,7 +34,7 @@ namespace LiminalSpaceMazeGame
             base.LoadContent(Content);
             try
             {
-                Texture = Content.Load<Texture2D>(@"nullVoidDead");
+                Texture = Content.Load<Texture2D>(@"key");
             }
             catch
             {

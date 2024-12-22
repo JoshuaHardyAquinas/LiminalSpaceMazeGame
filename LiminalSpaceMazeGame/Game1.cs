@@ -33,7 +33,7 @@ namespace LiminalSpaceMazeGame
         List<ObjInGame> gameObjects = new List<ObjInGame>();
 
         List<wall3d> walls3d = new List<wall3d>();
-        List<Collectable> collectables = new List<Collectable>();
+        List<Key> collectables = new List<Key>();
 
         public GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
