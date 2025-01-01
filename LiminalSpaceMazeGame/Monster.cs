@@ -48,34 +48,20 @@ namespace LiminalSpaceMazeGame
 
             if (lineOfSight == true)
             {
-                Vector2 tile = new Vector2(getLocation().X, getLocation().Y);
-                if (theHero.getLocation().X > getLocation().X)
-                {
-                    Movement.X = speed;
-                }
-                else if (theHero.getLocation().X < getLocation().X)
-                {
-                    Movement.X = -speed;
-                }
-                else if (theHero.getLocation().Y > getLocation().Y)
-                {
-                    Movement.Y = speed;
-                }
-                else if (theHero.getLocation().Y < getLocation().Y)
-                {
-                    Movement.Y = -speed;
-                }
-                disToGo = 0;
+                Movement.X = -speed*2 * (float)Math.Sin(rotation);// --//--
+                Movement.Y = speed*2 * (float)Math.Cos(rotation);
+                setLocation(getLocation() + Movement);
             }
             else
             {
                 move(theMaze, Direction.none);
+                setLocation(getLocation() - Movement);
             }
             
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
             //Movement.Y = -1* (float)Math.Cos(rotation);
-            setLocation(getLocation() - Movement);
+            
         }
         private void move(int[,] maze, Direction last)
         {

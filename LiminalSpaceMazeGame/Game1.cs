@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using System.Security.Cryptography;
 using System.Threading;
 
 
@@ -22,7 +23,7 @@ namespace LiminalSpaceMazeGame
         UILoadingBar HealthBar;
         UILoadingBar ShieldBar;
 
-        public float levelNumber = 0;
+        public int levelNumber = 0;
         public bool levelGen = false;
         public bool experimental = true;
 
@@ -44,7 +45,6 @@ namespace LiminalSpaceMazeGame
         int[,] maze;
         int mazeHeight = 17;
         int mazeWidth = 17;
-        int monstermax = 0;
 
         //states to switch game between its respective screens
         enum GameState
@@ -108,14 +108,14 @@ namespace LiminalSpaceMazeGame
             ks1 = Keyboard.GetState();
             switch (currentState)
             {
-                case GameState.StartMenu:
+                case GameState.StartMenu://welcome user
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = GameState.LevelGen;
                     }
                     break;
                 case GameState.LevelGen:
-                    if (!levelGen)
+                    if (!levelGen)//generate 1 new level and wait
                     {
                         levelNumber++;
                         maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
@@ -130,7 +130,8 @@ namespace LiminalSpaceMazeGame
                         currentState = GameState.InGame;
                     }
                     break;
-                case GameState.InGame:
+                case GameState.InGame:// run game code
+                    // update all entities
                     TheHero.update();
                     StaminaBar.update(TheHero.Stamina);
                     HealthBar.update(TheHero.checkHealth());
@@ -139,26 +140,37 @@ namespace LiminalSpaceMazeGame
                     foreach (Monster monster in monsters)
                     {
                         monster.update(TheHero, maze);
-                        gameObjects.Clear();
-                        ObjInGame player = new ObjInGame();
-                        player.objectEdge = TheHero.Edge;
-                        player.objectLocation = TheHero.getLocation();
-                        player.name = 'P';
                         Vector2 anglemath = monster.getLocation() - TheHero.getLocation();
                         double angle = Math.Atan(anglemath.X / -anglemath.Y);
-                        monster.rotation = +angle;
-                        if (monster.rotation > 3.14 / 2 && monster.rotation < (3 * 3.14) / 2)
+                        if (monster.getLocation().Y > TheHero.getLocation().Y)
                         {
-                            monster.rotation = +3.14;
+                            angle= angle+ 3.14;
+                        }
+                        
+                        monster.rotation = +angle;
+                        if (monster.rotation < 0)
+                        {
+                            monster.rotation = 3.14*2;
                         }
                         if (monster.rotation > 3.14 * 2)
                         {
                             monster.rotation = -(3.14 / 2);
                         }
-                        shotsFired(monster.rotation, monster.getLocation());
-                        gameObjects.Clear();
+                        
 
                     }
+                    
+                    foreach (var monster in monsters)
+                    {
+                        gameObjects.Clear();
+                        ObjInGame newObj = new ObjInGame();
+                        newObj.objectEdge = monster.Edge;
+                        newObj.objectLocation = monster.getLocation();
+                        newObj.name = 'M';
+                        gameObjects.Add(newObj);
+                        monster.lineOfSight = shotsFired(monster.rotation+3.14f, TheHero.getLocation());
+                    }
+                    gameObjects.Clear();
                     foreach (ExitDoor exitDoor in Exits)
                     {
                         exitDoor.update();
@@ -332,11 +344,33 @@ namespace LiminalSpaceMazeGame
         private void createEntities()
         {
             Random rnd = new Random();
+            collectables.Clear();
             monsters.Clear();
             walls.Clear();
             Exits.Clear();
-            int monstercount = 0;
-            monstermax++;
+            //assignes amount of spawns of each type by using dead end cont
+            int deadEndCount = 0;
+            for (int i = 0; i < mazeWidth; i++)
+            {
+                for (int j = 0; j < mazeHeight; j++)
+                {
+                    if (maze[i,j] == 3)
+                    {
+                        deadEndCount++;
+                    }
+                }
+            }
+            int exitMax = rnd.Next(1,deadEndCount);//ensures taht theres allways an exit to a level at the detriment to the monster count
+            int keymax = exitMax+1;
+            deadEndCount -= exitMax;
+            int monsterMax = deadEndCount;
+            if (deadEndCount>levelNumber)
+            {
+                 monsterMax = rnd.Next(levelNumber, deadEndCount);
+            }
+            int monsterCount = 0;
+            int exitCount = 0;
+            int keyCount = 0;
             for (int i = 0; i < mazeWidth; i++)
             {
                 for (int j = 0; j < mazeHeight; j++)
@@ -349,29 +383,41 @@ namespace LiminalSpaceMazeGame
                             walls.Add(newWall);
                             break;
                         case 2:
-                            Key newKey = new Key(new Vector2(i*40, j*40),'K');
-                            newKey.LoadContent(Content);
-                            collectables.Add(newKey);
+                            if (rnd.Next(0, 32 - i - j) == 1 && keyCount < keymax )//alg to define locations of keys, gets more common with furthur distance
+                            {
+                                Key newKey = new Key(new Vector2(i * 40, j * 40), 'K');
+                                newKey.LoadContent(Content);
+                                collectables.Add(newKey);
+                                keyCount++;
+                            }
                             break;
                         case 3:
-                            if (rnd.Next(2) == 1 && monstercount < monstermax)
-                            {
-                                Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
-                                newMonster.LoadContent(Content);
-                                monsters.Add(newMonster);
-                                monstercount++;
-                            }
-                            else
+                            if (exitCount == 0 || (rnd.Next(0,keymax-1) == 1 && exitCount < exitMax))//ensures 1 exit spawn
                             {
                                 ExitDoor newDoor = new ExitDoor(new Vector2((i * 40) - 15, (j * 40) - 15));//spawn door at end of corridor and offset to centre of a tile
                                 newDoor.LoadContent(Content);
                                 Exits.Add(newDoor);
+                                exitCount++;
+                            }
+                            else if (monsterCount == 0 || (rnd.Next(0, 4) == 1 && monsterCount < monsterMax))//ensures 1 monster after 1 exit
+                            {
+                                Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
+                                newMonster.LoadContent(Content);
+                                monsters.Add(newMonster);
+                                monsterCount++;
                             }
                             break;
                         default:
                             break;
                     }
                 }
+            }
+            if (keyCount == 0)//garuntee a key
+            {
+                Key newKey = new Key(new Vector2(40,120), 'K');
+                newKey.LoadContent(Content);
+                collectables.Add(newKey);
+                keyCount++;
             }
         }
 
@@ -486,13 +532,12 @@ namespace LiminalSpaceMazeGame
                     wall3d newSlice = new wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit); //wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
                     newSlice.LoadContent(Content);
                     walls3d.Add(newSlice);
-
                 }
             }
         }
         public bool shotsFired(double rotation, Vector2 loc)
         {
-            float speed = 3f;
+            float speed = 1f;
             TheRay.setLocation(loc);
             TheRay.rotation = rotation;
             TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
