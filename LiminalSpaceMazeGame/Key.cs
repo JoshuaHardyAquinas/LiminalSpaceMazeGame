@@ -42,7 +42,7 @@ namespace LiminalSpaceMazeGame
             }
             
         }
-        public void collect(Hero theHero)
+        public override void collect(Hero theHero)
         {
             theHero.collected.Add(CollectableType);
             collected = true;

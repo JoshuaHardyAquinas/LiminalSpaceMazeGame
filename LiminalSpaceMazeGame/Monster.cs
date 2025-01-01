@@ -17,7 +17,7 @@ namespace LiminalSpaceMazeGame
         private int textnum = 0;
         private int damage;
         public bool lineOfSight = false;
-        public int memory;
+        public int memory = 40;
         private bool newNode = false;
         private int[] nextCoords = {0,0 };
         int[] currentCoords = { 0,0 };
@@ -44,24 +44,33 @@ namespace LiminalSpaceMazeGame
             //creates player edge
             Vector2 centreDis = theHero.getLocation() - getLocation();
             double tangent = (double)Math.Sqrt(centreDis.X* centreDis.X + centreDis.Y* centreDis.Y);
-            int speed = 1;
+            
 
-            if (lineOfSight == true)
+            if (lineOfSight == true)// direct follow movement
             {
-                Movement.X = -speed*2 * (float)Math.Sin(rotation);// --//--
-                Movement.Y = speed*2 * (float)Math.Cos(rotation);
-                setLocation(getLocation() + Movement);
+                follow();
+                memory = 40;
             }
-            else
+            else if (memory > 0)
+            {
+                follow();
+                memory --;
+            }
+            else // wander movement
             {
                 move(theMaze, Direction.none);
-                setLocation(getLocation() - Movement);
             }
-            
+            setLocation(getLocation() - Movement);
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
             //Movement.Y = -1* (float)Math.Cos(rotation);
-            
+
+        }
+        private void follow()
+        {
+            int speed = 1;
+            Movement.X = speed * 2 * (float)Math.Sin(rotation);// --//--
+            Movement.Y = -speed * 2 * (float)Math.Cos(rotation);
         }
         private void move(int[,] maze, Direction last)
         {

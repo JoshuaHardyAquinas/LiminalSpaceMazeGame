@@ -28,11 +28,11 @@ namespace LiminalSpaceMazeGame
             spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, objWidth, objHeight), Color.Yellow);
         }
 
-        public virtual void LoadContent(ContentManager Content)
+        public override void LoadContent(ContentManager Content)
         {
             base.LoadContent(Content);
         }
-        public void collect(Hero theHero)
+        public virtual void collect(Hero theHero)
         {
             theHero.collected.Add(CollectableType);
         }
