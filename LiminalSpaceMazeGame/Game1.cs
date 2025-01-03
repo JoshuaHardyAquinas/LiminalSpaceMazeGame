@@ -19,6 +19,7 @@ namespace LiminalSpaceMazeGame
         UI TheUI;
         GenerateMaze TheMaze;
         SpriteFont GameFont;
+        startMenuClass startMenu;
         UILoadingBar StaminaBar;
         UILoadingBar HealthBar;
         UILoadingBar ShieldBar;
@@ -87,6 +88,8 @@ namespace LiminalSpaceMazeGame
             StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X+590f,TheUI.getLocation().Y+20f),TheHero.StaminaMax,120,20);
             HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y+12f), TheHero.maxHealth, 69, 6);
             ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.StaminaMax, 69, 86);
+            startMenu = new startMenuClass();
+
             base.Initialize();
 
         }
@@ -101,6 +104,7 @@ namespace LiminalSpaceMazeGame
             StaminaBar.LoadContent(Content);
             HealthBar.LoadContent(Content);
             ShieldBar.LoadContent(Content);
+            startMenu.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -136,6 +140,14 @@ namespace LiminalSpaceMazeGame
                     StaminaBar.update(TheHero.Stamina);
                     HealthBar.update(TheHero.checkHealth());
                     ShieldBar.update(TheHero.shield);
+                    foreach (Collectable col in collectables)
+                    {
+                        col.update();
+                        if (col.Edge.Intersects(TheHero.Edge))
+                        {
+                            col.collect(TheHero);
+                        }
+                    }
 
                     foreach (Monster monster in monsters)
                     {
@@ -398,6 +410,7 @@ namespace LiminalSpaceMazeGame
                                 newDoor.LoadContent(Content);
                                 Exits.Add(newDoor);
                                 exitCount++;
+                                maze[i, j] = 5;
                             }
                             else if (monsterCount == 0 || (rnd.Next(0, 4) == 1 && monsterCount < monsterMax))//ensures 1 monster after 1 exit
                             {
@@ -430,7 +443,7 @@ namespace LiminalSpaceMazeGame
                     
                     this.IsMouseVisible = true;
                     GraphicsDevice.Clear(Color.Yellow);
-                    spriteBatch.DrawString(GameFont, "welcome", new Vector2(0, 0), Color.Black);
+                    startMenu.draw(spriteBatch);
                     break;
 
                 case GameState.LevelGen:

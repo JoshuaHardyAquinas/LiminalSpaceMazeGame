@@ -24,7 +24,7 @@ namespace LiminalSpaceMazeGame
         int[] currentCoords = { 0,0 };
         int disToGo = 0;
 
-        public int Damage { get => damage; set => damage = value; }
+        public new int Damage { get => damage; set => damage = value; }
 
         public Monster(Vector2 startingLoc, int text, int MaxDamage)
         {

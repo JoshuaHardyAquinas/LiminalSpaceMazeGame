@@ -111,9 +111,8 @@ namespace LiminalSpaceMazeGame
                 } while (breakCase == false);
                 maze[currentCoords[0], currentCoords[1]] = 1;//adds next cords to maze
                 currentCoords = (int[])nextCoords.Clone();
-
-                backtrackingMazeAlg((int[])nextCoords.Clone(), nextCoords, maze, length, width);//backtracking
-                backtrackingMazeAlg(currentCoords, (int[])currentCoords.Clone(), maze, length, width);//move to next space in maze
+                backtrackingMazeAlg(nextCoords, nextCoords, maze, length, width);//backtracking
+                backtrackingMazeAlg(currentCoords,currentCoords, maze, length, width);//move to next space in maze
             }
             return maze;//once backtracking is complete there is no other space to be than the start so maze is complete!
         }

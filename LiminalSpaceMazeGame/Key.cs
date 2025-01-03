@@ -22,11 +22,18 @@ namespace LiminalSpaceMazeGame
         }
         public override void update()
         {
+            if (collected)
+            {
+                setLocation(new Vector2(-40, -40));
+            }
         }
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, new Rectangle((int)getLocation().X, (int)getLocation().Y, objWidth, objHeight), null, Color.White);
+            if (!collected)
+            {
+                spriteBatch.Draw(Texture, new Rectangle((int)getLocation().X, (int)getLocation().Y, objWidth, objHeight), null, Color.White);
+            }
         }
 
         public override void LoadContent(ContentManager Content)
