@@ -16,8 +16,9 @@ namespace LiminalSpaceMazeGame
     {
         private int textnum = 0;
         private int damage;
+        private int memoryStrength;
         public bool lineOfSight = false;
-        public int memory = 40;
+        public int memory = 0;
         private bool newNode = false;
         private int[] nextCoords = {0,0 };
         int[] currentCoords = { 0,0 };
@@ -27,8 +28,10 @@ namespace LiminalSpaceMazeGame
 
         public Monster(Vector2 startingLoc, int text, int MaxDamage)
         {
+            
             Random random = new Random();
             damage = random.Next(4,MaxDamage+1);
+            memoryStrength = 5 * random.Next(1,MaxDamage);
             spawn(startingLoc);
             textnum = 0;
             rotation = 0f;
@@ -49,7 +52,7 @@ namespace LiminalSpaceMazeGame
             if (lineOfSight == true)// direct follow movement
             {
                 follow();
-                memory = 40;
+                memory = memoryStrength;
             }
             else if (memory > 0)
             {
@@ -60,6 +63,14 @@ namespace LiminalSpaceMazeGame
             {
                 move(theMaze, Direction.none);
             }
+            if (memory == 1)
+            {
+                nextCoords[0] = (int)((getLocation().X+20) / 40);
+                nextCoords[1] = (int)((getLocation().Y+20) / 40);
+                currentCoords[0] = nextCoords[0];
+                currentCoords[1] = nextCoords[1];
+                memory = 0;
+            }
             setLocation(getLocation() - Movement);
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
@@ -69,8 +80,8 @@ namespace LiminalSpaceMazeGame
         private void follow()
         {
             int speed = 1;
-            Movement.X = speed * 2 * (float)Math.Sin(rotation);// --//--
-            Movement.Y = -speed * 2 * (float)Math.Cos(rotation);
+            Movement.X = speed * 1.1f * (float)Math.Sin(rotation);// --//--
+            Movement.Y = -speed * 1.1f * (float)Math.Cos(rotation);
         }
         private void move(int[,] maze, Direction last)
         {
