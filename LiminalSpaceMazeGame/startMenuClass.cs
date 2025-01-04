@@ -26,11 +26,13 @@ namespace LiminalSpaceMazeGame
         {
             //load player texture
             background = Content.Load<Texture2D>(@"WelcomeScreen");
-            //helpMenu 
+            helpMenu = Content.Load<Texture2D>(@"HelpScreen");//  WWWWWWWWWWAAAAAAAAAAAA
         }
         public void draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(background, new Vector2(0,0), Color.White);
+            spriteBatch.Draw(helpMenu, new Vector2(0, 0), Color.White);// WWAAAAAAAAAAAAAAAAAA
+
         }
     }
 }
