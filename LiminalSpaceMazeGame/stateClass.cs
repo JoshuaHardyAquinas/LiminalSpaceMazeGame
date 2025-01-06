@@ -8,13 +8,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class startMenuClass
+    internal class stateClass
     {
         private Texture2D background;
-        private Texture2D helpMenu;
-        public bool displayHelpMenu;
+        private Texture2D forground;
+        public bool displayFg;
 
-        public startMenuClass()
+        public stateClass()
         {
             
         }
@@ -22,17 +22,19 @@ namespace LiminalSpaceMazeGame
         {
 
         }
-        public void LoadContent(ContentManager Content)
+        public void LoadContent(ContentManager Content,string bg,string fg)
         {
             //load player texture
-            background = Content.Load<Texture2D>(@"WelcomeScreen");
-            helpMenu = Content.Load<Texture2D>(@"HelpScreen");//  WWWWWWWWWWAAAAAAAAAAAA
+            background = Content.Load<Texture2D>(@bg);
+            forground = Content.Load<Texture2D>(@fg);
         }
         public void draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(background, new Vector2(0,0), Color.White);
-            spriteBatch.Draw(helpMenu, new Vector2(0, 0), Color.White);// WWAAAAAAAAAAAAAAAAAA
-
+            if (displayFg )
+            {
+                spriteBatch.Draw(forground, new Vector2(0, 0), Color.White);
+            }
         }
     }
 }

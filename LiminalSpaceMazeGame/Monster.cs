@@ -6,9 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using System.Windows.Forms;
-using System.Security.Permissions;
-using SharpDX.Direct2D1.Effects;
 
 namespace LiminalSpaceMazeGame
 {

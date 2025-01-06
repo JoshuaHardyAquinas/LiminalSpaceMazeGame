@@ -19,14 +19,14 @@ namespace LiminalSpaceMazeGame
         UI TheUI;
         GenerateMaze TheMaze;
         SpriteFont GameFont;
-        startMenuClass startMenu;
+        stateClass startMenu;
+        stateClass deathMenu;
         UILoadingBar StaminaBar;
         UILoadingBar HealthBar;
         UILoadingBar ShieldBar;
 
         public int levelNumber = 0;
         public bool levelGen = false;
-        public bool experimental = true;
 
 
         List<Monster> monsters = new List<Monster>();
@@ -42,18 +42,27 @@ namespace LiminalSpaceMazeGame
 
         List<ExitDoor> Exits = new List<ExitDoor>();
 
+        List<stateButtons> stateButtonList = new List<stateButtons>();
+
 
         int[,] maze;
         int mazeHeight = 17;
         int mazeWidth = 17;
 
+        MouseState mouseState = Mouse.GetState();
+        MouseState mouseState2 = Mouse.GetState();
+
         //states to switch game between its respective screens
-        enum GameState
+        public enum GameState
         {
             StartMenu,
-            LevelGen,
+            Help,
+            Settings,
+            Leaderbaord,
+            Shop,
             InGame,
-            Dead
+            Dead,
+            none
         }
         //states to switch logic between dimensions
         enum Dimension
@@ -61,7 +70,7 @@ namespace LiminalSpaceMazeGame
             D2,
             D3
         }
-        GameState currentState = GameState.StartMenu;
+        public GameState currentState = GameState.StartMenu;
         Dimension CurrentDimension = Dimension.D2;
 
         Vector2 gameResolution = new Vector2(720, 720);
@@ -84,14 +93,30 @@ namespace LiminalSpaceMazeGame
             TheHero = new Hero(90,1200,1000);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
-            TheUI = new UI(); 
-            StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X+590f,TheUI.getLocation().Y+20f),TheHero.StaminaMax,120,20);
+            TheUI = new UI();
+            StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 590f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 120, 20);
             HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y+12f), TheHero.maxHealth, 69, 6);
             ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.StaminaMax, 69, 86);
-            startMenu = new startMenuClass();
+            startMenu = new stateClass();
+            deathMenu = new stateClass();
 
+            stateButtonList.Add(new stateButtons(new Vector2( 85, 465), new Vector2(187, 82), GameState.StartMenu, 'b'));
+            stateButtonList.Add(new stateButtons(new Vector2( 85, 580), new Vector2(187, 82), GameState.StartMenu, 'l'));
+            stateButtonList.Add(new stateButtons(new Vector2(312, 465), new Vector2(187, 82), GameState.StartMenu, 's'));
+            stateButtonList.Add(new stateButtons(new Vector2(312, 580), new Vector2(187, 82), GameState.StartMenu, 'h'));
+            
+            stateButtonList.Add(new stateButtons(new Vector2(283, 560), new Vector2(187, 82), GameState.Help, 'H'));
+            //add new button script for size!
+            /*startMenuButton newbut = new startMenuButton(new Vector2(283, 560), new Vector2(187, 82), GameState.Help, 'H');
+            newbut.LoadContent(Content);
+            startButtons.Add();*/
+            stateButtonList.Add(new stateButtons(new Vector2(108, 535), new Vector2(220, 100), GameState.Dead, 'R'));
+            stateButtonList.Add(new stateButtons(new Vector2(382, 535), new Vector2(220, 100), GameState.Dead, 'E'));
+            /*stateButtonList.Add(newbut);ewbut = new stateButtons(new Vector2(283, 560), new Vector2(187, 82), GameState.Dead, 'E');
+
+            newbut.LoadContent(Content, "exit");
+            stateButtonList.Add(newbut);*/ //next button         aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
             base.Initialize();
-
         }
 
         protected override void LoadContent()
@@ -104,21 +129,57 @@ namespace LiminalSpaceMazeGame
             StaminaBar.LoadContent(Content);
             HealthBar.LoadContent(Content);
             ShieldBar.LoadContent(Content);
-            startMenu.LoadContent(Content);
+            startMenu.LoadContent(Content, "WelcomeScreen","HelpScreen");
+            deathMenu.LoadContent(Content, "Dead", "nullVoidDead");
         }
 
         protected override void Update(GameTime gameTime)
         {
             ks1 = Keyboard.GetState();
+            mouseState = Mouse.GetState();
+            Rectangle mousePosition = new Rectangle(mouseState.X, mouseState.Y, 0, 0);
             switch (currentState)
             {
-                case GameState.StartMenu://welcome user
-                    if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
+                case (GameState.StartMenu)://welcome user
+                    foreach (stateButtons button in stateButtonList)
                     {
-                        currentState = GameState.LevelGen;
+                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition)&& (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released))
+                        {
+                            switch (button.buttonAction)
+                            {
+                                case 'b':
+                                    currentState = GameState.Shop;
+                                    break;
+                                case 'h':
+                                    currentState = GameState.Help;
+                                    startMenu.displayFg = true;
+                                    break;
+                            }
+                            break;
+                        }
                     }
                     break;
-                case GameState.LevelGen:
+                case GameState.Help:
+                    foreach (stateButtons button in stateButtonList)
+                    {
+                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released))
+                        {
+                            switch (button.buttonAction)
+                            {
+                                case 'H':
+                                    startMenu.displayFg = false ;
+                                    currentState = GameState.StartMenu;
+                                    break;
+                            }
+                            break;
+                        }
+                        if (ks1.IsKeyDown(Keys.Escape) && startMenu.displayFg == true)
+                        {
+                            startMenu.displayFg = false;
+                        }
+                    }
+                    break;
+                case GameState.Shop:
                     if (!levelGen)//generate 1 new level and wait
                     {
                         levelNumber++;
@@ -127,7 +188,7 @@ namespace LiminalSpaceMazeGame
                         createEntities();
                         TheHero.spawn(new Vector2(40, 40));//put the hero back at its spawn location
                         levelGen = true;
-                        
+
                     }
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
@@ -328,17 +389,25 @@ namespace LiminalSpaceMazeGame
                 case GameState.Dead:
                     levelGen = false;
                     monsters.Clear();
-                    if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
+                    foreach (stateButtons button in stateButtonList)
                     {
-                        currentState = GameState.StartMenu;
+                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released))
+                        {
+                            switch (button.buttonAction)
+                            {
+                                case 'R':
+                                    currentState = GameState.StartMenu;
+                                    break;
+                                case 'E':
+                                    Exit();
+                                    break;
+                            }
+                            break;
+                        }
                     }
                     break;
                 default:
                     break;
-            }
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                Exit();
             }
             if (ks1.IsKeyDown(Keys.NumPad1) && ks2.IsKeyUp(Keys.NumPad1))
             {
@@ -349,6 +418,7 @@ namespace LiminalSpaceMazeGame
                 CurrentDimension = Dimension.D3;
             }
             ks2 = ks1;
+            mouseState2 = mouseState;
 
             base.Update(gameTime);
         }
@@ -440,13 +510,17 @@ namespace LiminalSpaceMazeGame
             switch (currentState)
             {
                 case GameState.StartMenu:
-                    
                     this.IsMouseVisible = true;
                     GraphicsDevice.Clear(Color.Yellow);
                     startMenu.draw(spriteBatch);
                     break;
+                case GameState.Help:
+                    this.IsMouseVisible = true;
+                    startMenu.draw(spriteBatch);
+                    
+                    break;
 
-                case GameState.LevelGen:
+                case GameState.Shop:
                     GraphicsDevice.Clear(Color.Peru);
                     this.IsMouseVisible = true;
                     spriteBatch.DrawString(GameFont, "shop", new Vector2(10, 10), Color.Black, 0f, new Vector2(0, 0), 1.5f, SpriteEffects.None, 0f);
@@ -521,7 +595,7 @@ namespace LiminalSpaceMazeGame
                 case GameState.Dead:
                     GraphicsDevice.Clear(Color.Red);
                     this.IsMouseVisible = true;
-                    spriteBatch.DrawString(GameFont, "dead", new Vector2(0, 0), Color.Black);
+                    deathMenu.draw(spriteBatch);
                     break;
 
                 default:

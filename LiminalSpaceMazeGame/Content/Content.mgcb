@@ -61,6 +61,18 @@
 /processorParam:TextureFormat=Color
 /build:3dWallTest.png
 
+#begin Dead.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Dead.png
+
 #begin door_3d.png
 /importer:TextureImporter
 /processor:TextureProcessor

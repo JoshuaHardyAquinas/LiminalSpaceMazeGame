@@ -21,14 +21,6 @@ namespace LiminalSpaceMazeGame
         public Rectangle rectangle;
         public char type;
         private Vector2 centreDistance;
-        /*public enum Direction //deprecated wall directionals
-        {
-            none,
-            North,
-            South,
-            East,
-            West
-        }*/
         public wall3d(Vector2 displacement, int slice, Vector2 gameRes, Vector2 centreDis, char objHit)
         {
             double wallHieght = 8192 / Math.Sqrt(displacement.Y * displacement.Y + displacement.X * displacement.X); //reciprocal function to convert distance of the wall from the player to teh wall height
