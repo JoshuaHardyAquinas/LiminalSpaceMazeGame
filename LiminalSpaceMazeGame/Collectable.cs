@@ -12,8 +12,8 @@ namespace LiminalSpaceMazeGame
 {
     internal class Collectable : StationaryObject
     {
-        protected char CollectableType;
-        protected bool collected;
+        public char CollectableType;
+        public bool isCollected;
         public Collectable()
         {
             

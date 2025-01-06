@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using SharpDX.DirectWrite;
 
 namespace LiminalSpaceMazeGame
 {
@@ -14,12 +16,15 @@ namespace LiminalSpaceMazeGame
         private int textnum = 0;
         private int damage;
         private int memoryStrength;
+        private int health;
         public bool lineOfSight = false;
         public int memory = 0;
         private bool newNode = false;
         private int[] nextCoords = {0,0 };
         int[] currentCoords = { 0,0 };
         int disToGo = 0;
+        private bool dead = false;
+        Direction previous = Direction.none;
 
         public new int Damage { get => damage; set => damage = value; }
 
@@ -29,6 +34,7 @@ namespace LiminalSpaceMazeGame
             Random random = new Random();
             damage = random.Next(4,MaxDamage+1);
             memoryStrength = 5 * random.Next(1,MaxDamage);
+            health = random.Next(5,MaxDamage+10);
             spawn(startingLoc);
             textnum = 0;
             rotation = 0f;
@@ -36,10 +42,14 @@ namespace LiminalSpaceMazeGame
             currentCoords[1] = (int)startingLoc.Y/40;
             nextCoords[0] = currentCoords[0];
             nextCoords[1] = currentCoords[1];
+            
         }
         public void update(Hero theHero, int [,] theMaze)
         {
-            
+            if (dead)
+            {
+                return;
+            }
             base.update();
             //creates player edge
             Vector2 centreDis = theHero.getLocation() - getLocation();
@@ -53,12 +63,13 @@ namespace LiminalSpaceMazeGame
             }
             else if (memory > 0)
             {
+                previous = Direction.none;
                 follow();
                 memory --;
             }
             else // wander movement
             {
-                move(theMaze, Direction.none);
+                move(theMaze,theHero);
             }
             if (memory == 1)
             {
@@ -80,7 +91,7 @@ namespace LiminalSpaceMazeGame
             Movement.X = speed * 1.1f * (float)Math.Sin(rotation);// --//--
             Movement.Y = -speed * 1.1f * (float)Math.Cos(rotation);
         }
-        private void move(int[,] maze, Direction last)
+        private void move(int[,] maze,Hero theHero)
         {
             Random rnd = new Random();
 
@@ -102,23 +113,36 @@ namespace LiminalSpaceMazeGame
                 Direction.West
             };
             
-            if(maze[currentCoords[0], currentCoords[1] - 1] == 0 )
+            if(maze[currentCoords[0], currentCoords[1] - 1] == 0 || maze[currentCoords[0], currentCoords[1] - 1] == 5 || previous == Direction.North)
             {
                 dir[0] = Direction.none;
             }
-            if (maze[currentCoords[0], currentCoords[1] + 1] == 0 )
+            if (maze[currentCoords[0], currentCoords[1] + 1] == 0 || maze[currentCoords[0], currentCoords[1] + 1] == 5 || previous == Direction.South)
             {
                 dir[1] = Direction.none;
             }
-            if (maze[currentCoords[0] + 1, currentCoords[1]] == 0 )
+            if (maze[currentCoords[0] + 1, currentCoords[1]] == 0 || maze[currentCoords[0] + 1, currentCoords[1]] == 5 || previous == Direction.East)
             {
                 dir[2] = Direction.none;
             }
-            if (maze[currentCoords[0] - 1, currentCoords[1]] == 0 )
+            if (maze[currentCoords[0] - 1, currentCoords[1]] == 0 || maze[currentCoords[0] - 1, currentCoords[1]] == 5|| previous == Direction.West)
             {
                 dir[3] = Direction.none;
             }
             int value;
+            int count = 0;
+            foreach(Direction direction in dir)
+            {
+                if (direction != Direction.none)
+                {
+                    count++;
+                }
+            }
+            if (count == 0)
+            {
+                previous = Direction.none ;
+                return;
+            }
             while (true)
             {
                 value = rnd.Next(4);
@@ -132,22 +156,22 @@ namespace LiminalSpaceMazeGame
                 case Direction.North:
                     nextCoords[0] += 0;
                     nextCoords[1] -= 1;
-                    last = Direction.South;
+                    previous = Direction.South;
                     break;
                 case Direction.South:
                     nextCoords[0] += 0;
                     nextCoords[1] += 1;
-                    last = Direction.North;
+                    previous = Direction.North;
                     break;
                 case Direction.East:
                     nextCoords[0] += 1;
                     nextCoords[1] += 0;
-                    last = Direction.West;
+                    previous = Direction.West;
                     break;
                 case Direction.West:
                     nextCoords[0] -= 1;
                     nextCoords[1] += 0;
-                    last = Direction.East;
+                    previous = Direction.East;
                     break;
                 default:
                     nextCoords[0] = 0;
@@ -171,7 +195,20 @@ namespace LiminalSpaceMazeGame
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw player including rotation
+            if (dead)
+            {
+                return;
+            }
             spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
+        }
+        public void loseHealth(int toLose)
+        {
+            health -= toLose;
+            if (health <= 0)
+            {
+                dead = true;
+                setLocation(new Vector2(-40, -40));
+            }
         }
         protected enum Direction
         {

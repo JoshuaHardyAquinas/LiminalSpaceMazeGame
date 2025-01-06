@@ -49,6 +49,8 @@ namespace LiminalSpaceMazeGame
         int mazeHeight = 17;
         int mazeWidth = 17;
 
+        bool toExit = false;
+
         MouseState mouseState = Mouse.GetState();
         MouseState mouseState2 = Mouse.GetState();
 
@@ -62,6 +64,8 @@ namespace LiminalSpaceMazeGame
             Shop,
             InGame,
             Dead,
+            win,
+            pause,
             none
         }
         //states to switch logic between dimensions
@@ -180,6 +184,8 @@ namespace LiminalSpaceMazeGame
                     }
                     break;
                 case GameState.Shop:
+                    toExit = false;
+                    TheHero.rotation = 0f;
                     if (!levelGen)//generate 1 new level and wait
                     {
                         levelNumber++;
@@ -188,12 +194,13 @@ namespace LiminalSpaceMazeGame
                         createEntities();
                         TheHero.spawn(new Vector2(40, 40));//put the hero back at its spawn location
                         levelGen = true;
-
                     }
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
                         currentState = GameState.InGame;
                     }
+                    TheHero.collected.Clear();
+
                     break;
                 case GameState.InGame:// run game code
                     // update all entities
@@ -209,7 +216,7 @@ namespace LiminalSpaceMazeGame
                             col.collect(TheHero);
                         }
                     }
-
+                    
                     foreach (Monster monster in monsters)
                     {
                         monster.update(TheHero, maze);
@@ -242,11 +249,15 @@ namespace LiminalSpaceMazeGame
                         newObj.name = 'M';
                         gameObjects.Add(newObj);
                         monster.lineOfSight = shotsFired(monster.rotation+3.14f, TheHero.getLocation());
+                        /*if (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released && monster.lineOfSight)
+                        {
+                            //monster.
+                        }*/
                     }
                     gameObjects.Clear();
                     foreach (ExitDoor exitDoor in Exits)
                     {
-                        exitDoor.update();
+                        toExit = exitDoor.update(TheHero.collected);
                     }
                     Vector2 centreDis = new Vector2(0, 0);
                     foreach (Wall wall in walls)
@@ -338,6 +349,10 @@ namespace LiminalSpaceMazeGame
                     {
                         if (exit.Edge.Intersects(TheHero.Edge))
                         {
+                            if (toExit)
+                            {
+                                currentState = GameState.win;
+                            }
                             centreDis = new Vector2(exit.Edge.Center.X, exit.Edge.Center.Y) - TheHero.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
                             if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move player away depending on what side is further on collision
                             {
@@ -378,7 +393,7 @@ namespace LiminalSpaceMazeGame
                             newObj.name = 'E';
                             gameObjects.Add(newObj);
                         }
-                        rayCast(200, 'E');
+                        rayCast(400, 'E');
                         gameObjects.Clear();
                     }
                     if (TheHero.checkHealth() <= 0 || (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter)))
@@ -388,6 +403,7 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.Dead:
                     levelGen = false;
+                    levelNumber = 0;
                     monsters.Clear();
                     foreach (stateButtons button in stateButtonList)
                     {
@@ -405,6 +421,11 @@ namespace LiminalSpaceMazeGame
                             break;
                         }
                     }
+                    break;
+                case GameState.win:
+                    levelGen = false;
+                    monsters.Clear();
+                    currentState = GameState.Shop;
                     break;
                 default:
                     break;
@@ -617,7 +638,7 @@ namespace LiminalSpaceMazeGame
                 if (distanceTraveled != new Vector2(castLength, castLength))
                 {
                     wall3d newSlice = new wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit); //wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
-                    newSlice.LoadContent(Content);
+                    newSlice.LoadContent(Content,toExit);
                     walls3d.Add(newSlice);
                 }
             }

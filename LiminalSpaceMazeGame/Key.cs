@@ -14,7 +14,7 @@ namespace LiminalSpaceMazeGame
     {
         public Key (Vector2 spawnLoc, char type)
         {
-            collected = false;
+            isCollected = false;
             spawn(spawnLoc-new Vector2(10,10));
             CollectableType = type;
             objWidth = 20;
@@ -22,7 +22,7 @@ namespace LiminalSpaceMazeGame
         }
         public override void update()
         {
-            if (collected)
+            if (isCollected)
             {
                 setLocation(new Vector2(-40, -40));
             }
@@ -30,7 +30,7 @@ namespace LiminalSpaceMazeGame
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            if (!collected)
+            if (!isCollected)
             {
                 spriteBatch.Draw(Texture, new Rectangle((int)getLocation().X, (int)getLocation().Y, objWidth, objHeight), null, Color.White);
             }
@@ -52,7 +52,7 @@ namespace LiminalSpaceMazeGame
         public override void collect(Hero theHero)
         {
             theHero.collected.Add(CollectableType);
-            collected = true;
+            isCollected = true;
         }
     }
 }

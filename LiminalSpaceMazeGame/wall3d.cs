@@ -36,7 +36,7 @@ namespace LiminalSpaceMazeGame
         {
 
         }
-        public override void LoadContent(ContentManager Content)
+        public void LoadContent(ContentManager Content,bool ex)
         {
             switch(type)
             {
@@ -45,7 +45,14 @@ namespace LiminalSpaceMazeGame
                     Width = 50;
                     break;
                 case 'E':
-                    Texture = Content.Load<Texture2D>(@"door_3d");
+                    if (ex)
+                    {
+                        Texture = Content.Load<Texture2D>(@"exitOpen");
+                    }
+                    else
+                    {
+                        Texture = Content.Load<Texture2D>(@"door_3d");
+                    }
                     Width = 40;
                     break;
                 case 'K':

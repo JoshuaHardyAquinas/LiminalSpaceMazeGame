@@ -20,21 +20,20 @@ namespace LiminalSpaceMazeGame
             spawn(loc);
             Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, 30, 30);
         }
-        public void update(GameTime gameTime)
+        public bool update(List<char> collected)
         {
-            
-            if (Available == true)
+            foreach (char collectable in collected)
             {
-                if (gameTime.ElapsedGameTime.Seconds % 5 == 0)
+                if(collectable == 'K')
                 {
-                    textureNumber++;
-                    if (textureNumber < 3)
-                    {
-                        textureNumber = 1;
-                    }
+                    Available = true;
                 }
             }
-
+            if (Available == true)
+            {
+                textureNumber = 2;
+            }
+            return Available;
         }
         public override void LoadContent(ContentManager Content)
         {
