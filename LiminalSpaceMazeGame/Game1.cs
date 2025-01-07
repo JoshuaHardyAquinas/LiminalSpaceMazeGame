@@ -193,7 +193,7 @@ namespace LiminalSpaceMazeGame
                         maze[1, 1] = 1;
                         createEntities();
                         TheHero.spawn(new Vector2(40, 40));//put the hero back at its spawn location
-                        levelGen = true;
+                        levelGen = true; 
                     }
                     if (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
