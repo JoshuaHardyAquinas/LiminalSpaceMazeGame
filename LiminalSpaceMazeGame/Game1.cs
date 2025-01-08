@@ -64,7 +64,7 @@ namespace LiminalSpaceMazeGame
             StartMenu,
             Help,
             Settings,
-            Leaderbaord,
+            Leaderboard,
             Shop,
             InGame,
             Dead,
@@ -265,8 +265,11 @@ namespace LiminalSpaceMazeGame
                         newObj.name = 'M';
                         gameObjects.Add(newObj);
                         monster.lineOfSight = shotsFired(monster.rotation+3.14f, TheHero.getLocation());
-                        if (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released && monster.lineOfSight)
+                        bool shootable = shotsFired(TheHero.rotation, TheHero.getLocation());
+                        
+                        if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released) && shootable)
                         {
+
                             monster.loseHealth(TheHero.Damage);
                         }
                     }
