@@ -17,10 +17,13 @@ namespace LiminalSpaceMazeGame
     internal class Hero : MovingObject
     {
         private int MaxHealth;
+        private int startHealth;
         private int staminaMax;
+        private int staminaStart;
         private int stamina;
         private int MaxShield = 100;
         private int Shield;
+        private int ShieldStart;
         private int fOV;
         bool cooldown;
         public List<char> collected = new List<char>();
@@ -30,13 +33,19 @@ namespace LiminalSpaceMazeGame
         public int StaminaMax { get => staminaMax; set => staminaMax = value; }
         public int maxHealth { get => MaxHealth; set => MaxHealth = value; }
         public int shield { get => Shield; set => Shield = value; }
+        public int ShieldMax { get => MaxShield; set => MaxShield = value; }
 
         public Hero(int fov, int MxSt, int MxHlth)
         {
             // constructor
+            Damage = 10;
             staminaMax = MxSt;
+            staminaStart = staminaMax;
             Health = MxHlth;
             MaxHealth = MxHlth;
+            startHealth = MxHlth;
+            shield = MaxShield / 4;
+            ShieldStart = MaxShield;
             spawn(new Vector2(60, 60));
             Movement = new Vector2(0, 0);//no movment for player to begin with
             changeRotation = 0;
@@ -156,6 +165,15 @@ namespace LiminalSpaceMazeGame
         {
             base.spawn(loc);
             Health = maxHealth;
+        }
+
+        public void upgrade(char stat,int value,bool reset)
+        {
+            if (reset)
+            {
+                maxHealth = startHealth;
+
+            }
         }
     }
 }

@@ -100,7 +100,7 @@ namespace LiminalSpaceMazeGame
             TheUI = new UI();
             StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 590f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 120, 20);
             HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y+12f), TheHero.maxHealth, 69, 6);
-            ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.StaminaMax, 69, 86);
+            ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.ShieldMax, 69, 86);
             startMenu = new stateClass();
             deathMenu = new stateClass();
 
@@ -208,12 +208,22 @@ namespace LiminalSpaceMazeGame
                     StaminaBar.update(TheHero.Stamina);
                     HealthBar.update(TheHero.checkHealth());
                     ShieldBar.update(TheHero.shield);
+                    TheHero.gainHealth(1);
                     foreach (Collectable col in collectables)
                     {
                         col.update();
                         if (col.Edge.Intersects(TheHero.Edge))
                         {
                             col.collect(TheHero);
+                            Vector2 dis = new Vector2(col.Edge.Center.X, col.Edge.Center.Y) - TheHero.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                            if (Math.Abs(dis.X) > Math.Abs(dis.Y))//move player away depending on what side is further on collision
+                            {
+                                TheHero.setLocation(new Vector2(dis.X * -0.125f + TheHero.getLocation().X, TheHero.getLocation().Y));
+                            }
+                            else
+                            {
+                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, dis.Y * -0.125f + TheHero.getLocation().Y));
+                            }
                         }
                     }
                     
@@ -249,10 +259,10 @@ namespace LiminalSpaceMazeGame
                         newObj.name = 'M';
                         gameObjects.Add(newObj);
                         monster.lineOfSight = shotsFired(monster.rotation+3.14f, TheHero.getLocation());
-                        /*if (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released && monster.lineOfSight)
+                        if (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released && monster.lineOfSight)
                         {
-                            //monster.
-                        }*/
+                            monster.loseHealth(TheHero.Damage);
+                        }
                     }
                     gameObjects.Clear();
                     foreach (ExitDoor exitDoor in Exits)
@@ -394,6 +404,18 @@ namespace LiminalSpaceMazeGame
                             gameObjects.Add(newObj);
                         }
                         rayCast(400, 'E');
+                        foreach (var coll in collectables)
+                        {
+                            if(coll.CollectableType == 'K')
+                            {
+                                ObjInGame newObj = new ObjInGame();
+                                newObj.objectEdge = coll.Edge;
+                                newObj.objectLocation = coll.getLocation();
+                                newObj.name = 'K';
+                                gameObjects.Add(newObj);
+                            }
+                        }
+                        rayCast(400, 'K');
                         gameObjects.Clear();
                     }
                     if (TheHero.checkHealth() <= 0 || (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter)))

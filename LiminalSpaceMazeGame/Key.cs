@@ -25,6 +25,7 @@ namespace LiminalSpaceMazeGame
             if (isCollected)
             {
                 setLocation(new Vector2(-40, -40));
+                Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, objWidth, objHeight);
             }
         }
 

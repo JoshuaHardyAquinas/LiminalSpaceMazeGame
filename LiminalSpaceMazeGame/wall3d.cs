@@ -56,7 +56,7 @@ namespace LiminalSpaceMazeGame
                     Width = 40;
                     break;
                 case 'K':
-                    Content.Load<Texture2D>(@"nullVoidDead");
+                    Texture = Content.Load<Texture2D>(@"key_3d");
                     Width = 20;
                     break;
                 case 'W':
