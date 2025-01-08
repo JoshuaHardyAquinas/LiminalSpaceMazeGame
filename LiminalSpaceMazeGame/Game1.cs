@@ -51,6 +51,10 @@ namespace LiminalSpaceMazeGame
 
         bool toExit = false;
 
+        char wallType = ' ';
+        char[] availableWalls = { 'W', 'w', 'v' };
+        Random rand = new Random();
+
         MouseState mouseState = Mouse.GetState();
         MouseState mouseState2 = Mouse.GetState();
 
@@ -188,6 +192,8 @@ namespace LiminalSpaceMazeGame
                     TheHero.rotation = 0f;
                     if (!levelGen)//generate 1 new level and wait
                     {
+                        int vars = rand.Next(0,availableWalls.Length);
+                        wallType = availableWalls[vars];
                         levelNumber++;
                         maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                         maze[1, 1] = 1;
@@ -382,10 +388,10 @@ namespace LiminalSpaceMazeGame
                             ObjInGame newObj = new ObjInGame();
                             newObj.objectEdge = wall.Edge;
                             newObj.objectLocation = wall.getLocation();
-                            newObj.name = 'W';
+                            newObj.name = wallType;
                             gameObjects.Add(newObj);
                         }
-                        rayCast(660, 'W');
+                        rayCast(660, wallType);
                         foreach (var monster in monsters)
                         {
                             ObjInGame newObj = new ObjInGame();
@@ -605,7 +611,7 @@ namespace LiminalSpaceMazeGame
                             List<wall3d> CURRENT = new List<wall3d>();
                             foreach (wall3d wall in walls3d)
                             {
-                                if (wall.type == 'W')
+                                if (wall.type == wallType)
                                 {
                                     wall.draw(spriteBatch);
                                 }
@@ -613,7 +619,7 @@ namespace LiminalSpaceMazeGame
                             }
                             foreach (wall3d wall in walls3d)
                             {
-                                if (wall.type != 'W')
+                                if (wall.type != wallType)
                                 {
                                     foreach(wall3d pre in CURRENT)
                                     {
@@ -656,7 +662,7 @@ namespace LiminalSpaceMazeGame
             {
                 char objHit = ' ';
                 Vector2 centreDis = new Vector2(0, 0);
-                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castLength, ref objHit, toHit);
+                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castLength, ref objHit, toHit,wallType);
                 if (distanceTraveled != new Vector2(castLength, castLength))
                 {
                     wall3d newSlice = new wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit); //wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);

@@ -57,10 +57,18 @@ namespace LiminalSpaceMazeGame
                     break;
                 case 'K':
                     Texture = Content.Load<Texture2D>(@"key_3d");
-                    Width = 20;
+                    Width = 40;
                     break;
                 case 'W':
-                    Texture = Content.Load<Texture2D>(@"3dWallTest");//load wall texture for wall slices
+                    Texture = Content.Load<Texture2D>(@"3dWall1");
+                    Width = 40;
+                    break;
+                case 'w':
+                    Texture = Content.Load<Texture2D>(@"3dWall2");
+                    Width = 40;
+                    break;
+                case 'v':
+                    Texture = Content.Load<Texture2D>(@"3dWall3");
                     Width = 40;
                     break;
                 default:

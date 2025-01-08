@@ -35,7 +35,7 @@ namespace LiminalSpaceMazeGame
             //draw player including rotation
             //spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, 0, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
-        static public Vector2 cast(int angle, Hero TheHero, Ray TheRay,List<ObjInGame> ingameObjects,ref Vector2 centreDis,int maxCastLength, ref char objHit, char toHit)
+        static public Vector2 cast(int angle, Hero TheHero, Ray TheRay,List<ObjInGame> ingameObjects,ref Vector2 centreDis,int maxCastLength, ref char objHit, char toHit,char wallType)
         {
             float speed = 3f;
             TheRay.setLocation(TheHero.getLocation());
@@ -49,7 +49,7 @@ namespace LiminalSpaceMazeGame
                 TheRay.update();//update hitbox
                 foreach (ObjInGame Obj in ingameObjects)//loop though all walls (ik its slow but its easy)
                 {
-                    if (Obj.objectEdge.Intersects(TheRay.Edge) && (Obj.name == toHit || Obj.name == 'W'))//check collision with hitbox
+                    if (Obj.objectEdge.Intersects(TheRay.Edge) && (Obj.name == toHit || Obj.name == wallType))//check collision with hitbox
                     {
                         TheRay.setLocation(TheRay.getLocation() - TheRay.Movement * 1.1f);//move ray backwards a lil further than the last hit
                         for (int i = 0; i<11;i++)//increase ray accuracy for a known hit by moving slower to the actual location
