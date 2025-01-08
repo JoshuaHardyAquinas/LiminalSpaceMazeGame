@@ -38,7 +38,8 @@ namespace LiminalSpaceMazeGame
         }
         public void LoadContent(ContentManager Content,bool ex)
         {
-            switch(type)
+            Width = 40;
+            switch (type)
             {
                 case 'M':
                     Texture = Content.Load<Texture2D>(@"216123");
@@ -53,27 +54,20 @@ namespace LiminalSpaceMazeGame
                     {
                         Texture = Content.Load<Texture2D>(@"door_3d");
                     }
-                    Width = 40;
                     break;
                 case 'K':
                     Texture = Content.Load<Texture2D>(@"key_3d");
-                    Width = 40;
                     break;
                 case 'W':
-                    Texture = Content.Load<Texture2D>(@"3dWall1");
-                    Width = 40;
                     break;
                 case 'w':
                     Texture = Content.Load<Texture2D>(@"3dWall2");
-                    Width = 40;
                     break;
                 case 'v':
                     Texture = Content.Load<Texture2D>(@"3dWall3");
-                    Width = 40;
                     break;
                 default:
                     Texture = Content.Load<Texture2D>(@"nullVoidDead");//load wall texture for wall slices
-                    Width = 40;
                     break;
             }
         }
