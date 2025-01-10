@@ -17,6 +17,7 @@ namespace LiminalSpaceMazeGame
         public Rectangle Edge;
         public virtual void update()
         {
+
         }
         public virtual void LoadContent(ContentManager Content)
         {

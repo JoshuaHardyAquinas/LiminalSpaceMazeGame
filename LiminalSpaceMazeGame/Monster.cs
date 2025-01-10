@@ -52,8 +52,7 @@ namespace LiminalSpaceMazeGame
             }
             base.update();
             //creates player edge
-            Vector2 centreDis = theHero.getLocation() - getLocation();
-            double tangent = (double)Math.Sqrt(centreDis.X* centreDis.X + centreDis.Y* centreDis.Y);
+            
             
 
             if (lineOfSight == true)// direct follow movement
@@ -143,6 +142,46 @@ namespace LiminalSpaceMazeGame
                 previous = Direction.none ;
                 return;
             }
+            if (count == 0)
+            {
+                previous = Direction.none;
+                return;
+            }
+            Vector2 centreDis = theHero.getLocation() - getLocation();
+            if (Math.Abs(centreDis.Y) >= Math.Abs(centreDis.Y))
+            {
+                if (getLocation().Y > theHero.getLocation().Y && dir[0] != Direction.none)
+                {
+                    nextCoords[0] += 0;
+                    nextCoords[1] -= 1;
+                    previous = Direction.South;
+                    return;
+                }
+                else if (getLocation().Y < theHero.getLocation().Y && dir[1] != Direction.none)
+                {
+                    nextCoords[0] += 0;
+                    nextCoords[1] += 1;
+                    previous = Direction.North;
+                    return;
+                }
+            }
+            else
+            {
+                if (getLocation().X > theHero.getLocation().X && dir[2] != Direction.none)
+                {
+                    nextCoords[0] += 1;
+                    nextCoords[1] += 0;
+                    previous = Direction.West;
+                    return;
+                }
+                else if (getLocation().Y < theHero.getLocation().Y && dir[3] != Direction.none)
+                {
+                    nextCoords[0] -= 1;
+                    nextCoords[1] += 0;
+                    previous = Direction.East;
+                    return;
+                }
+            }
             while (true)
             {
                 value = rnd.Next(4);
@@ -178,7 +217,6 @@ namespace LiminalSpaceMazeGame
                     nextCoords[1] = 0;
                     break;
             }
-
         }
         public override void LoadContent(ContentManager Content)
         {
