@@ -25,7 +25,6 @@ namespace LiminalSpaceMazeGame
         private int Shield;
         private int ShieldStart;
         private int fOV;
-        private int points;
         bool cooldown;
         public List<char> collected = new List<char>();
 
@@ -48,7 +47,7 @@ namespace LiminalSpaceMazeGame
             shield = MaxShield / 4;
             ShieldStart = MaxShield;
             spawn(new Vector2(60, 60));
-            Movement = new Vector2(0, 0);//no movement for player to begin with
+            Movement = new Vector2(0, 0);//no movment for player to begin with
             changeRotation = 0;
             rotation = 0;//starting rotation
             FOV = fov;
@@ -150,6 +149,9 @@ namespace LiminalSpaceMazeGame
             return stamina;
         }
 
+        public void editStats(char stat, int vaue) { 
+        }
+
         public void gainHealth(int value)
         {
             Health += value;
@@ -158,10 +160,6 @@ namespace LiminalSpaceMazeGame
                 Health = maxHealth;
             }
         }
-        public void editPoints(int value)
-        {
-            points += value;
-        }
 
         public override void spawn(Vector2 loc)
         {
@@ -169,38 +167,13 @@ namespace LiminalSpaceMazeGame
             Health = maxHealth;
         }
 
-        public bool upgrade(char stat,int value, int cost,bool reset)
+        public void upgrade(char stat,int value,bool reset)
         {
             if (reset)
             {
                 maxHealth = startHealth;
-                MaxShield = ShieldStart;
-                staminaMax = staminaStart;
-                return true;//leave early as there is no point staying
+
             }
-            if (points >= cost)
-            {
-                editPoints(-cost);
-            }
-            else
-            {
-                return false;
-            }
-            switch (stat)
-            {
-                case 'H':
-                    maxHealth += value;
-                    break;
-                case 'S':
-                    staminaMax += value;
-                    break;
-                case 's':
-                    MaxShield += value;
-                    break;
-                default:
-                    return false;
-            }
-            return true;
         }
     }
 }
