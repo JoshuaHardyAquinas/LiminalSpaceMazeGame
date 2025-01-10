@@ -19,7 +19,6 @@ namespace LiminalSpaceMazeGame
         private int health;
         public bool lineOfSight = false;
         public int memory = 0;
-        private bool newNode = false;
         private int[] nextCoords = {0,0 };
         int[] currentCoords = { 0,0 };
         int disToGo = 0;
@@ -46,7 +45,7 @@ namespace LiminalSpaceMazeGame
         }
         public void update(Hero theHero, int [,] theMaze)
         {
-            if (dead)
+            if (dead)//dont move update if the monster is dead
             {
                 return;
             }
@@ -111,53 +110,48 @@ namespace LiminalSpaceMazeGame
                 Direction.East,
                 Direction.West
             };
-            
-            if(maze[currentCoords[0], currentCoords[1] - 1] == 0 || maze[currentCoords[0], currentCoords[1] - 1] == 5 || previous == Direction.North)
+            //find all directions that the monster is able to move in
+            if(maze[currentCoords[0], currentCoords[1] - 1] == 0 || previous == Direction.North)
             {
                 dir[0] = Direction.none;
             }
-            if (maze[currentCoords[0], currentCoords[1] + 1] == 0 || maze[currentCoords[0], currentCoords[1] + 1] == 5 || previous == Direction.South)
+            if (maze[currentCoords[0], currentCoords[1] + 1] == 0 || previous == Direction.South)
             {
                 dir[1] = Direction.none;
             }
-            if (maze[currentCoords[0] + 1, currentCoords[1]] == 0 || maze[currentCoords[0] + 1, currentCoords[1]] == 5 || previous == Direction.East)
+            if (maze[currentCoords[0] + 1, currentCoords[1]] == 0 || previous == Direction.East)
             {
                 dir[2] = Direction.none;
             }
-            if (maze[currentCoords[0] - 1, currentCoords[1]] == 0 || maze[currentCoords[0] - 1, currentCoords[1]] == 5|| previous == Direction.West)
+            if (maze[currentCoords[0] - 1, currentCoords[1]] == 0 || previous == Direction.West)
             {
                 dir[3] = Direction.none;
             }
             int value;
             int count = 0;
-            foreach(Direction direction in dir)
+            foreach(Direction direction in dir)//check if any directions are possible
             {
                 if (direction != Direction.none)
                 {
                     count++;
                 }
             }
-            if (count == 0)
+            if (count == 0)//fail back and reset previous direction so the monster can backtrack
             {
                 previous = Direction.none ;
                 return;
             }
-            if (count == 0)
-            {
-                previous = Direction.none;
-                return;
-            }
-            Vector2 centreDis = theHero.getLocation() - getLocation();
+            Vector2 centreDis = theHero.getLocation() - getLocation();//check if the vertical or horizontal distance is greater
             if (Math.Abs(centreDis.Y) >= Math.Abs(centreDis.Y))
             {
-                if (getLocation().Y > theHero.getLocation().Y && dir[0] != Direction.none)
+                if (getLocation().Y > theHero.getLocation().Y && dir[0] != Direction.none)//if the player is lower move up if possible
                 {
                     nextCoords[0] += 0;
                     nextCoords[1] -= 1;
                     previous = Direction.South;
                     return;
                 }
-                else if (getLocation().Y < theHero.getLocation().Y && dir[1] != Direction.none)
+                else if (getLocation().Y < theHero.getLocation().Y && dir[1] != Direction.none)// if player is higher move down
                 {
                     nextCoords[0] += 0;
                     nextCoords[1] += 1;
@@ -167,14 +161,14 @@ namespace LiminalSpaceMazeGame
             }
             else
             {
-                if (getLocation().X > theHero.getLocation().X && dir[2] != Direction.none)
+                if (getLocation().X > theHero.getLocation().X && dir[2] != Direction.none)//east if west
                 {
                     nextCoords[0] += 1;
                     nextCoords[1] += 0;
                     previous = Direction.West;
                     return;
                 }
-                else if (getLocation().Y < theHero.getLocation().Y && dir[3] != Direction.none)
+                else if (getLocation().Y < theHero.getLocation().Y && dir[3] != Direction.none)//west if east
                 {
                     nextCoords[0] -= 1;
                     nextCoords[1] += 0;
@@ -182,7 +176,8 @@ namespace LiminalSpaceMazeGame
                     return;
                 }
             }
-            while (true)
+            // fall back if the above algorithm, comes back with a constant/ equal value
+            while (true)//rng the direction to get out of the error situation
             {
                 value = rnd.Next(4);
                 if (dir[value] != Direction.none)
@@ -190,7 +185,7 @@ namespace LiminalSpaceMazeGame
                     break;
                 }
             }
-            switch (dir[value])
+            switch (dir[value])//send in direction and mark opposite direction as the direction i just came from
             {
                 case Direction.North:
                     nextCoords[0] += 0;
@@ -213,8 +208,9 @@ namespace LiminalSpaceMazeGame
                     previous = Direction.East;
                     break;
                 default:
-                    nextCoords[0] = 0;
-                    nextCoords[1] = 0;
+                    nextCoords[0] += 0;//default out if fails
+                    nextCoords[1] += 0;
+                    previous = Direction.none;
                     break;
             }
         }
@@ -227,13 +223,13 @@ namespace LiminalSpaceMazeGame
             }
             else
             {
-                throw new Exception("ID10T");
+                Texture = Content.Load<Texture2D>(@"NullVoidDead");
             }
         }
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw player including rotation
-            if (dead)
+            if (dead)//do not draw if the monster is dead
             {
                 return;
             }
@@ -241,7 +237,7 @@ namespace LiminalSpaceMazeGame
         }
         public void loseHealth(int toLose)
         {
-            health -= toLose;
+            health -= toLose;//teleport outside the map and disable monster 
             if (health <= 0)
             {
                 dead = true;
