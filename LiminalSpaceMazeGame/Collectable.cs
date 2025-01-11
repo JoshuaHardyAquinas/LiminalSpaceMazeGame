@@ -35,6 +35,10 @@ namespace LiminalSpaceMazeGame
         public virtual void collect(Hero theHero)
         {
             theHero.collected.Add(CollectableType);
+            if (CollectableType == 'C')
+            {
+                theHero.editPoints(50);
+            }
         }
     }
 }
