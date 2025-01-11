@@ -20,6 +20,7 @@ namespace LiminalSpaceMazeGame
         GenerateMaze TheMaze;
         SpriteFont GameFont;
         stateClass startMenu;
+        stateClass ShopMenu;
         stateClass deathMenu;
         UILoadingBar StaminaBar;
         UILoadingBar HealthBar;
@@ -106,6 +107,7 @@ namespace LiminalSpaceMazeGame
             HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y+12f), TheHero.maxHealth, 69, 6);
             ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.ShieldMax, 69, 86);
             startMenu = new stateClass();
+            ShopMenu = new stateClass();
             deathMenu = new stateClass();
 
             stateButtonList.Add(new stateButtons(new Vector2( 85, 465), new Vector2(187, 82), GameState.StartMenu, 'b'));
@@ -138,6 +140,7 @@ namespace LiminalSpaceMazeGame
             HealthBar.LoadContent(Content);
             ShieldBar.LoadContent(Content);
             startMenu.LoadContent(Content, "WelcomeScreen","HelpScreen");
+            startMenu.LoadContent(Content, "", "nullVoidDead");
             deathMenu.LoadContent(Content, "Dead", "nullVoidDead");
         }
 
@@ -395,6 +398,18 @@ namespace LiminalSpaceMazeGame
                             gameObjects.Add(newObj);
                         }
                         rayCast(660, wallType);
+                        foreach (var coll in collectables)
+                        {
+                            if (coll.CollectableType == 'K')
+                            {
+                                ObjInGame newObj = new ObjInGame();
+                                newObj.objectEdge = coll.Edge;
+                                newObj.objectLocation = coll.getLocation();
+                                newObj.name = 'K';
+                                gameObjects.Add(newObj);
+                            }
+                        }
+                        rayCast(400, 'K');
                         foreach (var monster in monsters)
                         {
                             ObjInGame newObj = new ObjInGame();
@@ -413,18 +428,7 @@ namespace LiminalSpaceMazeGame
                             gameObjects.Add(newObj);
                         }
                         rayCast(400, 'E');
-                        foreach (var coll in collectables)
-                        {
-                            if(coll.CollectableType == 'K')
-                            {
-                                ObjInGame newObj = new ObjInGame();
-                                newObj.objectEdge = coll.Edge;
-                                newObj.objectLocation = coll.getLocation();
-                                newObj.name = 'K';
-                                gameObjects.Add(newObj);
-                            }
-                        }
-                        rayCast(400, 'K');
+                        
                         gameObjects.Clear();
                     }
                     if (TheHero.checkHealth() <= 0 || (ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter)))
@@ -615,6 +619,14 @@ namespace LiminalSpaceMazeGame
                             foreach (wall3d wall in walls3d)
                             {
                                 if (wall.type == wallType)
+                                {
+                                    wall.draw(spriteBatch);
+                                }
+                                CURRENT.Add(wall);
+                            }
+                            foreach (wall3d wall in walls3d)
+                            {
+                                if (wall.type != wallType && wall.type != 'M')
                                 {
                                     wall.draw(spriteBatch);
                                 }
