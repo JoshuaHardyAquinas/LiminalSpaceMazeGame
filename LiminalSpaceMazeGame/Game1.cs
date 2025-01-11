@@ -140,7 +140,7 @@ namespace LiminalSpaceMazeGame
             HealthBar.LoadContent(Content);
             ShieldBar.LoadContent(Content);
             startMenu.LoadContent(Content, "WelcomeScreen","HelpScreen");
-            startMenu.LoadContent(Content, "", "nullVoidDead");
+            //startMenu.LoadContent(Content, "", "nullVoidDead");
             deathMenu.LoadContent(Content, "Dead", "nullVoidDead");
         }
 

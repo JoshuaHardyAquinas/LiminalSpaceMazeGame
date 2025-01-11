@@ -37,7 +37,7 @@ namespace LiminalSpaceMazeGame
             theHero.collected.Add(CollectableType);
             if (CollectableType == 'C')
             {
-                theHero.editPoints(50);
+                //theHero.editPoints(50);
             }
         }
     }
