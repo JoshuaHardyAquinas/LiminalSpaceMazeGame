@@ -7,7 +7,7 @@ namespace LiminalSpaceMazeGame
     public class StationaryObject
     {
         public float PI = 3.141592f;//pie for radians/rotation
-        Vector2 Location;
+        private Vector2 Location;
         public Vector2 Movement;
         public double rotation;
         public double changeRotation;
@@ -15,6 +15,9 @@ namespace LiminalSpaceMazeGame
         protected int objWidth;
         protected int objHeight;
         public Rectangle Edge;
+        public StationaryObject()
+        {
+        }
         public virtual void update()
         {
         }

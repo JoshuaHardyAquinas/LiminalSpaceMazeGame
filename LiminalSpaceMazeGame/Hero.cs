@@ -16,6 +16,10 @@ namespace LiminalSpaceMazeGame
 {
     internal class Hero : MovingObject
     {
+        public float sensitivity = 32;
+        public float senseMin = 64;
+        public float senseMax = 1;
+        public int score;
         private int MaxHealth;
         private int startHealth;
         private int staminaMax;
@@ -97,11 +101,11 @@ namespace LiminalSpaceMazeGame
             //for player movment and rotation
             if (ks.IsKeyDown(Keys.A))//rotation using radians
             {
-                changeRotation = - PI / 32f;//used pi/16 for smoother rotation in comparison to a larger value
+                changeRotation = - PI / sensitivity;//used pi/16 for smoother rotation in comparison to a larger value
             }
             if (ks.IsKeyDown(Keys.D))
             {
-                changeRotation = PI / 32f;
+                changeRotation = PI / sensitivity;
             }
             if (ks.IsKeyDown(Keys.S))
             {
@@ -137,6 +141,15 @@ namespace LiminalSpaceMazeGame
         }
         public void loseHealth(int value)
         {
+            if (shield > 0)
+            {
+                shield -= value;
+                if (shield < 0)
+                {
+                    value = Math.Abs(shield);
+                    shield = 0;
+                }
+            }
             Health -= value;
 
         }
@@ -172,6 +185,8 @@ namespace LiminalSpaceMazeGame
             if (reset)
             {
                 maxHealth = startHealth;
+                MaxShield = ShieldStart;
+                staminaMax = staminaStart;
 
             }
         }

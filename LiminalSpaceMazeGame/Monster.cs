@@ -18,24 +18,23 @@ namespace LiminalSpaceMazeGame
         private int memoryStrength;
         private int health;
         public bool lineOfSight = false;
-        public int memory = 0;
-        private bool newNode = false;
-        private bool blockoff = false;
-        private int[] nextCoords = {0,0 };
-        int[] currentCoords = { 0,0 };
-        int disToGo = 0;
+        public float memory = 0;
+        private bool blockoff = true;
+        private int[] nextCoords = { 0, 0 };
+        int[] currentCoords = { 0, 0 };
+        float disToGo = 40;
         private bool dead = false;
         Direction previous = Direction.none;
 
         public new int Damage { get => damage; set => damage = value; }
 
-        public Monster(Vector2 startingLoc, int text, int MaxDamage)
+        public Monster(Vector2 startingLoc, int text, int multistat)
         {
-            
             Random random = new Random();
-            damage = random.Next(4,MaxDamage+1);
-            memoryStrength = 5 * random.Next(1,MaxDamage);
-            health = random.Next(5,MaxDamage+10);
+            damage = 2 * random.Next((int)Math.Sqrt(multistat),multistat);
+            memoryStrength = 5 * multistat;
+            health = random.Next((int)Math.Sqrt(multistat), (int)(multistat/2)+1);
+            Speed = (float)Math.Sqrt(Math.Sqrt(multistat));
             spawn(startingLoc);
             textnum = 0;
             rotation = 0f;
@@ -70,7 +69,7 @@ namespace LiminalSpaceMazeGame
                     }
                 }
                 follow();
-                memory = memoryStrength;
+                memory = memoryStrength/Speed;
             }
             else if (memory > 0)
             {
@@ -90,7 +89,7 @@ namespace LiminalSpaceMazeGame
                 currentCoords[1] = nextCoords[1];
                 memory = 0;
             }
-            setLocation(getLocation() - Movement);
+            setLocation(getLocation() - (Movement*new Vector2(Speed,Speed)));
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
             //Movement.Y = -1* (float)Math.Cos(rotation);
@@ -98,9 +97,8 @@ namespace LiminalSpaceMazeGame
         }
         private void follow()
         {
-            int speed = 1;
-            Movement.X = speed * 1.1f * (float)Math.Sin(rotation);// --//--
-            Movement.Y = -speed * 1.1f * (float)Math.Cos(rotation);
+            Movement.X = 1.1f * (float)Math.Sin(rotation);// --//--
+            Movement.Y = -1.1f * (float)Math.Cos(rotation);
         }
         private void move(int[,] maze, Hero theHero)
         {
@@ -116,7 +114,7 @@ namespace LiminalSpaceMazeGame
             currentCoords[0] = nextCoords[0];
             currentCoords[1] = nextCoords[1];
             setLocation(new Vector2(currentCoords[0] * 40, currentCoords[1] * 40));
-            disToGo = 40;
+            disToGo = 40f/Speed;
             Direction[] dir = {
                 Direction.North,
                 Direction.South,
@@ -149,7 +147,7 @@ namespace LiminalSpaceMazeGame
                     count++;
                 }
             }
-            if (count >1)
+            if (count >1)//method to block off dead ends to prevent looping
             {
                 blockoff = false;
             }
@@ -169,14 +167,12 @@ namespace LiminalSpaceMazeGame
             {
                 if (getLocation().Y >= theHero.getLocation().Y && dir[0] != Direction.none)//if the player is lower move up if possible
                 {
-                    nextCoords[0] += 0;
                     nextCoords[1] -= 1;
                     previous = Direction.South;
                     return;
                 }
                 else if (getLocation().Y < theHero.getLocation().Y && dir[1] != Direction.none)// if player is higher move down
                 {
-                    nextCoords[0] += 0;
                     nextCoords[1] += 1;
                     previous = Direction.North;
                     return;
@@ -187,14 +183,12 @@ namespace LiminalSpaceMazeGame
                 if (getLocation().X < theHero.getLocation().X && dir[2] != Direction.none)//east if west
                 {
                     nextCoords[0] += 1;
-                    nextCoords[1] += 0;
                     previous = Direction.West;
                     return;
                 }
                 else if (getLocation().X > theHero.getLocation().X && dir[3] != Direction.none)//west if east
                 {
                     nextCoords[0] -= 1;
-                    nextCoords[1] += 0;
                     previous = Direction.East;
                     return;
                 }
@@ -211,28 +205,22 @@ namespace LiminalSpaceMazeGame
             switch (dir[value])//send in direction and mark opposite direction as the direction i just came from
             {
                 case Direction.North:
-                    nextCoords[0] += 0;
                     nextCoords[1] -= 1;
                     previous = Direction.South;
                     break;
                 case Direction.South:
-                    nextCoords[0] += 0;
                     nextCoords[1] += 1;
                     previous = Direction.North;
                     break;
                 case Direction.East:
                     nextCoords[0] += 1;
-                    nextCoords[1] += 0;
                     previous = Direction.West;
                     break;
                 case Direction.West:
                     nextCoords[0] -= 1;
-                    nextCoords[1] += 0;
                     previous = Direction.East;
                     break;
                 default:
-                    nextCoords[0] += 0;//default out if fails
-                    nextCoords[1] += 0;
                     previous = Direction.none;
                     break;
             }

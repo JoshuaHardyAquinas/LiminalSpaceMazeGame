@@ -9,9 +9,12 @@ namespace LiminalSpaceMazeGame
 {
     public class UI:StationaryObject
     {
-        public UI()
+        private string TN;
+        public bool drawUI = true;
+        public UI(Vector2 loc,string textName)
         {
-            spawn(new Vector2(0, 670));
+            TN = textName;
+            spawn(loc);
         }
         public override void update()
         {
@@ -20,11 +23,15 @@ namespace LiminalSpaceMazeGame
         public override void LoadContent(ContentManager Content)
         {
             //load player texture
-            Texture = Content.Load<Texture2D>(@"ui");
+            
+            Texture = Content.Load<Texture2D>(@TN);
         }
         public override void draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture,getLocation(),Color.AliceBlue);
+            if (drawUI)
+            {
+                spriteBatch.Draw(Texture, getLocation(), Color.AliceBlue);
+            }
         }
 
     }

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Threading;
+using System.IO;
+using SharpDX.Direct3D9;
 
 
 namespace LiminalSpaceMazeGame
@@ -17,14 +19,20 @@ namespace LiminalSpaceMazeGame
         Hero TheHero;
         Ray TheRay;
         UI TheUI;
+        UI crosshair;
+        UI keyUI;
         GenerateMaze TheMaze;
         SpriteFont GameFont;
         stateClass startMenu;
         stateClass ShopMenu;
+        stateClass SettingsMenu;
+        stateClass leaderboardMenu;
         stateClass deathMenu;
         UILoadingBar StaminaBar;
         UILoadingBar HealthBar;
         UILoadingBar ShieldBar;
+
+        UILoadingBar sensitivityBar;
 
         public int levelNumber = 0;
         public bool levelGen = false;
@@ -50,11 +58,15 @@ namespace LiminalSpaceMazeGame
         int mazeHeight = 17;
         int mazeWidth = 17;
 
+        int senseBar = 33;
         bool toExit = false;
 
         char wallType = ' ';
         char[] availableWalls = { 'W', 'w', 'v' };
         Random rand = new Random();
+
+        string[] playerLeaderboard = new string[3];
+        string[] playerLeaderboardScore = new string[3];
 
         MouseState mouseState = Mouse.GetState();
         MouseState mouseState2 = Mouse.GetState();
@@ -80,7 +92,7 @@ namespace LiminalSpaceMazeGame
             D3
         }
         public GameState currentState = GameState.StartMenu;
-        Dimension CurrentDimension = Dimension.D2;
+        Dimension CurrentDimension = Dimension.D3;
 
         Vector2 gameResolution = new Vector2(720, 720);
         public Game1()
@@ -99,20 +111,25 @@ namespace LiminalSpaceMazeGame
         protected override void Initialize()
         {
             //create hero and maze object
-            TheHero = new Hero(90,1200,1000);
+            TheHero = new Hero(90,1200,100);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
-            TheUI = new UI();
-            StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 590f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 120, 20);
-            HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y+12f), TheHero.maxHealth, 69, 6);
-            ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.ShieldMax, 69, 86);
+            TheUI = new UI(new Vector2(0, 670), "ui");
+            StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 590f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 120, 20,Color.Green);
+            HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y+12f), TheHero.maxHealth, 69, 6,Color.Red);
+            ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.ShieldMax, 69, 6,Color.Blue);
+            sensitivityBar = new UILoadingBar(new Vector2(185, 170), 64, 350, 101,Color.OrangeRed);
             startMenu = new stateClass();
             ShopMenu = new stateClass();
+            SettingsMenu = new stateClass();
+            leaderboardMenu = new stateClass();
             deathMenu = new stateClass();
 
+            crosshair = new UI(new Vector2(340,340),"crosshair");
+
             stateButtonList.Add(new stateButtons(new Vector2( 85, 465), new Vector2(187, 82), GameState.StartMenu, 'b'));
-            stateButtonList.Add(new stateButtons(new Vector2( 85, 580), new Vector2(187, 82), GameState.StartMenu, 'l'));
-            stateButtonList.Add(new stateButtons(new Vector2(312, 465), new Vector2(187, 82), GameState.StartMenu, 's'));
+            stateButtonList.Add(new stateButtons(new Vector2( 85, 580), new Vector2(187, 82), GameState.StartMenu, 's'));
+            stateButtonList.Add(new stateButtons(new Vector2(312, 465), new Vector2(187, 82), GameState.StartMenu, 'l'));
             stateButtonList.Add(new stateButtons(new Vector2(312, 580), new Vector2(187, 82), GameState.StartMenu, 'h'));
             
             stateButtonList.Add(new stateButtons(new Vector2(283, 560), new Vector2(187, 82), GameState.Help, 'H'));
@@ -126,7 +143,18 @@ namespace LiminalSpaceMazeGame
 
             newbut.LoadContent(Content, "exit");
             stateButtonList.Add(newbut);*/ //next button         aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            stateButtonList.Add(new stateButtons(new Vector2(528, 246), new Vector2(156, 64), GameState.Shop, 'S'));
+            stateButtonList.Add(new stateButtons(new Vector2(528, 346), new Vector2(156, 64), GameState.Shop, 'H'));
+            stateButtonList.Add(new stateButtons(new Vector2(528, 456), new Vector2(156, 64), GameState.Shop, 's'));
+            stateButtonList.Add(new stateButtons(new Vector2(545, 570), new Vector2(175, 150), GameState.Shop, 'E'));
+
+            stateButtonList.Add(new stateButtons(new Vector2(70, 175), new Vector2(100, 100), GameState.Settings, 'S'));
+            stateButtonList.Add(new stateButtons(new Vector2(545, 175), new Vector2(100, 100), GameState.Settings, 's'));
+            stateButtonList.Add(new stateButtons(new Vector2(250, 598), new Vector2(220, 100), GameState.Settings, 'E'));
+
+            stateButtonList.Add(new stateButtons(new Vector2(250, 598), new Vector2(220, 100), GameState.Leaderboard, 'E'));
             base.Initialize();
+
         }
 
         protected override void LoadContent()
@@ -136,12 +164,16 @@ namespace LiminalSpaceMazeGame
             TheRay.LoadContent(Content);
             TheUI.LoadContent(Content);
             GameFont = Content.Load<SpriteFont>(@"File");
-            StaminaBar.LoadContent(Content);
-            HealthBar.LoadContent(Content);
-            ShieldBar.LoadContent(Content);
+            StaminaBar.LoadContent(Content,GraphicsDevice);
+            HealthBar.LoadContent(Content, GraphicsDevice);
+            ShieldBar.LoadContent(Content, GraphicsDevice);
+            sensitivityBar.LoadContent(Content, GraphicsDevice);
             startMenu.LoadContent(Content, "WelcomeScreen","HelpScreen");
-            //startMenu.LoadContent(Content, "", "nullVoidDead");
+            ShopMenu.LoadContent(Content, "The Shop", "nullVoidDead");
+            SettingsMenu.LoadContent(Content, "Settings", "nullVoidDead");
+            leaderboardMenu.LoadContent(Content, "Leaderboard", "nullVoidDead");
             deathMenu.LoadContent(Content, "Dead", "nullVoidDead");
+            crosshair.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -164,6 +196,21 @@ namespace LiminalSpaceMazeGame
                                 case 'h':
                                     currentState = GameState.Help;
                                     startMenu.displayFg = true;
+                                    break;
+                                case 'l':
+                                    currentState = GameState.Leaderboard;
+                                    StreamReader sr = new StreamReader("playerLeaderboard.txt");
+                                    playerLeaderboard[0] = sr.ReadLine();
+                                    playerLeaderboard[1] = sr.ReadLine();
+                                    playerLeaderboard[2] = sr.ReadLine();
+                                    playerLeaderboardScore[0] = sr.ReadLine();
+                                    playerLeaderboardScore[1] = sr.ReadLine();
+                                    playerLeaderboardScore[2] = sr.ReadLine();
+                                    sr.Close();
+
+                                    break;
+                                case 's':
+                                    currentState = GameState.Settings;
                                     break;
                             }
                             break;
@@ -190,9 +237,64 @@ namespace LiminalSpaceMazeGame
                         }
                     }
                     break;
+                case GameState.Settings:
+                    sensitivityBar.update(senseBar);
+                    foreach (stateButtons button in stateButtonList)
+                    {
+                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed))
+                        {
+                            switch (button.buttonAction)
+                            {
+                                case 'E':
+                                    if(mouseState2.LeftButton == ButtonState.Released)
+                                    {
+                                        currentState = GameState.StartMenu;
+                                    }
+                                    break;
+                                case 's':
+                                    if (TheHero.sensitivity > TheHero.senseMax)
+                                    {
+                                        senseBar++;
+                                        TheHero.sensitivity -= 1;
+                                    }
+                                    break;
+                                case 'S':
+                                    if (TheHero.sensitivity < TheHero.senseMin)
+                                    {
+                                        senseBar--;
+                                        TheHero.sensitivity += 1;
+                                    }
+                                    break;
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                case GameState.Leaderboard:
+                    foreach (stateButtons button in stateButtonList)
+                    {
+                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released)&& button.buttonAction == 'E')
+                        {
+                            currentState = GameState.StartMenu;
+                        }
+                    }
+                    break;
                 case GameState.Shop:
                     toExit = false;
                     TheHero.rotation = 0f;
+                    foreach (stateButtons button in stateButtonList)
+                    {
+                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released))
+                        {
+                            switch (button.buttonAction)
+                            {
+                                case 'E':
+                                    currentState = GameState.InGame;
+                                    break;
+                            }
+                            break;
+                        }
+                    }
                     if (!levelGen)//generate 1 new level and wait
                     {
                         int vars = rand.Next(0,availableWalls.Length);
@@ -213,7 +315,16 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.InGame:// run game code
                     // update all entities
-                    TheHero.update();
+                    if (ks1.IsKeyDown(Keys.NumPad2))
+                    {
+                        CurrentDimension = Dimension.D2;
+                    }
+                    else
+                    {
+                        CurrentDimension = Dimension.D3;
+                        TheHero.update();
+                    }
+                    ks2 = ks1;
                     StaminaBar.update(TheHero.Stamina);
                     HealthBar.update(TheHero.checkHealth());
                     ShieldBar.update(TheHero.shield);
@@ -267,13 +378,13 @@ namespace LiminalSpaceMazeGame
                         newObj.objectLocation = monster.getLocation();
                         newObj.name = 'M';
                         gameObjects.Add(newObj);
-                        monster.lineOfSight = shotsFired(monster.rotation+3.14f, TheHero.getLocation());
-                        bool shootable = shotsFired(TheHero.rotation, TheHero.getLocation());
+                        monster.lineOfSight = shotsFired(monster.rotation+3.14f, TheHero.getLocation(),400);
+                        bool shootable = shotsFired(TheHero.rotation, TheHero.getLocation(),200);
                         
                         if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released) && shootable)
                         {
-
                             monster.loseHealth(TheHero.Damage);
+                            break;
                         }
                     }
                     gameObjects.Clear();
@@ -465,15 +576,6 @@ namespace LiminalSpaceMazeGame
                 default:
                     break;
             }
-            if (ks1.IsKeyDown(Keys.NumPad1) && ks2.IsKeyUp(Keys.NumPad1))
-            {
-                CurrentDimension = Dimension.D2;
-            }
-            if (ks1.IsKeyDown(Keys.NumPad2) && ks2.IsKeyUp(Keys.NumPad2))
-            {
-                CurrentDimension = Dimension.D3;
-            }
-            ks2 = ks1;
             mouseState2 = mouseState;
 
             base.Update(gameTime);
@@ -540,7 +642,7 @@ namespace LiminalSpaceMazeGame
                             }
                             else if (monsterCount == 0 || (rnd.Next(0, 4) == 1 && monsterCount < monsterMax))//ensures 1 monster after 1 exit
                             {
-                                Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, 5 * (int)levelNumber);//spawn monster at end of corridor
+                                Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, levelNumber*levelNumber);//spawn monster at end of corridor
                                 newMonster.LoadContent(Content);
                                 monsters.Add(newMonster);
                                 monsterCount++;
@@ -579,13 +681,22 @@ namespace LiminalSpaceMazeGame
                 case GameState.Shop:
                     GraphicsDevice.Clear(Color.Peru);
                     this.IsMouseVisible = true;
-                    spriteBatch.DrawString(GameFont, "shop", new Vector2(10, 10), Color.Black, 0f, new Vector2(0, 0), 1.5f, SpriteEffects.None, 0f);
-                    spriteBatch.DrawString(GameFont, "example item 1", new Vector2(10, 40), Color.Black, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
-                    spriteBatch.DrawString(GameFont, "example item 2", new Vector2(10, 60), Color.Black, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
-                    spriteBatch.DrawString(GameFont, "upgrade health", new Vector2(10, 80), Color.Black, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
-                    spriteBatch.DrawString(GameFont, "Level: " + levelNumber, new Vector2(360, 360), Color.Black, 0f, new Vector2(0, 0), 2.5f, SpriteEffects.None, 0f);
+                    ShopMenu.draw(spriteBatch);
                     break;
+                case GameState.Settings:
+                    this.IsMouseVisible = true;
+                    SettingsMenu.draw(spriteBatch);
+                    sensitivityBar.draw(spriteBatch);
+                    break;
+                case GameState.Leaderboard:
+                    this.IsMouseVisible = true;
+                    leaderboardMenu.draw(spriteBatch);
+                    spriteBatch.DrawString(GameFont, playerLeaderboard[0], new Vector2(0, 0), Color.White);
+                    spriteBatch.DrawString(GameFont, playerLeaderboard[1], new Vector2(0, 0), Color.White);
+                    spriteBatch.DrawString(GameFont, playerLeaderboard[2], new Vector2(0, 0), Color.White);
 
+
+                    break;
                 case GameState.InGame:
                     this.IsMouseVisible = false;
                     GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -649,6 +760,7 @@ namespace LiminalSpaceMazeGame
                                 }
                             }
                             TheUI.draw(spriteBatch);
+                            crosshair.draw(spriteBatch);
                             StaminaBar.draw(spriteBatch);
                             HealthBar.draw(spriteBatch);
                             ShieldBar.draw(spriteBatch);
@@ -660,6 +772,21 @@ namespace LiminalSpaceMazeGame
                     GraphicsDevice.Clear(Color.Red);
                     this.IsMouseVisible = true;
                     deathMenu.draw(spriteBatch);
+                    StreamWriter sw = new StreamWriter(@"playerLeaderboard.txt", false);
+                    for (int i = 0; i < playerLeaderboard.Length; i++)
+                    {
+                        if (TheHero.score > int.Parse(playerLeaderboardScore[i]))
+                        {
+                            for (int j = i+1; j < playerLeaderboard.Length; j++)
+                            {
+                                playerLeaderboard[j] = playerLeaderboard[j-1];
+                                playerLeaderboardScore[j] = playerLeaderboardScore[j-1];
+                            }
+                            break;
+                        }
+                        
+                    }
+                    sw.Close();
                     break;
 
                 default:
@@ -686,7 +813,7 @@ namespace LiminalSpaceMazeGame
                 }
             }
         }
-        public bool shotsFired(double rotation, Vector2 loc)
+        public bool shotsFired(double rotation, Vector2 loc,int range)
         {
             float speed = 1f;
             TheRay.setLocation(loc);

@@ -14,14 +14,14 @@ namespace LiminalSpaceMazeGame
     abstract class MovingObject : StationaryObject
     {
 
-        private int speed;
+        private float speed;
         private int health;
         private int sprint;
         private int attack;
         private int damage;
 
 
-        protected int Speed { get => speed; set => speed = value; }
+        protected float Speed { get => speed; set => speed = value; }
         protected int Health { get => health; set => health = value; }
         public int Sprint { get => sprint; set => sprint = value; }
         public int Attack { get => attack; set => attack = value; }
