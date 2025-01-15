@@ -110,6 +110,13 @@ namespace LiminalSpaceMazeGame
         }
         protected override void Initialize()
         {
+            StreamWriter sw = new StreamWriter(@"playerLeaderboard.txt",true);//creates player file if its the 1st boot
+            sw.WriteLine("null, 000");
+            sw.WriteLine("void, 000");
+            sw.WriteLine("dead, 000");
+            sw.Close();
+
+
             //create hero and maze object
             TheHero = new Hero(90,1200,100);
             TheMaze = new GenerateMaze();
@@ -691,9 +698,9 @@ namespace LiminalSpaceMazeGame
                 case GameState.Leaderboard:
                     this.IsMouseVisible = true;
                     leaderboardMenu.draw(spriteBatch);
-                    spriteBatch.DrawString(GameFont, playerLeaderboard[0], new Vector2(0, 0), Color.White);
-                    spriteBatch.DrawString(GameFont, playerLeaderboard[1], new Vector2(0, 0), Color.White);
-                    spriteBatch.DrawString(GameFont, playerLeaderboard[2], new Vector2(0, 0), Color.White);
+                    spriteBatch.DrawString(GameFont, playerLeaderboard[0], new Vector2(310, 205), Color.White, 0f,new Vector2(1,1),1.5f,SpriteEffects.None,1);
+                    spriteBatch.DrawString(GameFont, playerLeaderboard[1], new Vector2(310, 320), Color.White, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, playerLeaderboard[2], new Vector2(310, 435), Color.White, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
 
 
                     break;
@@ -772,7 +779,7 @@ namespace LiminalSpaceMazeGame
                     GraphicsDevice.Clear(Color.Red);
                     this.IsMouseVisible = true;
                     deathMenu.draw(spriteBatch);
-                    StreamWriter sw = new StreamWriter(@"playerLeaderboard.txt", false);
+                    
                     for (int i = 0; i < playerLeaderboard.Length; i++)
                     {
                         if (TheHero.score > int.Parse(playerLeaderboardScore[i]))
@@ -786,7 +793,7 @@ namespace LiminalSpaceMazeGame
                         }
                         
                     }
-                    sw.Close();
+                    //sw.Close();
                     break;
 
                 default:
