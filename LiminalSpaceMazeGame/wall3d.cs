@@ -58,6 +58,9 @@ namespace LiminalSpaceMazeGame
                 case 'K':
                     Texture = Content.Load<Texture2D>(@"key_3d");
                     break;
+                case 'C':
+                    Texture = Content.Load<Texture2D>(@"Coin_3d");
+                    break;
                 case 'W':
                     Texture = Content.Load<Texture2D>(@"3dWall1");
                     break;

@@ -11,6 +11,7 @@ using System.Windows.Forms.VisualStyles;
 using SharpDX.Direct3D9;
 using System.Reflection.Metadata.Ecma335;
 using SharpDX.XAudio2;
+using SharpDX.Direct2D1.Effects;
 
 namespace LiminalSpaceMazeGame
 {
@@ -29,6 +30,7 @@ namespace LiminalSpaceMazeGame
         private int Shield;
         private int ShieldStart;
         private int fOV;
+        public int points;
         bool cooldown;
         public List<char> collected = new List<char>();
 
@@ -57,6 +59,7 @@ namespace LiminalSpaceMazeGame
             FOV = fov;
             stamina = staminaMax/2;
             cooldown = false;
+            
             
         }
         public override void update()

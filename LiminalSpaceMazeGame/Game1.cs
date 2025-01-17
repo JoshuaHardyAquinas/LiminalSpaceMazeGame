@@ -44,7 +44,7 @@ namespace LiminalSpaceMazeGame
         List<ObjInGame> gameObjects = new List<ObjInGame>();
 
         List<wall3d> walls3d = new List<wall3d>();
-        List<Key> collectables = new List<Key>();
+        List<Collectable> collectables = new List<Collectable>();
 
         public GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
@@ -528,6 +528,18 @@ namespace LiminalSpaceMazeGame
                             }
                         }
                         rayCast(400, 'K');
+                        foreach (var coll in collectables)
+                        {
+                            if (coll.CollectableType == 'C')
+                            {
+                                ObjInGame newObj = new ObjInGame();
+                                newObj.objectEdge = coll.Edge;
+                                newObj.objectLocation = coll.getLocation();
+                                newObj.name = 'C';
+                                gameObjects.Add(newObj);
+                            }
+                        }
+                        rayCast(400, 'C');
                         foreach (var monster in monsters)
                         {
                             ObjInGame newObj = new ObjInGame();
@@ -618,6 +630,8 @@ namespace LiminalSpaceMazeGame
             int monsterCount = 0;
             int exitCount = 0;
             int keyCount = 0;
+            int coincount = 0;
+            int coinMax = levelNumber+1/2;
             for (int i = 0; i < mazeWidth; i++)
             {
                 for (int j = 0; j < mazeHeight; j++)
@@ -636,6 +650,14 @@ namespace LiminalSpaceMazeGame
                                 newKey.LoadContent(Content);
                                 collectables.Add(newKey);
                                 keyCount++;
+                                break;// break so nothing else can spawn on that tile
+                            }
+                            if (rnd.Next(0, 32 - i - j) > 5 && coincount < coinMax)//alg to define locations of coins, do not need to guarantee a key
+                            {
+                                CoinItem coin = new CoinItem(new Vector2(i * 40, j * 40), 'C');
+                                coin.LoadContent(Content);
+                                collectables.Add(coin);
+                                coincount++;
                             }
                             break;
                         case 3:
@@ -660,7 +682,7 @@ namespace LiminalSpaceMazeGame
                     }
                 }
             }
-            if (keyCount == 0)//garuntee a key
+            if (keyCount == 0)//guarantee 1 key
             {
                 Key newKey = new Key(new Vector2(40,120), 'K');
                 newKey.LoadContent(Content);
@@ -766,6 +788,7 @@ namespace LiminalSpaceMazeGame
                                     }
                                 }
                             }
+                            spriteBatch.DrawString(GameFont,  (TheHero.points).ToString(), new Vector2(0, 0), Color.Black);
                             TheUI.draw(spriteBatch);
                             crosshair.draw(spriteBatch);
                             StaminaBar.draw(spriteBatch);
