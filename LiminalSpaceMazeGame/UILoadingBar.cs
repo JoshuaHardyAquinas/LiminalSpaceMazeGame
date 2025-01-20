@@ -18,6 +18,7 @@ namespace LiminalSpaceMazeGame
         private int Height;
         Color barcolour;
         private Rectangle rectangle;
+        public bool display = true;
 
         public UILoadingBar(Vector2 startingLocation, int maxV, int maxL, int height,Color colour)
         {
@@ -29,8 +30,13 @@ namespace LiminalSpaceMazeGame
         }
         public void update(int current)
         {
-            currentValue = (current*maxLength)/maxValue;
+            currentValue = (current * maxLength) / maxValue;
             rectangle = new Rectangle((int)getLocation().X, (int)getLocation().Y, currentValue, Height);
+        }
+        public void update(int current,int newmax)
+        {
+            maxValue = newmax;
+            update(current);
         }
         public void LoadContent(ContentManager Content,GraphicsDevice device)
         {
@@ -39,8 +45,10 @@ namespace LiminalSpaceMazeGame
         }
         public override void draw(SpriteBatch spriteBatch)
         {
-            
-            spriteBatch.Draw(Texture, rectangle, new Rectangle(0,0,100,50), Color.White);
+            if (display)
+            {
+                spriteBatch.Draw(Texture, rectangle, new Rectangle(0, 0, 100, 50), Color.White);
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ namespace LiminalSpaceMazeGame
         private int damage;
         private int memoryStrength;
         private int health;
+        private int maxHealth;
         public bool lineOfSight = false;
         public float memory = 0;
         private bool blockoff = true;
@@ -33,7 +34,8 @@ namespace LiminalSpaceMazeGame
             Random random = new Random();
             damage = 2 * random.Next((int)Math.Sqrt(multistat),multistat);
             memoryStrength = 5 * multistat;
-            health = random.Next((int)Math.Sqrt(multistat), (int)(multistat/2)+1);
+            health = random.Next((int)Math.Sqrt(multistat), (multistat/2)+1);
+            maxHealth = health;
             Speed = (float)Math.Sqrt(Math.Sqrt(multistat));
             spawn(startingLoc);
             textnum = 0;
@@ -255,6 +257,14 @@ namespace LiminalSpaceMazeGame
                 dead = true;
                 setLocation(new Vector2(-40, -40));
             }
+        }
+        public int gethealth()
+        {
+            return health;
+        }
+        public int gethealthMax()
+        {
+            return maxHealth;
         }
         protected enum Direction
         {
