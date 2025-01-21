@@ -21,9 +21,11 @@ namespace LiminalSpaceMazeGame
         public Rectangle rectangle;
         public char type;
         private Vector2 centreDistance;
+        public double distanceFromHero;
         public wall3d(Vector2 displacement, int slice, Vector2 gameRes, Vector2 centreDis, char objHit)
         {
-            double wallHieght = 8192 / Math.Sqrt(displacement.Y * displacement.Y + displacement.X * displacement.X); //reciprocal function to convert distance of the wall from the player to teh wall height
+            distanceFromHero = Math.Sqrt(displacement.Y * displacement.Y + displacement.X * displacement.X);
+            double wallHieght = 8192 / distanceFromHero; //reciprocal function to convert distance of the wall from the player to teh wall height
             
             centreDistance = centreDis;
             

@@ -322,21 +322,20 @@ namespace LiminalSpaceMazeGame
                             break;
                         }
                     }
+                    TheHero.collected.Clear();
+                    break;
+                case GameState.level:
                     if (!levelGen)//generate 1 new level and wait
                     {
-                        int vars = rand.Next(0,availableWalls.Length);
+                        int vars = rand.Next(0, availableWalls.Length);
                         wallType = availableWalls[vars];
                         levelNumber++;
                         maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                         maze[1, 1] = 1;
                         createEntities();
                         TheHero.spawn(new Vector2(40, 40));//put the hero back at its spawn location
-                        levelGen = true; 
+                        levelGen = true;
                     }
-                    TheHero.collected.Clear();
-
-                    break;
-                case GameState.level:
                     countToChange += 2;
                     if (countToChange > 720)
                     {
@@ -413,10 +412,11 @@ namespace LiminalSpaceMazeGame
                         gameObjects.Add(newObj);
                         monster.lineOfSight = shotsFired(monster.rotation+3.14f, TheHero.getLocation(),400);
                         bool shootable = shotsFired(TheHero.rotation, TheHero.getLocation(),200);
+                        MonsterHealthBar.update(monster.gethealth(), monster.gethealthMax());
+                        MonsterHealthBar.display = true;
                         if (shootable)
                         {
-                            MonsterHealthBar.update(monster.gethealth(), monster.gethealthMax());
-                            MonsterHealthBar.display = true;
+                            
                             if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released))
                             {
                                 monster.loseHealth(TheHero.Damage);
@@ -823,6 +823,18 @@ namespace LiminalSpaceMazeGame
                                 }
                                 CURRENT.Add(wall);
                             }
+                            for (int i = 0; i < walls3d.Count - 1; i++)
+                            {
+                                for (int j = 0; j < walls3d.Count - i-1; j++)
+                                {
+                                    if (walls3d[j].distanceFromHero < walls3d[j + 1].distanceFromHero)
+                                    {
+                                        wall3d temp = walls3d[j];
+                                        walls3d[j] = walls3d[j + 1];
+                                        walls3d[j + 1] = temp;
+                                    }
+                                }
+                            }
                             foreach (wall3d wall in walls3d)
                             {
                                 if (wall.type != wallType && wall.type != 'E')
@@ -831,6 +843,7 @@ namespace LiminalSpaceMazeGame
                                 }
                                 CURRENT.Add(wall);
                             }
+                            
                             foreach (wall3d wall in walls3d)
                             {
                                 if (wall.type != wallType && wall.type != 'E')
