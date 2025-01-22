@@ -9,6 +9,7 @@ using System.Threading;
 using System.IO;
 using SharpDX.Direct3D9;
 using Microsoft.Xna.Framework.Audio;
+using System.Xml.Linq;
 
 
 namespace LiminalSpaceMazeGame
@@ -69,9 +70,7 @@ namespace LiminalSpaceMazeGame
         char wallType = ' ';
         char[] availableWalls = { 'W', 'w', 'v' };
         Random rand = new Random();
-
-        string[] playerLeaderboard = new string[3];
-        string[] playerLeaderboardScore = new string[3];
+        List<LeaderboardInput> Playerleaderboards = new List<LeaderboardInput>();
 
         int monsterHealth = 1;
 
@@ -110,7 +109,7 @@ namespace LiminalSpaceMazeGame
             this.IsMouseVisible = true;
             _graphics = new GraphicsDeviceManager(this);
             //change screen size
-            
+
             _graphics.PreferredBackBufferWidth = (int)gameResolution.X;
             _graphics.PreferredBackBufferHeight = (int)gameResolution.Y;
             _graphics.ApplyChanges();
@@ -118,7 +117,7 @@ namespace LiminalSpaceMazeGame
         }
         protected override void Initialize()
         {
-            StreamWriter sw = new StreamWriter(@"playerLeaderboard.txt",true);//creates player file if its the 1st boot
+            StreamWriter sw = new StreamWriter(@"playerLeaderboard.txt", true);//creates player file if its the 1st boot
             sw.WriteLine("null, 000");
             sw.WriteLine("void, 000");
             sw.WriteLine("dead, 000");
@@ -126,31 +125,31 @@ namespace LiminalSpaceMazeGame
 
 
             //create hero and maze object
-            TheHero = new Hero(90,1200,100);
+            TheHero = new Hero(90, 1200, 100);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
             TheUI = new UI(new Vector2(0, 670), "ui");
             crosshair = new UI(new Vector2(340, 340), "crosshair");
             keyUI = new UI(new Vector2(TheUI.getLocation().X + 542f, TheUI.getLocation().Y + 9f), "key");
             levelDisplay = new UI(new Vector2(0, -720), "Level screen");
-            StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 590f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 120, 20,Color.Green);
-            HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y+12f), TheHero.maxHealth, 69, 6,Color.Red);
-            ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.ShieldMax, 69, 6,Color.Blue);
+            StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 590f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 120, 20, Color.Green);
+            HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 12f), TheHero.maxHealth, 69, 6, Color.Red);
+            ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.ShieldMax, 69, 6, Color.Blue);
             MonsterHealthBar = new UILoadingBar(new Vector2(crosshair.getLocation().X, crosshair.getLocation().Y + 25f), monsterHealth, 20, 3, Color.Red);
-            sensitivityBar = new UILoadingBar(new Vector2(185, 170), 64, 350, 101,Color.OrangeRed);
+            sensitivityBar = new UILoadingBar(new Vector2(185, 170), 64, 350, 101, Color.OrangeRed);
             startMenu = new stateClass();
             ShopMenu = new stateClass();
             SettingsMenu = new stateClass();
             leaderboardMenu = new stateClass();
             deathMenu = new stateClass();
 
-            
 
-            stateButtonList.Add(new stateButtons(new Vector2( 85, 465), new Vector2(187, 82), GameState.StartMenu, 'b'));
-            stateButtonList.Add(new stateButtons(new Vector2( 85, 580), new Vector2(187, 82), GameState.StartMenu, 's'));
+
+            stateButtonList.Add(new stateButtons(new Vector2(85, 465), new Vector2(187, 82), GameState.StartMenu, 'b'));
+            stateButtonList.Add(new stateButtons(new Vector2(85, 580), new Vector2(187, 82), GameState.StartMenu, 's'));
             stateButtonList.Add(new stateButtons(new Vector2(312, 465), new Vector2(187, 82), GameState.StartMenu, 'l'));
             stateButtonList.Add(new stateButtons(new Vector2(312, 580), new Vector2(187, 82), GameState.StartMenu, 'h'));
-            
+
             stateButtonList.Add(new stateButtons(new Vector2(283, 560), new Vector2(187, 82), GameState.Help, 'H'));
             //add new button script for size!
             /*startMenuButton newbut = new startMenuButton(new Vector2(283, 560), new Vector2(187, 82), GameState.Help, 'H');
@@ -190,12 +189,12 @@ namespace LiminalSpaceMazeGame
             keyUI.drawUI = false;
             levelDisplay.LoadContent(Content);
             GameFont = Content.Load<SpriteFont>(@"File");
-            StaminaBar.LoadContent(Content,GraphicsDevice);
+            StaminaBar.LoadContent(Content, GraphicsDevice);
             HealthBar.LoadContent(Content, GraphicsDevice);
             ShieldBar.LoadContent(Content, GraphicsDevice);
             MonsterHealthBar.LoadContent(Content, GraphicsDevice);
             sensitivityBar.LoadContent(Content, GraphicsDevice);
-            startMenu.LoadContent(Content, "WelcomeScreen","HelpScreen");
+            startMenu.LoadContent(Content, "WelcomeScreen", "HelpScreen");
             ShopMenu.LoadContent(Content, "The Shop", "nullVoidDead");
             SettingsMenu.LoadContent(Content, "Settings", "nullVoidDead");
             leaderboardMenu.LoadContent(Content, "Leaderboard", "nullVoidDead");
@@ -213,7 +212,7 @@ namespace LiminalSpaceMazeGame
                 case (GameState.StartMenu)://welcome user
                     foreach (stateButtons button in stateButtonList)
                     {
-                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition)&& (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released))
+                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released))
                         {
                             switch (button.buttonAction)
                             {
@@ -227,12 +226,14 @@ namespace LiminalSpaceMazeGame
                                 case 'l':
                                     currentState = GameState.Leaderboard;
                                     StreamReader sr = new StreamReader("playerLeaderboard.txt");
-                                    playerLeaderboard[0] = sr.ReadLine();
-                                    playerLeaderboard[1] = sr.ReadLine();
-                                    playerLeaderboard[2] = sr.ReadLine();
-                                    playerLeaderboardScore[0] = sr.ReadLine();
-                                    playerLeaderboardScore[1] = sr.ReadLine();
-                                    playerLeaderboardScore[2] = sr.ReadLine();
+                                    for (int i = 0; i < 3; i++)
+                                    {
+                                        string[] readin = sr.ReadLine().Split(',');
+                                        LeaderboardInput newItem = new LeaderboardInput();
+                                        newItem.name = readin[2];
+                                        newItem.score = int.Parse(readin[1]);
+                                        Playerleaderboards.Add(newItem);
+                                    }
                                     sr.Close();
 
                                     break;
@@ -252,7 +253,7 @@ namespace LiminalSpaceMazeGame
                             switch (button.buttonAction)
                             {
                                 case 'H':
-                                    startMenu.displayFg = false ;
+                                    startMenu.displayFg = false;
                                     currentState = GameState.StartMenu;
                                     break;
                             }
@@ -273,7 +274,7 @@ namespace LiminalSpaceMazeGame
                             switch (button.buttonAction)
                             {
                                 case 'E':
-                                    if(mouseState2.LeftButton == ButtonState.Released)
+                                    if (mouseState2.LeftButton == ButtonState.Released)
                                     {
                                         currentState = GameState.StartMenu;
                                     }
@@ -300,7 +301,7 @@ namespace LiminalSpaceMazeGame
                 case GameState.Leaderboard:
                     foreach (stateButtons button in stateButtonList)
                     {
-                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released)&& button.buttonAction == 'E')
+                        if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released) && button.buttonAction == 'E')
                         {
                             currentState = GameState.StartMenu;
                         }
@@ -357,9 +358,9 @@ namespace LiminalSpaceMazeGame
                         TheHero.update();
                     }
                     ks2 = ks1;
-                    StaminaBar.update(TheHero.Stamina,TheHero.StaminaMax);
-                    HealthBar.update(TheHero.checkHealth(),TheHero.maxHealth);
-                    ShieldBar.update(TheHero.shield,TheHero.ShieldMax);
+                    StaminaBar.update(TheHero.Stamina, TheHero.StaminaMax);
+                    HealthBar.update(TheHero.checkHealth(), TheHero.maxHealth);
+                    ShieldBar.update(TheHero.shield, TheHero.ShieldMax);
                     TheHero.gainHealth(1);
                     foreach (Collectable col in collectables)
                     {
@@ -378,7 +379,7 @@ namespace LiminalSpaceMazeGame
                             }
                         }
                     }
-                    
+
                     foreach (Monster monster in monsters)
                     {
                         monster.update(TheHero, maze);
@@ -386,22 +387,22 @@ namespace LiminalSpaceMazeGame
                         double angle = Math.Atan(anglemath.X / -anglemath.Y);
                         if (monster.getLocation().Y > TheHero.getLocation().Y)
                         {
-                            angle= angle+ 3.14;
+                            angle = angle + 3.14;
                         }
-                        
+
                         monster.rotation = +angle;
                         if (monster.rotation < 0)
                         {
-                            monster.rotation = 3.14*2;
+                            monster.rotation = 3.14 * 2;
                         }
                         if (monster.rotation > 3.14 * 2)
                         {
                             monster.rotation = -(3.14 / 2);
                         }
-                        
+
 
                     }
-                    
+
                     foreach (var monster in monsters)
                     {
                         gameObjects.Clear();
@@ -410,13 +411,13 @@ namespace LiminalSpaceMazeGame
                         newObj.objectLocation = monster.getLocation();
                         newObj.name = 'M';
                         gameObjects.Add(newObj);
-                        monster.lineOfSight = shotsFired(monster.rotation+3.14f, TheHero.getLocation(),400);
-                        bool shootable = shotsFired(TheHero.rotation, TheHero.getLocation(),200);
+                        monster.lineOfSight = shotsFired(monster.rotation + 3.14f, TheHero.getLocation(), 400);
+                        bool shootable = shotsFired(TheHero.rotation, TheHero.getLocation(), 200);
                         MonsterHealthBar.update(monster.gethealth(), monster.gethealthMax());
                         MonsterHealthBar.display = true;
                         if (shootable)
                         {
-                            
+
                             if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released))
                             {
                                 monster.loseHealth(TheHero.Damage);
@@ -427,7 +428,7 @@ namespace LiminalSpaceMazeGame
                         {
                             MonsterHealthBar.display = false;
                         }
-                        
+
                     }
                     gameObjects.Clear();
                     foreach (ExitDoor exitDoor in Exits)
@@ -468,7 +469,7 @@ namespace LiminalSpaceMazeGame
                     foreach (Monster monster in monsters)
                     {
                         monster.update();
-                        
+
                         if (monster.Edge.Intersects(TheHero.Edge))
                         {
                             centreDis = TheHero.getLocation() - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
@@ -517,9 +518,9 @@ namespace LiminalSpaceMazeGame
                             }
                         }
                     }
-                        //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
-                        
-                    
+                    //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
+
+
                     foreach (ExitDoor exit in Exits)
                     {
                         if (exit.Edge.Intersects(TheHero.Edge))
@@ -635,6 +636,7 @@ namespace LiminalSpaceMazeGame
             base.Update(gameTime);
         }
 
+
         private void createEntities()
         {
             Random rnd = new Random();
@@ -648,25 +650,25 @@ namespace LiminalSpaceMazeGame
             {
                 for (int j = 0; j < mazeHeight; j++)
                 {
-                    if (maze[i,j] == 3)
+                    if (maze[i, j] == 3)
                     {
                         deadEndCount++;
                     }
                 }
             }
-            int exitMax = rnd.Next(1,deadEndCount);//ensures taht theres allways an exit to a level at the detriment to the monster count
-            int keymax = exitMax+1;
+            int exitMax = rnd.Next(1, deadEndCount);//ensures taht theres allways an exit to a level at the detriment to the monster count
+            int keymax = exitMax + 1;
             deadEndCount -= exitMax;
             int monsterMax = deadEndCount;
-            if (deadEndCount>levelNumber)
+            if (deadEndCount > levelNumber)
             {
-                 monsterMax = rnd.Next(levelNumber, deadEndCount);
+                monsterMax = rnd.Next(levelNumber, deadEndCount);
             }
             int monsterCount = 0;
             int exitCount = 0;
             int keyCount = 0;
             int coincount = 0;
-            int coinMax = levelNumber+1/2;
+            int coinMax = levelNumber + 1 / 2;
             for (int i = 0; i < mazeWidth; i++)
             {
                 for (int j = 0; j < mazeHeight; j++)
@@ -679,7 +681,7 @@ namespace LiminalSpaceMazeGame
                             walls.Add(newWall);
                             break;
                         case 2:
-                            if (rnd.Next(0, 32 - i - j) == 1 && keyCount < keymax )//alg to define locations of keys, gets more common with furthur distance
+                            if (rnd.Next(0, 32 - i - j) == 1 && keyCount < keymax)//alg to define locations of keys, gets more common with furthur distance
                             {
                                 Key newKey = new Key(new Vector2(i * 40, j * 40), 'K');
                                 newKey.LoadContent(Content);
@@ -687,7 +689,7 @@ namespace LiminalSpaceMazeGame
                                 keyCount++;
                                 break;// break so nothing else can spawn on that tile
                             }
-                            if (rnd.Next(0, 32 - i - j) > 5 && coincount < coinMax && new Vector2(i,j) != new Vector2(1,3))//alg to define locations of coins, do not need to guarantee a key
+                            if (rnd.Next(0, 32 - i - j) > 5 && coincount < coinMax && new Vector2(i, j) != new Vector2(1, 3))//alg to define locations of coins, do not need to guarantee a key
                             {
                                 CoinItem coin = new CoinItem(new Vector2(i * 40, j * 40), 'C');
                                 coin.LoadContent(Content);
@@ -696,7 +698,7 @@ namespace LiminalSpaceMazeGame
                             }
                             break;
                         case 3:
-                            if (exitCount == 0 || (rnd.Next(0,keymax-1) == 1 && exitCount < exitMax))//ensures 1 exit spawn
+                            if (exitCount == 0 || (rnd.Next(0, keymax - 1) == 1 && exitCount < exitMax))//ensures 1 exit spawn
                             {
                                 ExitDoor newDoor = new ExitDoor(new Vector2((i * 40) - 15, (j * 40) - 15));//spawn door at end of corridor and offset to centre of a tile
                                 newDoor.LoadContent(Content);
@@ -706,7 +708,7 @@ namespace LiminalSpaceMazeGame
                             }
                             else if (monsterCount == 0 || (rnd.Next(0, 4) == 1 && monsterCount < monsterMax))//ensures 1 monster after 1 exit
                             {
-                                Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, levelNumber*levelNumber);//spawn monster at end of corridor
+                                Monster newMonster = new Monster(new Vector2(i * 40, j * 40), 1, levelNumber * levelNumber);//spawn monster at end of corridor
                                 newMonster.LoadContent(Content);
                                 monsters.Add(newMonster);
                                 monsterCount++;
@@ -719,7 +721,7 @@ namespace LiminalSpaceMazeGame
             }
             if (keyCount == 0)//guarantee 1 key
             {
-                Key newKey = new Key(new Vector2(40,120), 'K');
+                Key newKey = new Key(new Vector2(40, 120), 'K');
                 newKey.LoadContent(Content);
                 collectables.Add(newKey);
                 keyCount++;
@@ -739,7 +741,7 @@ namespace LiminalSpaceMazeGame
                 case GameState.Help:
                     this.IsMouseVisible = true;
                     startMenu.draw(spriteBatch);
-                    
+
                     break;
 
                 case GameState.Shop:
@@ -749,7 +751,7 @@ namespace LiminalSpaceMazeGame
                 case GameState.level:
                     this.IsMouseVisible = true;
                     levelDisplay.draw(spriteBatch);
-                    spriteBatch.DrawString(GameFont, levelNumber.ToString(), new Vector2(levelDisplay.getLocation().X+480, levelDisplay.getLocation().Y+1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, levelNumber.ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
                     break;
                 case GameState.Settings:
                     this.IsMouseVisible = true;
@@ -759,12 +761,9 @@ namespace LiminalSpaceMazeGame
                 case GameState.Leaderboard:
                     this.IsMouseVisible = true;
                     leaderboardMenu.draw(spriteBatch);
-                    spriteBatch.DrawString(GameFont, playerLeaderboard[0], new Vector2(310, 205), Color.White, 0f,new Vector2(1,1),1.5f,SpriteEffects.None,1);
-                    spriteBatch.DrawString(GameFont, playerLeaderboard[1], new Vector2(310, 320), Color.White, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
-                    spriteBatch.DrawString(GameFont, playerLeaderboard[2], new Vector2(310, 435), Color.White, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
-
-
-                    break;
+                    spriteBatch.DrawString(GameFont, Playerleaderboards[0].name, new Vector2(310, 205), Color.White, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, Playerleaderboards[1].name, new Vector2(310, 320), Color.White, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, Playerleaderboards[2].name, new Vector2(310, 435), Color.White, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
                     break;
                 case GameState.InGame:
                     this.IsMouseVisible = false;
@@ -783,13 +782,13 @@ namespace LiminalSpaceMazeGame
                     switch (CurrentDimension)
                     {
                         case Dimension.D2://2d representation
-                            
+
                             //draw walls below player
                             for (int i = 0; i < walls.Count; i++)
                             {
                                 walls[i].draw(spriteBatch);
                             }
-                            for (int i = 0; i< monsters.Count; i++)
+                            for (int i = 0; i < monsters.Count; i++)
                             {
                                 monsters[i].draw(spriteBatch);
                             }
@@ -825,7 +824,7 @@ namespace LiminalSpaceMazeGame
                             }
                             for (int i = 0; i < walls3d.Count - 1; i++)
                             {
-                                for (int j = 0; j < walls3d.Count - i-1; j++)
+                                for (int j = 0; j < walls3d.Count - i - 1; j++)
                                 {
                                     if (walls3d[j].distanceFromHero < walls3d[j + 1].distanceFromHero)
                                     {
@@ -843,16 +842,16 @@ namespace LiminalSpaceMazeGame
                                 }
                                 CURRENT.Add(wall);
                             }
-                            
+
                             foreach (wall3d wall in walls3d)
                             {
                                 if (wall.type != wallType && wall.type != 'E')
                                 {
-                                    foreach(wall3d pre in CURRENT)
+                                    foreach (wall3d pre in CURRENT)
                                     {
                                         if (wall.getLocation().X == pre.getLocation().X)
                                         {
-                                            if(wall.Height > pre.Height)
+                                            if (wall.Height > pre.Height)
                                             {
                                                 wall.draw(spriteBatch);
                                             }
@@ -860,7 +859,7 @@ namespace LiminalSpaceMazeGame
                                     }
                                 }
                             }
-                            spriteBatch.DrawString(GameFont,  (TheHero.points).ToString(), new Vector2(0, 0), Color.Black);
+                            spriteBatch.DrawString(GameFont, (TheHero.points).ToString(), new Vector2(0, 0), Color.Black);
                             TheUI.draw(spriteBatch);
                             crosshair.draw(spriteBatch);
                             StaminaBar.draw(spriteBatch);
@@ -876,20 +875,18 @@ namespace LiminalSpaceMazeGame
                     GraphicsDevice.Clear(Color.Red);
                     this.IsMouseVisible = true;
                     deathMenu.draw(spriteBatch);
-                    
-                    /*for (int i = 0; i < playerLeaderboard.Length; i++)
+                    for (int i = 0; i < Playerleaderboards.Count - 1; i++)
                     {
-                        if (TheHero.score > int.Parse(playerLeaderboardScore[i]))
+                        for (int j = 0; j < walls3d.Count - i - 1; j++)
                         {
-                            for (int j = i+1; j < playerLeaderboard.Length; j++)
+                            if (walls3d[j].distanceFromHero < walls3d[j + 1].distanceFromHero)
                             {
-                                playerLeaderboard[j] = playerLeaderboard[j-1];
-                                playerLeaderboardScore[j] = playerLeaderboardScore[j-1];
+                                wall3d temp = walls3d[j];
+                                walls3d[j] = walls3d[j + 1];
+                                walls3d[j + 1] = temp;
                             }
-                            break;
                         }
-                        
-                    }*/
+                    }
                     //sw.Close();
                     break;
 
@@ -902,22 +899,22 @@ namespace LiminalSpaceMazeGame
             spriteBatch.End();
             base.Draw(gameTime);
         }
-        public void rayCast(int castLength,char toHit)
+        public void rayCast(int castLength, char toHit)
         {
             for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
             {
                 char objHit = ' ';
                 Vector2 centreDis = new Vector2(0, 0);
-                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castLength, ref objHit, toHit,wallType);
+                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castLength, ref objHit, toHit, wallType);
                 if (distanceTraveled != new Vector2(castLength, castLength))
                 {
                     wall3d newSlice = new wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit); //wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
-                    newSlice.LoadContent(Content,toExit);
+                    newSlice.LoadContent(Content, toExit);
                     walls3d.Add(newSlice);
                 }
             }
         }
-        public bool shotsFired(double rotation, Vector2 loc,int range)
+        public bool shotsFired(double rotation, Vector2 loc, int range)
         {
             float speed = 1f;
             TheRay.setLocation(loc);
@@ -948,6 +945,11 @@ namespace LiminalSpaceMazeGame
             public Rectangle objectEdge;//for raycasting
             public Vector2 objectLocation;
             public char name;//for when an object it to be searched for/hit
+        }
+        public struct LeaderboardInput()
+        {
+            public string name;
+            public int score;
         }
     }
 }
