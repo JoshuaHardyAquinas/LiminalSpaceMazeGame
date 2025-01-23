@@ -20,7 +20,6 @@ namespace LiminalSpaceMazeGame
         public float sensitivity = 32;
         public float senseMin = 64;
         public float senseMax = 1;
-        public int score;
         private int MaxHealth;
         private int startHealth;
         private int staminaMax;
@@ -32,6 +31,7 @@ namespace LiminalSpaceMazeGame
         private int fOV;
         public int points;
         bool cooldown;
+        public string name;
         public List<char> collected = new List<char>();
 
         public int FOV { get => fOV; set => fOV = value; }
@@ -59,8 +59,7 @@ namespace LiminalSpaceMazeGame
             FOV = fov;
             stamina = staminaMax/2;
             cooldown = false;
-            
-            
+            name = " ";
         }
         public override void update()
         {
