@@ -10,6 +10,7 @@ using System.IO;
 using SharpDX.Direct3D9;
 using Microsoft.Xna.Framework.Audio;
 using System.Xml.Linq;
+using System.Linq;
 
 
 namespace LiminalSpaceMazeGame
@@ -77,6 +78,8 @@ namespace LiminalSpaceMazeGame
 
         MouseState mouseState = Mouse.GetState();
         MouseState mouseState2 = Mouse.GetState();
+        Keys down;
+
 
         //states to switch game between its respective screens
         public enum GameState
@@ -103,11 +106,14 @@ namespace LiminalSpaceMazeGame
         Dimension CurrentDimension = Dimension.D3;
 
         Vector2 gameResolution = new Vector2(720, 720);
+
         public Game1()
         {
             ks1 = Keyboard.GetState();
             ks2 = Keyboard.GetState();
             this.IsMouseVisible = true;
+            down = Keys.None;
+
             _graphics = new GraphicsDeviceManager(this);
             //change screen size
 
@@ -315,24 +321,17 @@ namespace LiminalSpaceMazeGame
                     }
                     if (nameChange)
                     {
-                        string safe = "";
-                        
-                        if (ks1.IsKeyDown(Keys.Back) && ks2.IsKeyUp(Keys.Back) && TheHero.name.Length > 0)
+                        string safe = "qwertyuiopasdfghjklzxcvbnm";
+                        Keys[] keys = ks1.GetPressedKeys();
+                        if (keys.Count() > 0)
                         {
-                            TheHero.name = TheHero.name.Remove(TheHero.name.Length - 1);
-                        }
-                        else if (TheHero.name.Length < 4 && (ks1.GetPressedKeys() != ks2.GetPressedKeys()))
-                        {
-                            Keys down = ks1.GetPressedKeys()[0];
-                            var keys = ks1.GetPressedKeys().ToString();
-                            if (keys.Length > 0)
+                            Keys key = keys[0];
+                            string strKey = key.ToString();
+                            if (ks1.IsKeyDown(key)&& !ks2.IsKeyDown(key))
                             {
-                                var keyValue = keys[0].ToString();
-                                TheHero.name = TheHero.name + keyValue;
+                                TheHero.name += strKey;
                             }
-                            
                         }
-                        
                     }
                     break;
                 case GameState.Leaderboard:
