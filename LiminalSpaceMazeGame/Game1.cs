@@ -75,11 +75,10 @@ namespace LiminalSpaceMazeGame
         List<LeaderboardInput> Playerleaderboards = new List<LeaderboardInput>();
 
         int monsterHealth = 1;
+        Keys down = Keys.None;
 
         MouseState mouseState = Mouse.GetState();
         MouseState mouseState2 = Mouse.GetState();
-        Keys down;
-
 
         //states to switch game between its respective screens
         public enum GameState
@@ -109,11 +108,10 @@ namespace LiminalSpaceMazeGame
 
         public Game1()
         {
+            down = Keys.None;
             ks1 = Keyboard.GetState();
             ks2 = Keyboard.GetState();
             this.IsMouseVisible = true;
-            down = Keys.None;
-
             _graphics = new GraphicsDeviceManager(this);
             //change screen size
 
@@ -321,17 +319,24 @@ namespace LiminalSpaceMazeGame
                     }
                     if (nameChange)
                     {
-                        string safe = "qwertyuiopasdfghjklzxcvbnm";
-                        Keys[] keys = ks1.GetPressedKeys();
-                        if (keys.Count() > 0)
+                        string safe = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+
+                        if (ks1.IsKeyDown(Keys.Back) && ks2.IsKeyUp(Keys.Back) && TheHero.name.Length > 0)
                         {
-                            Keys key = keys[0];
-                            string strKey = key.ToString();
-                            if (ks1.IsKeyDown(key)&& !ks2.IsKeyDown(key))
-                            {
-                                TheHero.name += strKey;
-                            }
+                            TheHero.name = TheHero.name.Remove(TheHero.name.Length - 1);
                         }
+                        else if (TheHero.name.Length < 3 && (ks1.IsKeyDown(down) == !ks2.IsKeyDown(down))&& safe.Contains(down.ToString()))
+                        {
+                                TheHero.name = TheHero.name + down.ToString();
+                        }
+                        Keys[] KeyLogs = ks1.GetPressedKeys();
+
+
+                        if (KeyLogs.Length > 0)
+                        {
+                            down = KeyLogs[0];
+                        }
+
                     }
                     break;
                 case GameState.Leaderboard:
@@ -662,6 +667,7 @@ namespace LiminalSpaceMazeGame
                             sw.WriteLine(Playerleaderboards[i].name + "," + Playerleaderboards[i].score);
                         }
                         sw.Close();
+                        sw.Dispose();
                         currentState = GameState.Dead;
                     }
                     break;
