@@ -72,7 +72,8 @@ namespace LiminalSpaceMazeGame
         char wallType = ' ';
         char[] availableWalls = { 'W', 'w', 'v' };
         Random rand = new Random();
-        List<LeaderboardInput> Playerleaderboards = new List<LeaderboardInput>();
+        List<NameValue> Playerleaderboards = new List<NameValue>();
+        List<NameValue> ShopItems = new List<NameValue>();
 
         int monsterHealth = 1;
         Keys down = Keys.None;
@@ -119,6 +120,16 @@ namespace LiminalSpaceMazeGame
             _graphics.PreferredBackBufferHeight = (int)gameResolution.Y;
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
+            NameValue newShopItem = new NameValue();
+            newShopItem.name = "Health Cap";
+            newShopItem.value = 100;
+            ShopItems.Add(newShopItem);
+            newShopItem.name = "Sprint Cap";
+            newShopItem.value = 50;
+            ShopItems.Add(newShopItem);
+            newShopItem.name = "Shield Fill";
+            newShopItem.value = 50;
+            ShopItems.Add(newShopItem);
         }
         protected override void Initialize()
         {
@@ -242,9 +253,9 @@ namespace LiminalSpaceMazeGame
                                     for (int i = 0; i < 3; i++)
                                     {
                                         string[] readin = sr.ReadLine().Split(',');
-                                        LeaderboardInput newItem = new LeaderboardInput();
+                                        NameValue newItem = new NameValue();
                                         newItem.name = readin[0];
-                                        newItem.score = int.Parse(readin[1]);
+                                        newItem.value = int.Parse(readin[1]);
                                         Playerleaderboards.Add(newItem);
                                     }
                                     sr.Close();
@@ -359,6 +370,16 @@ namespace LiminalSpaceMazeGame
                             {
                                 case 'E':
                                     currentState = GameState.level;
+                                    break;
+                                case 'S':
+                                    TheHero.editStats();
+                                    break;
+                                case 's':
+
+                                    break;
+
+                                case 'H':
+
                                     break;
                             }
                             break;
@@ -639,32 +660,32 @@ namespace LiminalSpaceMazeGame
                     }
                     if (TheHero.checkHealth() <= 0 || ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
-                        LeaderboardInput newinput = new LeaderboardInput();
+                        NameValue newinput = new NameValue();
                         newinput.name = TheHero.name;
-                        newinput.score = TheHero.points;
+                        newinput.value = TheHero.points;
                         Playerleaderboards.Insert(0, newinput);
                         for (int i = Playerleaderboards.Count; i < 3; i++)
                         {
-                            newinput.name = " ";
-                            newinput.score = 0;
+                            newinput.name = "null";
+                            newinput.value = 0;
                             Playerleaderboards.Add(newinput);
                         }
                         for (int i = 0; i < Playerleaderboards.Count - 1; i++)
                         {
                             for (int j = 0; j < Playerleaderboards.Count - i - 1; j++)
                             {
-                                if (Playerleaderboards[j].score <= Playerleaderboards[j + 1].score)
+                                if (Playerleaderboards[j].value <= Playerleaderboards[j + 1].value)
                                 {
-                                    LeaderboardInput temp = Playerleaderboards[j];
+                                    NameValue temp = Playerleaderboards[j];
                                     Playerleaderboards[j] = Playerleaderboards[j + 1];
                                     Playerleaderboards[j + 1] = temp;
                                 }
                             }
                         }
                         StreamWriter sw = new StreamWriter(@"playerLeaderboard.txt", false);
-                        for (int i = 0; i < Playerleaderboards.Count; i++)
+                        for (int i = 0; i < 3; i++)
                         {
-                            sw.WriteLine(Playerleaderboards[i].name + "," + Playerleaderboards[i].score);
+                            sw.WriteLine(Playerleaderboards[i].name + "," + Playerleaderboards[i].value);
                         }
                         sw.Close();
                         sw.Dispose();
@@ -816,6 +837,7 @@ namespace LiminalSpaceMazeGame
                 case GameState.Shop:
                     this.IsMouseVisible = true;
                     ShopMenu.draw(spriteBatch);
+                    spriteBatch.DrawString(GameFont, TheHero.points.ToString(), new Vector2(535,45), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
                     break;
                 case GameState.level:
                     this.IsMouseVisible = true;
@@ -828,15 +850,15 @@ namespace LiminalSpaceMazeGame
                     sensitivityBar.draw(spriteBatch);
                     if (TheHero.name != null)
                     {
-                        spriteBatch.DrawString(GameFont, TheHero.name, new Vector2(275, 360), Color.Black, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
+                        spriteBatch.DrawString(GameFont, TheHero.name, new Vector2(290, 375), Color.Black, 0f, new Vector2(1, 1), 1.75f, SpriteEffects.None, 1);
                     }
                     break;
                 case GameState.Leaderboard:
                     this.IsMouseVisible = true;
                     leaderboardMenu.draw(spriteBatch);
-                    spriteBatch.DrawString(GameFont, Playerleaderboards[0].name + " " + Playerleaderboards[0].score.ToString(), new Vector2(310, 205), Color.Gold, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
-                    spriteBatch.DrawString(GameFont, Playerleaderboards[1].name + " " + Playerleaderboards[1].score.ToString(), new Vector2(310, 320), Color.Silver, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
-                    spriteBatch.DrawString(GameFont, Playerleaderboards[2].name + " " + Playerleaderboards[2].score.ToString(), new Vector2(310, 435), Color.OrangeRed, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, Playerleaderboards[0].name + " " + Playerleaderboards[0].value.ToString(), new Vector2(310, 205), Color.Gold, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, Playerleaderboards[1].name + " " + Playerleaderboards[1].value.ToString(), new Vector2(310, 320), Color.Silver, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, Playerleaderboards[2].name + " " + Playerleaderboards[2].value.ToString(), new Vector2(310, 435), Color.OrangeRed, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
 
                     break;
                 case GameState.InGame:
@@ -1007,10 +1029,10 @@ namespace LiminalSpaceMazeGame
             public Vector2 objectLocation;
             public char name;//for when an object it to be searched for/hit
         }
-        public struct LeaderboardInput()
+        public struct NameValue()
         {
             public string name;
-            public int score;
+            public int value;
         }
     }
 }

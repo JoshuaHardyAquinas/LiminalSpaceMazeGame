@@ -59,7 +59,7 @@ namespace LiminalSpaceMazeGame
             FOV = fov;
             stamina = staminaMax/2;
             cooldown = false;
-            name = " ";
+            name = "";
         }
         public override void update()
         {
@@ -164,7 +164,8 @@ namespace LiminalSpaceMazeGame
             return stamina;
         }
 
-        public void editStats(char stat, int vaue) { 
+        public void editStats() {
+            
         }
 
         public void gainHealth(int value)
@@ -182,15 +183,35 @@ namespace LiminalSpaceMazeGame
             Health = maxHealth;
         }
 
-        public void upgrade(char stat,int value,bool reset)
+        public void upgrade(NameValue item,int levelNum)
         {
-            if (reset)
+            if (item.value*levelNum >= points)
             {
-                maxHealth = startHealth;
-                MaxShield = ShieldStart;
-                staminaMax = staminaStart;
-
+                points -= item.value*levelNum;
             }
+            switch (item.name)
+            {
+                case "s":
+                    shield = ShieldMax;
+                    break;
+                case "S":
+                    staminaMax = (int)(staminaMax*Math.Sqrt(levelNum));
+                    break;
+                case "H":
+                    staminaMax = (int)(staminaMax * Math.Sqrt(levelNum));
+                    break;
+            }
+        }
+        public void reset(char stat, int value, bool reset)
+        {
+            maxHealth = startHealth;
+            MaxShield = ShieldStart;
+            staminaMax = staminaStart;
+        }
+        public struct NameValue()
+        {
+            public string name;
+            public int value;
         }
     }
 }
