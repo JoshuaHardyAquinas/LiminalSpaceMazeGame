@@ -703,6 +703,7 @@ namespace LiminalSpaceMazeGame
                             switch (button.buttonAction)
                             {
                                 case 'R':
+                                    TheHero.reset();
                                     currentState = GameState.StartMenu;
                                     break;
                                 case 'E':
@@ -843,6 +844,9 @@ namespace LiminalSpaceMazeGame
                     this.IsMouseVisible = true;
                     levelDisplay.draw(spriteBatch);
                     spriteBatch.DrawString(GameFont, levelNumber.ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, ShopItems[0].name + " " + (ShopItems[0].value* ShopItems[0].used*levelNumber/ 1.5f).ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, ShopItems[1].name + " " + (ShopItems[0].value * ShopItems[1].used * levelNumber / 1.5f).ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, ShopItems[2].name + " " + (ShopItems[0].value * ShopItems[2].used * levelNumber / 1.5f).ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
                     break;
                 case GameState.Settings:
                     this.IsMouseVisible = true;
@@ -1033,6 +1037,7 @@ namespace LiminalSpaceMazeGame
         {
             public string name;
             public int value;
+            public int used = 1;
         }
     }
 }

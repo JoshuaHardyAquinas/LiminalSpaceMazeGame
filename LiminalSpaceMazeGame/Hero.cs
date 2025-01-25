@@ -202,11 +202,13 @@ namespace LiminalSpaceMazeGame
                     break;
             }
         }
-        public void reset(char stat, int value, bool reset)
+        public void reset()
         {
             maxHealth = startHealth;
             MaxShield = ShieldStart;
             staminaMax = staminaStart;
+            points = 100;
+            collected.Clear();
         }
         public struct NameValue()
         {
