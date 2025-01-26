@@ -1,17 +1,11 @@
-﻿using Microsoft.Xna.Framework.Content;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Assimp.Configs;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Windows.Forms.VisualStyles;
-using SharpDX.Direct3D9;
-using System.Reflection.Metadata.Ecma335;
-using SharpDX.XAudio2;
-using SharpDX.Direct2D1.Effects;
+using System;
+using System.Collections.Generic;
+using static LiminalSpaceMazeGame.Game1;
 
 namespace LiminalSpaceMazeGame
 {
@@ -29,7 +23,7 @@ namespace LiminalSpaceMazeGame
         private int Shield;
         private int ShieldStart;
         private int fOV;
-        public int points;
+        public int points = 100;
         bool cooldown;
         public string name;
         public List<char> collected = new List<char>();
@@ -57,14 +51,14 @@ namespace LiminalSpaceMazeGame
             changeRotation = 0;
             rotation = 0;//starting rotation
             FOV = fov;
-            stamina = staminaMax/2;
+            stamina = staminaMax / 2;
             cooldown = false;
             name = "";
         }
         public override void update()
         {
             //creates player edge
-            Edge = new Rectangle((int)getLocation().X-Texture.Width/2, (int)getLocation().Y-Texture.Height/2, Texture.Width, Texture.Height);
+            Edge = new Rectangle((int)getLocation().X - Texture.Width / 2, (int)getLocation().Y - Texture.Height / 2, Texture.Width, Texture.Height);
             move();
         }
         protected void move()
@@ -74,9 +68,9 @@ namespace LiminalSpaceMazeGame
             //calculates layer speed with possibility to add sprinting
             int speedMultiplyer = 1;
             int speed = 1;
-            if (stamina < 1200 && (stamina>20 || !cooldown))
+            if (stamina < 1200 && (stamina > 20 || !cooldown))
             {
-                stamina = stamina+2;
+                stamina = stamina + 2*staminaMax/1000;
             }
             if (ks.IsKeyDown(Keys.LeftShift) && !cooldown)
             {
@@ -103,7 +97,7 @@ namespace LiminalSpaceMazeGame
             //for player movment and rotation
             if (ks.IsKeyDown(Keys.A))//rotation using radians
             {
-                changeRotation = - PI / sensitivity;//used pi/16 for smoother rotation in comparison to a larger value
+                changeRotation = -PI / sensitivity;//used pi/16 for smoother rotation in comparison to a larger value
             }
             if (ks.IsKeyDown(Keys.D))
             {
@@ -134,7 +128,7 @@ namespace LiminalSpaceMazeGame
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw player including rotation
-            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width/2f, Texture.Height/2f), new Vector2(1, 1), SpriteEffects.None, 1);
+            spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
         public override void LoadContent(ContentManager Content)
         {
@@ -164,8 +158,9 @@ namespace LiminalSpaceMazeGame
             return stamina;
         }
 
-        public void editStats() {
-            
+        public void editStats()
+        {
+
         }
 
         public void gainHealth(int value)
@@ -183,37 +178,46 @@ namespace LiminalSpaceMazeGame
             Health = maxHealth;
         }
 
-        public void upgrade(NameValue item,int levelNum)
+        public NameValue upgrade(NameValue item, int levelNum)
         {
-            if (item.value*levelNum >= points)
+            if ((item.value * levelNum*item.used) <= points)
             {
-                points -= item.value*levelNum;
+                points -= item.value * levelNum * item.used;
             }
-            switch (item.name)
+            else
             {
-                case "s":
+                return item;
+            }
+
+            switch (item.name[1].ToString())
+            {
+                case "h":
+                    ShieldMax += ShieldStart;
                     shield = ShieldMax;
                     break;
-                case "S":
-                    staminaMax = (int)(staminaMax*Math.Sqrt(levelNum));
+                case "t":
+                    staminaMax = (int)(staminaMax * Math.Sqrt(levelNum+1));
+                    stamina = staminaMax;
                     break;
-                case "H":
-                    staminaMax = (int)(staminaMax * Math.Sqrt(levelNum));
+                case "e":
+                    MaxHealth = (int)(staminaMax * Math.Sqrt(levelNum+1));
+                    Health = maxHealth;
                     break;
             }
+            item.used = item.used + 1;
+            return item;
+            
         }
         public void reset()
         {
             maxHealth = startHealth;
+            Health = maxHealth;
             MaxShield = ShieldStart;
             staminaMax = staminaStart;
+            stamina = staminaStart;
+            shield = MaxShield / 4;
             points = 100;
             collected.Clear();
-        }
-        public struct NameValue()
-        {
-            public string name;
-            public int value;
         }
     }
 }

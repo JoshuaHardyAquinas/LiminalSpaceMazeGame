@@ -46,6 +46,7 @@ namespace LiminalSpaceMazeGame
         public override void collect(Hero theHero)
         {
             theHero.collected.Add(CollectableType);
+            theHero.points += 50;
             isCollected = true;
         }
     }

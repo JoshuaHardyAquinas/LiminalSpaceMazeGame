@@ -40,7 +40,7 @@ namespace LiminalSpaceMazeGame
 
         UILoadingBar sensitivityBar;
 
-        public int levelNumber = 0;
+        public int levelNumber = 1;
         public bool levelGen = false;
 
 
@@ -121,14 +121,17 @@ namespace LiminalSpaceMazeGame
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             NameValue newShopItem = new NameValue();
-            newShopItem.name = "Health Cap";
-            newShopItem.value = 100;
+            newShopItem.name = "Stamina Cap";
+            newShopItem.value = 20;
+            newShopItem.used = 1;
             ShopItems.Add(newShopItem);
-            newShopItem.name = "Sprint Cap";
+            newShopItem.name = "Health Cap";
             newShopItem.value = 50;
+            newShopItem.used = 1;
             ShopItems.Add(newShopItem);
             newShopItem.name = "Shield Fill";
-            newShopItem.value = 50;
+            newShopItem.value = 40;
+            newShopItem.used = 1;
             ShopItems.Add(newShopItem);
         }
         protected override void Initialize()
@@ -141,12 +144,12 @@ namespace LiminalSpaceMazeGame
 
 
             //create hero and maze object
-            TheHero = new Hero(90, 1200, 100);
+            TheHero = new Hero(90, 1000, 100);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
             TheUI = new UI(new Vector2(0, 670), "ui");
             crosshair = new UI(new Vector2(340, 340), "crosshair");
-            keyUI = new UI(new Vector2(TheUI.getLocation().X + 542f, TheUI.getLocation().Y + 9f), "key");
+            keyUI = new UI(new Vector2(TheUI.getLocation().X + 542f, TheUI.getLocation().Y + 3f), "key");
             levelDisplay = new UI(new Vector2(0, -720), "Level screen");
             StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 590f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 120, 20, Color.Green);
             HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 12f), TheHero.maxHealth, 69, 6, Color.Red);
@@ -372,32 +375,36 @@ namespace LiminalSpaceMazeGame
                                     currentState = GameState.level;
                                     break;
                                 case 'S':
-                                    TheHero.editStats();
+                                    ShopItems[0] = TheHero.upgrade(ShopItems[0],levelNumber);
+                                    break;
+                                case 'H':
+                                    ShopItems[1] = TheHero.upgrade(ShopItems[1], levelNumber);
+
                                     break;
                                 case 's':
+                                    ShopItems[2] = TheHero.upgrade(ShopItems[2], levelNumber);
 
                                     break;
 
-                                case 'H':
-
-                                    break;
+                                
                             }
                             break;
                         }
                     }
                     TheHero.collected.Clear();
+                    TheHero.collected.Remove('k');
                     break;
                 case GameState.level:
                     if (!levelGen)//generate 1 new level and wait
                     {
                         int vars = rand.Next(0, availableWalls.Length);
                         wallType = availableWalls[vars];
-                        levelNumber++;
                         maze = TheMaze.GenerateNewMaze(mazeWidth, mazeHeight);
                         maze[1, 1] = 1;
                         createEntities();
                         TheHero.spawn(new Vector2(40, 40));//put the hero back at its spawn location
                         levelGen = true;
+                        levelNumber++;
                     }
                     countToChange += 2;
                     if (countToChange > 720)
@@ -423,6 +430,7 @@ namespace LiminalSpaceMazeGame
                     HealthBar.update(TheHero.checkHealth(), TheHero.maxHealth);
                     ShieldBar.update(TheHero.shield, TheHero.ShieldMax);
                     TheHero.gainHealth(1);
+                    Vector2 centreDis = new Vector2(0, 0);
                     foreach (Collectable col in collectables)
                     {
                         col.update();
@@ -440,8 +448,7 @@ namespace LiminalSpaceMazeGame
                             }
                         }
                     }
-
-                    foreach (Monster monster in monsters)
+                    foreach (var monster in monsters)
                     {
                         monster.update(TheHero, maze);
                         Vector2 anglemath = monster.getLocation() - TheHero.getLocation();
@@ -460,12 +467,6 @@ namespace LiminalSpaceMazeGame
                         {
                             monster.rotation = -(3.14 / 2);
                         }
-
-
-                    }
-
-                    foreach (var monster in monsters)
-                    {
                         gameObjects.Clear();
                         ObjInGame newObj = new ObjInGame();
                         newObj.objectEdge = monster.Edge;
@@ -496,7 +497,7 @@ namespace LiminalSpaceMazeGame
                     {
                         toExit = exitDoor.update(TheHero.collected);
                     }
-                    Vector2 centreDis = new Vector2(0, 0);
+                    
                     foreach (Wall wall in walls)
                     {
                         if (wall.Edge.Intersects(TheHero.Edge))
@@ -839,14 +840,18 @@ namespace LiminalSpaceMazeGame
                     this.IsMouseVisible = true;
                     ShopMenu.draw(spriteBatch);
                     spriteBatch.DrawString(GameFont, TheHero.points.ToString(), new Vector2(535,45), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, ShopItems[0].name, new Vector2(12, 235), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, (ShopItems[0].value * ShopItems[0].used * levelNumber).ToString(), new Vector2(345, 235), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, ShopItems[1].name, new Vector2(12, 335), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1); 
+                    spriteBatch.DrawString(GameFont, (ShopItems[1].value * ShopItems[1].used * levelNumber).ToString(), new Vector2(345, 335), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, ShopItems[2].name, new Vector2(12, 435), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    spriteBatch.DrawString(GameFont, (ShopItems[2].value * ShopItems[2].used * levelNumber).ToString(), new Vector2(345, 435), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
                     break;
                 case GameState.level:
                     this.IsMouseVisible = true;
                     levelDisplay.draw(spriteBatch);
                     spriteBatch.DrawString(GameFont, levelNumber.ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
-                    spriteBatch.DrawString(GameFont, ShopItems[0].name + " " + (ShopItems[0].value* ShopItems[0].used*levelNumber/ 1.5f).ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
-                    spriteBatch.DrawString(GameFont, ShopItems[1].name + " " + (ShopItems[0].value * ShopItems[1].used * levelNumber / 1.5f).ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
-                    spriteBatch.DrawString(GameFont, ShopItems[2].name + " " + (ShopItems[0].value * ShopItems[2].used * levelNumber / 1.5f).ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
+                    
                     break;
                 case GameState.Settings:
                     this.IsMouseVisible = true;
@@ -868,15 +873,12 @@ namespace LiminalSpaceMazeGame
                 case GameState.InGame:
                     this.IsMouseVisible = false;
                     GraphicsDevice.Clear(Color.Gray);
+                    keyUI.drawUI = false;
                     foreach (char item in TheHero.collected)
                     {
                         if (item == 'K')
                         {
                             keyUI.drawUI = true;
-                        }
-                        else
-                        {
-                            keyUI.drawUI = false;
                         }
                     }
                     switch (CurrentDimension)
@@ -1037,7 +1039,7 @@ namespace LiminalSpaceMazeGame
         {
             public string name;
             public int value;
-            public int used = 1;
+            public int used;
         }
     }
 }

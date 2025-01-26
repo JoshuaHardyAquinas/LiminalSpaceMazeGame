@@ -255,6 +255,7 @@ namespace LiminalSpaceMazeGame
             if (health <= 0)
             {
                 dead = true;
+                
                 setLocation(new Vector2(-40, -40));
             }
         }
