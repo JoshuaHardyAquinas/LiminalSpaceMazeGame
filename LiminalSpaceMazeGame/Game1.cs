@@ -149,12 +149,12 @@ namespace LiminalSpaceMazeGame
             TheRay = new Ray();
             TheUI = new UI(new Vector2(0, 670), "ui");
             crosshair = new UI(new Vector2(340, 340), "crosshair");
-            keyUI = new UI(new Vector2(TheUI.getLocation().X + 542f, TheUI.getLocation().Y + 3f), "key");
+            keyUI = new UI(new Vector2(TheUI.getLocation().X + 539f, TheUI.getLocation().Y + 5f), "key");
             levelDisplay = new UI(new Vector2(0, -720), "Level screen");
-            StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 590f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 120, 20, Color.Green);
-            HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 12f), TheHero.maxHealth, 69, 6, Color.Red);
-            ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 69f, TheUI.getLocation().Y + 40f), TheHero.ShieldMax, 69, 6, Color.Blue);
-            MonsterHealthBar = new UILoadingBar(new Vector2(crosshair.getLocation().X, crosshair.getLocation().Y + 25f), monsterHealth, 20, 3, Color.Red);
+            StaminaBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 595f, TheUI.getLocation().Y + 20f), TheHero.StaminaMax, 112, 24, Color.Green);
+            HealthBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 59f, TheUI.getLocation().Y + 18f), TheHero.maxHealth, 94, 27, Color.Red);
+            ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 165F, TheUI.getLocation().Y + 18f), TheHero.ShieldMax, 94, 27, Color.Blue);
+            MonsterHealthBar = new UILoadingBar(new Vector2(crosshair.getLocation().X, crosshair.getLocation().Y + 25f), monsterHealth, 20, 6, Color.Red);
             sensitivityBar = new UILoadingBar(new Vector2(185, 170), 64, 350, 101, Color.OrangeRed);
             startMenu = new stateClass();
             ShopMenu = new stateClass();
@@ -414,6 +414,7 @@ namespace LiminalSpaceMazeGame
                         currentState = GameState.InGame;
                     }
                     levelDisplay.setLocation(new Vector2(levelDisplay.getLocation().X, levelDisplay.getLocation().Y + 2));
+                    walls3d.Clear();
                     break;
                 case GameState.InGame:// run game code
                     // update all entities
@@ -683,6 +684,20 @@ namespace LiminalSpaceMazeGame
                                 }
                             }
                         }
+                        ShopItems.Clear();
+                        NameValue newShopItem = new NameValue();
+                        newShopItem.name = "Stamina Cap";
+                        newShopItem.value = 20;
+                        newShopItem.used = 1;
+                        ShopItems.Add(newShopItem);
+                        newShopItem.name = "Health Cap";
+                        newShopItem.value = 50;
+                        newShopItem.used = 1;
+                        ShopItems.Add(newShopItem);
+                        newShopItem.name = "Shield Fill";
+                        newShopItem.value = 40;
+                        newShopItem.used = 1;
+                        ShopItems.Add(newShopItem);
                         StreamWriter sw = new StreamWriter(@"playerLeaderboard.txt", false);
                         for (int i = 0; i < 3; i++)
                         {
@@ -695,7 +710,8 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.Dead:
                     levelGen = false;
-                    levelNumber = 0;
+                    levelNumber = 1;
+                    
                     monsters.Clear();
                     foreach (stateButtons button in stateButtonList)
                     {
@@ -961,7 +977,6 @@ namespace LiminalSpaceMazeGame
                                     }
                                 }
                             }
-                            spriteBatch.DrawString(GameFont, (TheHero.points).ToString(), new Vector2(0, 0), Color.Black);
                             TheUI.draw(spriteBatch);
                             crosshair.draw(spriteBatch);
                             StaminaBar.draw(spriteBatch);
@@ -969,6 +984,8 @@ namespace LiminalSpaceMazeGame
                             ShieldBar.draw(spriteBatch);
                             MonsterHealthBar.draw(spriteBatch);
                             keyUI.draw(spriteBatch);
+                            spriteBatch.DrawString(GameFont, (TheHero.points).ToString(), new Vector2(TheUI.getLocation().X + 386f, TheUI.getLocation().Y + 19f), Color.Black);
+
                             break;
                     }
                     break;

@@ -68,7 +68,7 @@ namespace LiminalSpaceMazeGame
             //calculates layer speed with possibility to add sprinting
             int speedMultiplyer = 1;
             int speed = 1;
-            if (stamina < 1200 && (stamina > 20 || !cooldown))
+            if (stamina < staminaMax && (stamina > 40 || !cooldown))
             {
                 stamina = stamina + 2*staminaMax/1000;
             }
@@ -85,7 +85,7 @@ namespace LiminalSpaceMazeGame
             {
                 stamina++;
             }
-            if (stamina > 180)
+            if (stamina > 420)
             {
                 cooldown = false;
             }
