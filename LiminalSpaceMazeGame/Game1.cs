@@ -251,7 +251,6 @@ namespace LiminalSpaceMazeGame
                                     break;
                                 case 'l':
                                     currentState = GameState.Leaderboard;
-                                    Playerleaderboards.Clear();
                                     StreamReader sr = new StreamReader("playerLeaderboard.txt");
                                     for (int i = 0; i < 3; i++)
                                     {
@@ -480,7 +479,6 @@ namespace LiminalSpaceMazeGame
                         MonsterHealthBar.display = true;
                         if (shootable)
                         {
-
                             if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released))
                             {
                                 monster.loseHealth(TheHero.Damage);

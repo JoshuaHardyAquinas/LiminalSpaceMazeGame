@@ -196,7 +196,7 @@ namespace LiminalSpaceMazeGame
                     shield = ShieldMax;
                     break;
                 case "t":
-                    staminaMax = (int)(staminaMax * Math.Sqrt(levelNum+1));
+                    staminaMax = (int)(staminaMax * Math.Sqrt(Math.Sqrt(levelNum + 1)));
                     stamina = staminaMax;
                     break;
                 case "e":
