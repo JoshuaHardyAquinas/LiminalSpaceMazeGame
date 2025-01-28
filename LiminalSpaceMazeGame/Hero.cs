@@ -158,11 +158,6 @@ namespace LiminalSpaceMazeGame
             return stamina;
         }
 
-        public void editStats()
-        {
-
-        }
-
         public void gainHealth(int value)
         {
             Health += value;

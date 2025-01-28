@@ -73,7 +73,7 @@ namespace LiminalSpaceMazeGame
         char[] availableWalls = { 'W', 'w', 'v' };
         Random rand = new Random();
         List<NameValue> Playerleaderboards = new List<NameValue>();
-        List<NameValue> ShopItems = new List<NameValue>();
+        public List<NameValue> ShopItems = new List<NameValue>();
 
         int monsterHealth = 1;
         Keys down = Keys.None;
@@ -137,10 +137,21 @@ namespace LiminalSpaceMazeGame
         protected override void Initialize()
         {
             StreamWriter sw = new StreamWriter(@"playerLeaderboard.txt", true);//creates player file if its the 1st boot
-            sw.WriteLine("nul, 0");
-            sw.WriteLine("nul, 0");
-            sw.WriteLine("nul, 0");
+            sw.WriteLine("Jos, 2050");
+            sw.WriteLine("tim, 700");
+            sw.WriteLine("Dal, 400");
             sw.Close();
+            StreamReader sr = new StreamReader("playerLeaderboard.txt");
+            for (int i = 0; i < 3; i++)
+            {
+                string[] readin = sr.ReadLine().Split(',');
+                NameValue newItem = new NameValue();
+                newItem.name = readin[0];
+                newItem.value = int.Parse(readin[1]);
+                Playerleaderboards.Add(newItem);
+            }
+            sr.Close();
+            sr.Dispose();
 
 
             //create hero and maze object
@@ -251,18 +262,6 @@ namespace LiminalSpaceMazeGame
                                     break;
                                 case 'l':
                                     currentState = GameState.Leaderboard;
-                                    StreamReader sr = new StreamReader("playerLeaderboard.txt");
-                                    for (int i = 0; i < 3; i++)
-                                    {
-                                        string[] readin = sr.ReadLine().Split(',');
-                                        NameValue newItem = new NameValue();
-                                        newItem.name = readin[0];
-                                        newItem.value = int.Parse(readin[1]);
-                                        Playerleaderboards.Add(newItem);
-                                    }
-                                    sr.Close();
-                                    sr.Dispose();
-
                                     break;
                                 case 's':
                                     currentState = GameState.Settings;
@@ -374,18 +373,14 @@ namespace LiminalSpaceMazeGame
                                     currentState = GameState.level;
                                     break;
                                 case 'S':
-                                    ShopItems[0] = TheHero.upgrade(ShopItems[0],levelNumber);
+                                    ShopItems[0] = TheHero.upgrade(ShopItems[0], levelNumber);
                                     break;
                                 case 'H':
                                     ShopItems[1] = TheHero.upgrade(ShopItems[1], levelNumber);
-
                                     break;
                                 case 's':
                                     ShopItems[2] = TheHero.upgrade(ShopItems[2], levelNumber);
-
                                     break;
-
-                                
                             }
                             break;
                         }
@@ -403,7 +398,6 @@ namespace LiminalSpaceMazeGame
                         createEntities();
                         TheHero.spawn(new Vector2(40, 40));//put the hero back at its spawn location
                         levelGen = true;
-                        levelNumber++;
                     }
                     countToChange += 2;
                     if (countToChange > 720)
@@ -718,6 +712,7 @@ namespace LiminalSpaceMazeGame
                             switch (button.buttonAction)
                             {
                                 case 'R':
+
                                     TheHero.reset();
                                     currentState = GameState.StartMenu;
                                     break;
@@ -732,6 +727,7 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.win:
                     levelGen = false;
+                    levelNumber++;
                     monsters.Clear();
                     currentState = GameState.Shop;
                     break;
