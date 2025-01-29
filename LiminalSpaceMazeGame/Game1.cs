@@ -293,7 +293,7 @@ namespace LiminalSpaceMazeGame
                     break;
                 case GameState.Settings:
                     sensitivityBar.update(senseBar);
-                    foreach (stateButtons button in stateButtonList)
+                    foreach (stateButtons button in stateButtonList)//button switcher for levels with buttons activated
                     {
                         if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed))
                         {
