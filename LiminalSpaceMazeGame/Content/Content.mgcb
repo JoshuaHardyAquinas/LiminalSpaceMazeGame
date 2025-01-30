@@ -121,6 +121,12 @@
 /processorParam:TextureFormat=Color
 /build:Coin.png
 
+#begin coin2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:coin2.wav
+
 #begin crosshair.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -132,6 +138,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:crosshair.png
+
+#begin dark-ambient.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:dark-ambient.mp3
 
 #begin Dead.png
 /importer:TextureImporter
@@ -168,6 +180,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:exitOpen.png
+
+#begin explosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:explosion.wav
 
 #begin File.spritefont
 /importer:FontDescriptionImporter
@@ -260,6 +278,12 @@
 /processorParam:TextureFormat=Color
 /build:nullVoidDead.png
 
+#begin pickupCoin.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:pickupCoin.wav
+
 #begin ray.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -283,6 +307,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:rts.png
+
+#begin select.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:select.wav
 
 #begin Settings.png
 /importer:TextureImporter
