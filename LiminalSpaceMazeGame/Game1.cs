@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Threading;
 using System.IO;
+using Microsoft.Xna.Framework.Media;
 using SharpDX.Direct3D9;
 using Microsoft.Xna.Framework.Audio;
 using System.Xml.Linq;
@@ -25,6 +26,10 @@ namespace LiminalSpaceMazeGame
         UI crosshair;
         UI keyUI;
         UI levelDisplay;
+
+        Song mainSong;
+        bool playsong = true;
+        bool playing = false;
 
         GenerateMaze TheMaze;
         SpriteFont GameFont;
@@ -59,6 +64,7 @@ namespace LiminalSpaceMazeGame
 
         List<stateButtons> stateButtonList = new List<stateButtons>();
 
+        List<AudioSound> soundEffects = new List<AudioSound>();
 
         int[,] maze;
         int mazeHeight = 17;
@@ -188,7 +194,7 @@ namespace LiminalSpaceMazeGame
             newbut.LoadContent(Content);
             startButtons.Add();*/
 
-            //settings
+            //dead
             stateButtonList.Add(new stateButtons(new Vector2(108, 535), new Vector2(220, 100), GameState.Dead, 'R'));
             stateButtonList.Add(new stateButtons(new Vector2(382, 535), new Vector2(220, 100), GameState.Dead, 'E'));
 
@@ -201,11 +207,13 @@ namespace LiminalSpaceMazeGame
             stateButtonList.Add(new stateButtons(new Vector2(528, 456), new Vector2(156, 64), GameState.Shop, 's'));
             stateButtonList.Add(new stateButtons(new Vector2(545, 570), new Vector2(175, 150), GameState.Shop, 'E'));
 
+            //settings
             stateButtonList.Add(new stateButtons(new Vector2(70, 175), new Vector2(100, 100), GameState.Settings, 'S'));
             stateButtonList.Add(new stateButtons(new Vector2(545, 175), new Vector2(100, 100), GameState.Settings, 's'));
             stateButtonList.Add(new stateButtons(new Vector2(250, 598), new Vector2(220, 100), GameState.Settings, 'E'));
             stateButtonList.Add(new stateButtons(new Vector2(275, 360), new Vector2(220, 90), GameState.Settings, 'N'));
             stateButtonList.Add(new stateButtons(new Vector2(545, 353), new Vector2(85, 85), GameState.Settings, 'C'));
+            stateButtonList.Add(new stateButtons(new Vector2(260, 485), new Vector2(200, 100), GameState.Settings, 'M'));
 
             stateButtonList.Add(new stateButtons(new Vector2(250, 598), new Vector2(220, 100), GameState.Leaderboard, 'E'));
 
@@ -237,10 +245,53 @@ namespace LiminalSpaceMazeGame
             leaderboardMenu.LoadContent(Content, "Leaderboard", "nullVoidDead");
             deathMenu.LoadContent(Content, "Dead", "nullVoidDead");
             crosshair.LoadContent(Content);
+
+            mainSong = Content.Load<Song>("dark-ambient");
+            AudioSound newaudio = new AudioSound("select");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            newaudio = new AudioSound("coin2");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            newaudio = new AudioSound("pickupCoin");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            newaudio = new AudioSound("wrong");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            newaudio = new AudioSound("correct");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            newaudio = new AudioSound("explosion");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            //6
+            newaudio = new AudioSound("roar");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            //7
+            newaudio = new AudioSound("hurt");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            //8
+            newaudio = new AudioSound("died");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
         }
 
         protected override void Update(GameTime gameTime)
         {
+            if (playsong && !playing)
+            {
+                MediaPlayer.Play(mainSong);
+                MediaPlayer.IsRepeating = true;
+                playing = true;
+            }
+            else if (!playsong) 
+            {
+                MediaPlayer.Pause();
+                playing = false;
+            }
             ks1 = Keyboard.GetState();
             mouseState = Mouse.GetState();
             Rectangle mousePosition = new Rectangle(mouseState.X, mouseState.Y, 0, 0);
@@ -251,6 +302,7 @@ namespace LiminalSpaceMazeGame
                     {
                         if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released))
                         {
+                            soundEffects[0].play();
                             switch (button.buttonAction)
                             {
                                 case 'b':
@@ -276,6 +328,7 @@ namespace LiminalSpaceMazeGame
                     {
                         if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released))
                         {
+                            soundEffects[0].play();
                             switch (button.buttonAction)
                             {
                                 case 'H':
@@ -300,9 +353,15 @@ namespace LiminalSpaceMazeGame
                             switch (button.buttonAction)
                             {
                                 case 'E':
-                                    if (mouseState2.LeftButton == ButtonState.Released && TheHero.name != null && !nameChange)
+                                    if (mouseState2.LeftButton == ButtonState.Released && TheHero.name.Length>1 && !nameChange)
                                     {
+                                        soundEffects[0].play();
+
                                         currentState = GameState.StartMenu;
+                                    }
+                                    else
+                                    {
+                                        soundEffects[3].play();
                                     }
                                     break;
                                 case 's':
@@ -320,9 +379,20 @@ namespace LiminalSpaceMazeGame
                                     }
                                     break;
                                 case 'N':
+                                    soundEffects[0].play();
+
                                     nameChange = true;
                                     break;
+                                case 'M':
+                                    soundEffects[0].play();
+                                    if (mouseState2.LeftButton != ButtonState.Pressed)
+                                    {
+                                        playsong = !playsong;
+                                    }
+                                    break;
                                 case 'C':
+                                    soundEffects[4].play();
+
                                     nameChange = false;
                                     break;
                             }
@@ -356,6 +426,7 @@ namespace LiminalSpaceMazeGame
                     {
                         if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released) && button.buttonAction == 'E')
                         {
+                            soundEffects[0].play();
                             currentState = GameState.StartMenu;
                         }
                     }
@@ -367,19 +438,25 @@ namespace LiminalSpaceMazeGame
                     {
                         if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released))
                         {
+
                             switch (button.buttonAction)
                             {
+
                                 case 'E':
+                                    soundEffects[0].play();
+
                                     currentState = GameState.level;
                                     break;
                                 case 'S':
-                                    ShopItems[0] = TheHero.upgrade(ShopItems[0], levelNumber);
+                                    ShopItems[0] = TheHero.upgrade(ShopItems[0], levelNumber,soundEffects);
                                     break;
                                 case 'H':
-                                    ShopItems[1] = TheHero.upgrade(ShopItems[1], levelNumber);
+
+                                    ShopItems[1] = TheHero.upgrade(ShopItems[1], levelNumber, soundEffects);
                                     break;
                                 case 's':
-                                    ShopItems[2] = TheHero.upgrade(ShopItems[2], levelNumber);
+
+                                    ShopItems[2] = TheHero.upgrade(ShopItems[2], levelNumber, soundEffects);
                                     break;
                             }
                             break;
@@ -431,6 +508,7 @@ namespace LiminalSpaceMazeGame
                         if (col.Edge.Intersects(TheHero.Edge))
                         {
                             col.collect(TheHero);
+                            soundEffects[2].play();
                             Vector2 dis = new Vector2(col.Edge.Center.X, col.Edge.Center.Y) - TheHero.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
                             if (Math.Abs(dis.X) > Math.Abs(dis.Y))//move player away depending on what side is further on collision
                             {
@@ -471,10 +549,17 @@ namespace LiminalSpaceMazeGame
                         bool shootable = shotsFired(TheHero.rotation, TheHero.getLocation(), 200);
                         MonsterHealthBar.update(monster.gethealth(), monster.gethealthMax());
                         MonsterHealthBar.display = true;
+                        if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released))
+                        {
+                            soundEffects[5].play();
+                            TheHero.Stamina -= 100;
+                        }
                         if (shootable)
                         {
+                            soundEffects[6].play();
                             if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released))
                             {
+                                soundEffects[8].play();
                                 monster.loseHealth(TheHero.Damage);
                                 break;
                             }
@@ -483,6 +568,7 @@ namespace LiminalSpaceMazeGame
                         {
                             MonsterHealthBar.display = false;
                         }
+
 
                     }
                     gameObjects.Clear();
@@ -654,6 +740,7 @@ namespace LiminalSpaceMazeGame
                     }
                     if (TheHero.checkHealth() <= 0 || ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
+                        soundEffects[7].play();
                         NameValue newinput = new NameValue();
                         newinput.name = TheHero.name;
                         newinput.value = TheHero.points;
@@ -871,6 +958,15 @@ namespace LiminalSpaceMazeGame
                     {
                         spriteBatch.DrawString(GameFont, TheHero.name, new Vector2(290, 375), Color.Black, 0f, new Vector2(1, 1), 1.75f, SpriteEffects.None, 1);
                     }
+                    if (playsong)
+                    {
+                        spriteBatch.DrawString(GameFont, "mute", new Vector2(295, 500), Color.Green, 0f, new Vector2(1, 1), 2.25f, SpriteEffects.None, 1);
+                    }
+                    else
+                    {
+                        spriteBatch.DrawString(GameFont, "mute", new Vector2(295, 500), Color.Red, 0f, new Vector2(1, 1), 2.25f, SpriteEffects.None, 1);
+
+                    }
                     break;
                 case GameState.Leaderboard:
                     this.IsMouseVisible = true;
@@ -878,7 +974,6 @@ namespace LiminalSpaceMazeGame
                     spriteBatch.DrawString(GameFont, Playerleaderboards[0].name + " " + Playerleaderboards[0].value.ToString(), new Vector2(310, 205), Color.Gold, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
                     spriteBatch.DrawString(GameFont, Playerleaderboards[1].name + " " + Playerleaderboards[1].value.ToString(), new Vector2(310, 320), Color.Silver, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
                     spriteBatch.DrawString(GameFont, Playerleaderboards[2].name + " " + Playerleaderboards[2].value.ToString(), new Vector2(310, 435), Color.OrangeRed, 0f, new Vector2(1, 1), 1.5f, SpriteEffects.None, 1);
-
                     break;
                 case GameState.InGame:
                     this.IsMouseVisible = false;
