@@ -59,9 +59,8 @@ namespace LiminalSpaceMazeGame
         {
             //creates player edge
             Edge = new Rectangle((int)getLocation().X - Texture.Width / 2, (int)getLocation().Y - Texture.Height / 2, Texture.Width, Texture.Height);
-            move();
         }
-        protected void move()
+        public void move()
         {
             //checks for keyboard inputs
             KeyboardState ks = Keyboard.GetState();
@@ -173,16 +172,16 @@ namespace LiminalSpaceMazeGame
             Health = maxHealth;
         }
 
-        public NameValue upgrade(NameValue item, int levelNum, List<AudioSound> sound)
+        public NameValue upgrade(NameValue item, int levelNum, List<AudioSound> sound, bool play)
         {
             if ((item.value * levelNum*item.used) <= points)
             {
-                sound[1].play();
+                sound[1].play(play);
                 points -= item.value * levelNum * item.used;
             }
             else
             {
-                sound[3].play();
+                sound[3].play(play);
                 return item;
             }
 

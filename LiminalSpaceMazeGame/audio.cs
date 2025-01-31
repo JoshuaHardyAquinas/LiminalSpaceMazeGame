@@ -22,9 +22,12 @@ namespace LiminalSpaceMazeGame
         {
             music = Content.Load<SoundEffect>(musicName);
         }
-        public void play()
+        public void play(bool playcase)
         {
-            music.Play();
+            if (playcase)
+            {
+                music.Play();
+            }
         }
     }
 }

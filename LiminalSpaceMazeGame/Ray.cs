@@ -64,8 +64,8 @@ namespace LiminalSpaceMazeGame
                             }
                         }
                     }
-                    
                 }
+                speed += 0.2f;
                 if(Math.Abs(TheRay.getLocation().X-TheHero.getLocation().X) > maxCastLength || Math.Abs(TheRay.getLocation().Y - TheHero.getLocation().Y) > maxCastLength)
                 {
                     return new Vector2(maxCastLength, maxCastLength);

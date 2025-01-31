@@ -25,14 +25,17 @@ namespace LiminalSpaceMazeGame
         int[] currentCoords = { 0, 0 };
         float disToGo = 40;
         private bool dead = false;
+        private Vector2 spawnLoc;
+        int[,] maze;
         Direction previous = Direction.none;
 
         public new int Damage { get => damage; set => damage = value; }
 
-        public Monster(Vector2 startingLoc, int text, int multistat)
+        public Monster(Vector2 startingLoc, int text, int multistat, int[,] theMaze)
         {
+            maze = theMaze;
             Random random = new Random();
-            damage = 2 * random.Next((int)Math.Sqrt(multistat),multistat);
+            damage = 2 * random.Next((int)Math.Sqrt(multistat)*2,multistat*2);
             memoryStrength = 5 * multistat;
             health = random.Next((int)Math.Sqrt(multistat), (multistat/2)+1);
             maxHealth = health;
@@ -44,9 +47,9 @@ namespace LiminalSpaceMazeGame
             currentCoords[1] = (int)startingLoc.Y/40;
             nextCoords[0] = currentCoords[0];
             nextCoords[1] = currentCoords[1];
-            
+            spawnLoc = startingLoc;
         }
-        public void update(Hero theHero, int[,] theMaze)
+        public void update(Hero theHero)
         {
             if (dead)//dont move update if the monster is dead
             {
@@ -64,9 +67,9 @@ namespace LiminalSpaceMazeGame
                 {
                     for (int j = 0; j > 17; i++)
                     {
-                        if (theMaze[i,j] == 6)
+                        if (maze[i,j] == 6)
                         {
-                            theMaze[i,j] = 1;
+                            maze[i,j] = 1;
                         }
                     }
                 }
@@ -81,7 +84,7 @@ namespace LiminalSpaceMazeGame
             }
             else // wander movement
             {
-                move(theMaze, theHero);
+                move(theHero);
             }
             if (memory == 1)
             {
@@ -102,7 +105,7 @@ namespace LiminalSpaceMazeGame
             Movement.X = 1.1f * (float)Math.Sin(rotation);// --//--
             Movement.Y = -1.1f * (float)Math.Cos(rotation);
         }
-        private void move(int[,] maze, Hero theHero)
+        private void move(Hero theHero)
         {
             Random rnd = new Random();
 
