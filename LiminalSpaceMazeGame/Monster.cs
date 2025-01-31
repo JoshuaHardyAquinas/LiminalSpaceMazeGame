@@ -37,7 +37,7 @@ namespace LiminalSpaceMazeGame
             Random random = new Random();
             damage = 2 * random.Next((int)Math.Sqrt(multistat)*2,multistat*2);
             memoryStrength = 5 * multistat;
-            health = random.Next((int)Math.Sqrt(multistat), (multistat/2)+1);
+            health = random.Next(multistat*2, multistat*4);
             maxHealth = health;
             Speed = (float)random.NextDouble() *((float)Math.Sqrt(Math.Sqrt(multistat))-1) + 1f;
             spawn(startingLoc);

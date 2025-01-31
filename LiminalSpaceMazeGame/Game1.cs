@@ -576,7 +576,7 @@ namespace LiminalSpaceMazeGame
                         {
                             soundEffects[6].play(playfx);
                         }
-                        else
+                        if (!shootable)
                         {
                             MonsterHealthBar.display = false;
                         }
