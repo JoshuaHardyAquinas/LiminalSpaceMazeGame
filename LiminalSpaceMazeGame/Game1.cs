@@ -246,7 +246,7 @@ namespace LiminalSpaceMazeGame
             deathMenu.LoadContent(Content, "Dead", "nullVoidDead");
             crosshair.LoadContent(Content);
 
-            mainSong = Content.Load<Song>("dark-ambient");
+            //mainSong = Content.Load<Song>("dark-ambient");
             AudioSound newaudio = new AudioSound("select");
             newaudio.loadContent(Content);
             soundEffects.Add(newaudio);
@@ -283,7 +283,7 @@ namespace LiminalSpaceMazeGame
         {
             if (playsong && !playing)
             {
-                MediaPlayer.Play(mainSong);
+                //MediaPlayer.Play(mainSong);
                 MediaPlayer.IsRepeating = true;
                 playing = true;
             }
