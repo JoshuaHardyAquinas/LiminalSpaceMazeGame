@@ -173,14 +173,16 @@ namespace LiminalSpaceMazeGame
             Health = maxHealth;
         }
 
-        public NameValue upgrade(NameValue item, int levelNum)
+        public NameValue upgrade(NameValue item, int levelNum, List<AudioSound> sound)
         {
             if ((item.value * levelNum*item.used) <= points)
             {
+                sound[1].play();
                 points -= item.value * levelNum * item.used;
             }
             else
             {
+                sound[3].play();
                 return item;
             }
 

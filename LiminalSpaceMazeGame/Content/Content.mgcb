@@ -127,6 +127,12 @@
 /processorParam:Quality=Best
 /build:coin2.wav
 
+#begin correct.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:correct.wav
+
 #begin crosshair.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -156,6 +162,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Dead.png
+
+#begin died.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:died.wav
 
 #begin door_3d.png
 /importer:TextureImporter
@@ -205,6 +217,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:HelpScreen.png
+
+#begin hurt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:hurt.wav
 
 #begin key_3d.png
 /importer:TextureImporter
@@ -296,6 +314,12 @@
 /processorParam:TextureFormat=Color
 /build:ray.png
 
+#begin roar.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:roar.wav
+
 #begin rts.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -373,4 +397,10 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:WelcomeScreen.png
+
+#begin wrong.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:wrong.wav
 
