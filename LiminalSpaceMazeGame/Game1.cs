@@ -271,6 +271,7 @@ namespace LiminalSpaceMazeGame
             //6
             newaudio = new AudioSound("roar");
             newaudio.loadContent(Content);
+            
             soundEffects.Add(newaudio);
             //7
             newaudio = new AudioSound("hurt");
@@ -278,6 +279,14 @@ namespace LiminalSpaceMazeGame
             soundEffects.Add(newaudio);
             //8
             newaudio = new AudioSound("died");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            //9
+            newaudio = new AudioSound("level complete");
+            newaudio.loadContent(Content);
+            soundEffects.Add(newaudio);
+            //10
+            newaudio = new AudioSound("no Ammo");
             newaudio.loadContent(Content);
             soundEffects.Add(newaudio);
         }
@@ -554,34 +563,35 @@ namespace LiminalSpaceMazeGame
                         newObj.name = 'M';
                         gameObjects.Add(newObj);
                         monster.lineOfSight = shotsFired(monster.rotation + 3.14f, TheHero.getLocation(), 400);
-                        bool shootable = shotsFired(TheHero.rotation, TheHero.getLocation(), 200);
+                        monster.shootable = shotsFired(TheHero.rotation, TheHero.getLocation(), 200);
                         MonsterHealthBar.update(monster.gethealth(), monster.gethealthMax());
-                        MonsterHealthBar.display = true;
                         if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released) && TheHero.Stamina >= 100)
                         {
-                            soundEffects[5].play(playfx);
-
-                            TheHero.Stamina -= 100;
-                            if (shootable)
+                            if (TheHero.Stamina >= 100)
                             {
-                                monster.loseHealth(TheHero.Damage);
-                                if (monster.gethealth() < 0)
+                                soundEffects[5].play(playfx);
+
+                                TheHero.Stamina -= 100;
+                                if (monster.shootable)
                                 {
-                                    soundEffects[7].play(playfx);
+                                    monster.loseHealth(TheHero.Damage);
+                                    if (monster.gethealth() < 0)
+                                    {
+                                        soundEffects[7].play(playfx);
+                                    }
+                                    break;
                                 }
-                                break;
                             }
+                            else
+                            {
+                                soundEffects[10].play(playfx);
+                            }
+                            
                         }
                         if (monster.lineOfSight)
                         {
                             soundEffects[6].play(playfx);
                         }
-                        if (!shootable)
-                        {
-                            MonsterHealthBar.display = false;
-                        }
-
-
                     }
                     gameObjects.Clear();
                     foreach (ExitDoor exitDoor in Exits)
@@ -828,6 +838,8 @@ namespace LiminalSpaceMazeGame
                     levelGen = false;
                     levelNumber++;
                     monsters.Clear();
+                    TheHero.collected.Clear();
+                    soundEffects[9].play(playfx);
                     currentState = GameState.Shop;
                     break;
                 default:
@@ -1090,6 +1102,16 @@ namespace LiminalSpaceMazeGame
                             StaminaBar.draw(spriteBatch);
                             HealthBar.draw(spriteBatch);
                             ShieldBar.draw(spriteBatch);
+                            MonsterHealthBar.display = false;
+
+                            foreach (Monster monster in monsters)
+                            {
+                                if(monster.shootable == true)
+                                {
+                                    MonsterHealthBar.display = true;
+                                    break;
+                                }
+                            }
                             MonsterHealthBar.draw(spriteBatch);
                             keyUI.draw(spriteBatch);
                             spriteBatch.DrawString(GameFont, (TheHero.points).ToString(), new Vector2(TheUI.getLocation().X + 386f, TheUI.getLocation().Y + 19f), Color.Black);

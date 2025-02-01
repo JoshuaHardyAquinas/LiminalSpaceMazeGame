@@ -27,6 +27,7 @@ namespace LiminalSpaceMazeGame
         private bool dead = false;
         private Vector2 spawnLoc;
         int[,] maze;
+        public bool shootable;
         Direction previous = Direction.none;
 
         public new int Damage { get => damage; set => damage = value; }
