@@ -34,7 +34,7 @@ namespace LiminalSpaceMazeGame
 
         public Monster(Vector2 startingLoc, int text, int multistat, int[,] theMaze)
         {
-            maze = theMaze;
+            maze = (int[,])theMaze.Clone();
             Random random = new Random();
             damage = 2 * random.Next((int)Math.Sqrt(multistat)*2,multistat*2);
             memoryStrength = 5 * multistat;
@@ -52,17 +52,13 @@ namespace LiminalSpaceMazeGame
         }
         public void update(Hero theHero)
         {
-            if (dead)//dont move update if the monster is dead
-            {
-                return;
-            }
             base.update();
             //creates player edge
             Vector2 centreDis = theHero.getLocation() - getLocation();
             double tangent = (double)Math.Sqrt(centreDis.X* centreDis.X + centreDis.Y* centreDis.Y);
             
 
-            if (lineOfSight == true)// direct follow movement
+            if (lineOfSight == true && disToGo == 0)// direct follow movement
             {
                 for (int i = 0; i > 17; i++)
                 {
@@ -247,10 +243,6 @@ namespace LiminalSpaceMazeGame
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw player including rotation
-            if (dead)//do not draw if the monster is dead
-            {
-                return;
-            }
             spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
         public void loseHealth(int toLose)
@@ -258,9 +250,19 @@ namespace LiminalSpaceMazeGame
             health -= toLose;//teleport outside the map and disable monster 
             if (health <= 0)
             {
-                dead = true;
-                
-                setLocation(new Vector2(-40, -40));
+                for (int i = 0; i < 16; i++)
+                {
+                    for (int j = 0; j < 16; j++)
+                    {
+                        if (maze[i, j] == 6)
+                        {
+                            maze[i, j] = 1;
+                        }
+                    }
+                }
+                disToGo = 160;
+                spawn(spawnLoc);
+                health = maxHealth;
             }
         }
         public int gethealth()

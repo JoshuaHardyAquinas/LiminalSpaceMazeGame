@@ -391,7 +391,10 @@ namespace LiminalSpaceMazeGame
                                     }
                                     break;
                                 case 'N':
-                                    soundEffects[0].play(playfx);
+                                    if (mouseState2.LeftButton != ButtonState.Pressed)
+                                    {
+                                        soundEffects[0].play(playfx);
+                                    }
 
                                     nameChange = true;
                                     break;
@@ -416,7 +419,6 @@ namespace LiminalSpaceMazeGame
                                         soundEffects[4].play(playfx);
                                         nameChange = false;
                                     }
-                                    
                                     break;
                             }
                             break;
@@ -562,10 +564,10 @@ namespace LiminalSpaceMazeGame
                         newObj.objectLocation = monster.getLocation();
                         newObj.name = 'M';
                         gameObjects.Add(newObj);
-                        monster.lineOfSight = shotsFired(monster.rotation + 3.14f, TheHero.getLocation(), 400);
+                        monster.lineOfSight = shotsFired(monster.rotation + 3.14f, TheHero.getLocation(), 200);
                         monster.shootable = shotsFired(TheHero.rotation, TheHero.getLocation(), 200);
                         MonsterHealthBar.update(monster.gethealth(), monster.gethealthMax());
-                        if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released) && TheHero.Stamina >= 100)
+                        if ((mouseState.LeftButton == ButtonState.Pressed) && (mouseState2.LeftButton == ButtonState.Released))
                         {
                             if (TheHero.Stamina >= 100)
                             {
