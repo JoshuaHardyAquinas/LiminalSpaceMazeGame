@@ -564,6 +564,10 @@ namespace LiminalSpaceMazeGame
                         newObj.objectLocation = monster.getLocation();
                         newObj.name = 'M';
                         gameObjects.Add(newObj);
+                        if (monster.lineOfSight == false && monster.lineOfSight != shotsFired(monster.rotation + 3.14f, TheHero.getLocation(), 200))
+                        {
+                            soundEffects[6].play(playfx);
+                        }
                         monster.lineOfSight = shotsFired(monster.rotation + 3.14f, TheHero.getLocation(), 200);
                         monster.shootable = shotsFired(TheHero.rotation, TheHero.getLocation(), 200);
                         MonsterHealthBar.update(monster.gethealth(), monster.gethealthMax());
@@ -590,10 +594,7 @@ namespace LiminalSpaceMazeGame
                             }
                             
                         }
-                        if (monster.lineOfSight)
-                        {
-                            soundEffects[6].play(playfx);
-                        }
+                        
                     }
                     gameObjects.Clear();
                     foreach (ExitDoor exitDoor in Exits)
@@ -634,54 +635,56 @@ namespace LiminalSpaceMazeGame
                     foreach (Monster monster in monsters)
                     {
                         monster.update();
-
-                        if (monster.Edge.Intersects(TheHero.Edge))
+                        if (!monster.dead)
                         {
-                            centreDis = TheHero.getLocation() - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
-                            if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
+                            if (monster.Edge.Intersects(TheHero.Edge))
                             {
-                                monster.setLocation(new Vector2(centreDis.X * -0.25f + monster.getLocation().X, monster.getLocation().Y));
-                                TheHero.setLocation(new Vector2(centreDis.X * +0.125f + TheHero.getLocation().X, TheHero.getLocation().Y));
-                            }
-                            else
-                            {
-                                monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.25f + monster.getLocation().Y));
-                                TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * +0.125f + TheHero.getLocation().Y));
-                            }
-                            TheHero.loseHealth(monster.Damage);
-                        }
-                        foreach (Monster mns in monsters)
-                        {
-                            if (mns.Edge.Intersects(monster.Edge) && mns.getLocation() != monster.getLocation())
-                            {
-                                centreDis = new Vector2(mns.Edge.Center.X, mns.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                                centreDis = TheHero.getLocation() - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
                                 if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
                                 {
-                                    monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
-                                    mns.setLocation(new Vector2(centreDis.X * +0.25f + mns.getLocation().X, mns.getLocation().Y));
+                                    monster.setLocation(new Vector2(centreDis.X * -0.25f + monster.getLocation().X, monster.getLocation().Y));
+                                    TheHero.setLocation(new Vector2(centreDis.X * +0.125f + TheHero.getLocation().X, TheHero.getLocation().Y));
                                 }
                                 else
                                 {
-                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
-                                    mns.setLocation(new Vector2(mns.getLocation().X, centreDis.Y * +0.25f + mns.getLocation().Y));
+                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.25f + monster.getLocation().Y));
+                                    TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * +0.125f + TheHero.getLocation().Y));
                                 }
+                                TheHero.loseHealth(monster.Damage);
                             }
-                        }
-                        foreach (ExitDoor exit in Exits)
-                        {
-                            if (monster.Edge.Intersects(exit.Edge))
+                            foreach (Monster mns in monsters)
                             {
-                                centreDis = new Vector2(exit.Edge.Center.X, exit.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
-                                if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move player away depending on what side is further on collision
+                                if (mns.Edge.Intersects(monster.Edge) && mns.getLocation() != monster.getLocation())
                                 {
-                                    monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
-                                }
-                                else
-                                {
-                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
+                                    centreDis = new Vector2(mns.Edge.Center.X, mns.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                                    if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
+                                    {
+                                        monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
+                                        mns.setLocation(new Vector2(centreDis.X * +0.25f + mns.getLocation().X, mns.getLocation().Y));
+                                    }
+                                    else
+                                    {
+                                        monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
+                                        mns.setLocation(new Vector2(mns.getLocation().X, centreDis.Y * +0.25f + mns.getLocation().Y));
+                                    }
                                 }
                             }
-                        }
+                            foreach (ExitDoor exit in Exits)
+                            {
+                                if (monster.Edge.Intersects(exit.Edge))
+                                {
+                                    centreDis = new Vector2(exit.Edge.Center.X, exit.Edge.Center.Y) - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
+                                    if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move player away depending on what side is further on collision
+                                    {
+                                        monster.setLocation(new Vector2(centreDis.X * -0.125f + monster.getLocation().X, monster.getLocation().Y));
+                                    }
+                                    else
+                                    {
+                                        monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.125f + monster.getLocation().Y));
+                                    }
+                                }
+                            }
+                        } 
                     }
                     //checks every singe wall for a collision, inefficient but not intensive enough that it causes issues since the 1st check is a collision check
 
@@ -752,11 +755,14 @@ namespace LiminalSpaceMazeGame
                         rayCast(400, 'E');
                         foreach (var monster in monsters)
                         {
-                            ObjInGame newObj = new ObjInGame();
-                            newObj.objectEdge = monster.Edge;
-                            newObj.objectLocation = monster.getLocation();
-                            newObj.name = 'M';
-                            gameObjects.Add(newObj);
+                            if (!monster.dead)
+                            {
+                                ObjInGame newObj = new ObjInGame();
+                                newObj.objectEdge = monster.Edge;
+                                newObj.objectLocation = monster.getLocation();
+                                newObj.name = 'M';
+                                gameObjects.Add(newObj);
+                            }
                         }
                         rayCast(400, 'M');
 
@@ -764,6 +770,7 @@ namespace LiminalSpaceMazeGame
                     }
                     if (TheHero.checkHealth() <= 0 || ks1.IsKeyDown(Keys.Enter) && ks2.IsKeyUp(Keys.Enter))
                     {
+                        TheHero.points = TheHero.points*levelNumber;
                         soundEffects[8].play(playfx);
                         NameValue newinput = new NameValue();
                         newinput.name = TheHero.name;

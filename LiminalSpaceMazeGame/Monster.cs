@@ -20,11 +20,11 @@ namespace LiminalSpaceMazeGame
         private int maxHealth;
         public bool lineOfSight = false;
         public float memory = 0;
+        public bool dead = false;
         private bool blockoff = true;
         private int[] nextCoords = { 0, 0 };
         int[] currentCoords = { 0, 0 };
         float disToGo = 40;
-        private bool dead = false;
         private Vector2 spawnLoc;
         int[,] maze;
         public bool shootable;
@@ -57,6 +57,10 @@ namespace LiminalSpaceMazeGame
             Vector2 centreDis = theHero.getLocation() - getLocation();
             double tangent = (double)Math.Sqrt(centreDis.X* centreDis.X + centreDis.Y* centreDis.Y);
             
+            if (disToGo< 40)
+            {
+                dead = false;
+            }
 
             if (lineOfSight == true && disToGo == 0)// direct follow movement
             {
@@ -226,7 +230,6 @@ namespace LiminalSpaceMazeGame
                     previous = Direction.none;
                     break;
             }
-
         }
         public override void LoadContent(ContentManager Content)
         {
@@ -243,6 +246,10 @@ namespace LiminalSpaceMazeGame
         public override void draw(SpriteBatch spriteBatch)
         {
             //draw player including rotation
+            if (disToGo > 40)
+            {
+                return;
+            }
             spriteBatch.Draw(Texture, getLocation(), new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, (float)rotation, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
         public void loseHealth(int toLose)
@@ -250,6 +257,7 @@ namespace LiminalSpaceMazeGame
             health -= toLose;//teleport outside the map and disable monster 
             if (health <= 0)
             {
+                dead = true;
                 for (int i = 0; i < 16; i++)
                 {
                     for (int j = 0; j < 16; j++)
@@ -263,6 +271,10 @@ namespace LiminalSpaceMazeGame
                 disToGo = 160;
                 spawn(spawnLoc);
                 health = maxHealth;
+                currentCoords[0] = (int)spawnLoc.X / 40;
+                currentCoords[1] = (int)spawnLoc.Y / 40;
+                nextCoords[0] = currentCoords[0];
+                nextCoords[1] = currentCoords[1];
             }
         }
         public int gethealth()

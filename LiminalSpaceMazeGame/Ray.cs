@@ -37,7 +37,7 @@ namespace LiminalSpaceMazeGame
         }
         static public Vector2 cast(int angle, Hero TheHero, Ray TheRay,List<ObjInGame> ingameObjects,ref Vector2 centreDis,int maxCastLength, ref char objHit, char toHit,char wallType)
         {
-            float speed = 3f;
+            float speed = 1f;
             TheRay.setLocation(TheHero.getLocation());
             TheRay.rotation = TheHero.rotation;
             TheRay.rotation = TheRay.rotation + (angle / 180f) * 3.14159265f / 2;
@@ -65,8 +65,9 @@ namespace LiminalSpaceMazeGame
                         }
                     }
                 }
-                speed += 0.2f;
-                if(Math.Abs(TheRay.getLocation().X-TheHero.getLocation().X) > maxCastLength || Math.Abs(TheRay.getLocation().Y - TheHero.getLocation().Y) > maxCastLength)
+                speed += 0.1f;
+                TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
+                if (Math.Abs(TheRay.getLocation().X-TheHero.getLocation().X) > maxCastLength || Math.Abs(TheRay.getLocation().Y - TheHero.getLocation().Y) > maxCastLength)
                 {
                     return new Vector2(maxCastLength, maxCastLength);
                 }
