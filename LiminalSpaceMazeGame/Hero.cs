@@ -1,5 +1,4 @@
-﻿using Assimp.Configs;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -69,7 +68,7 @@ namespace LiminalSpaceMazeGame
             int speed = 1;
             if (stamina < staminaMax && (stamina > 40 || !cooldown))
             {
-                stamina = stamina + 2*staminaMax/1000;
+                stamina = stamina + 2 * staminaMax / 1000;
             }
             if (ks.IsKeyDown(Keys.LeftShift) && !cooldown)
             {
@@ -174,7 +173,7 @@ namespace LiminalSpaceMazeGame
 
         public NameValue upgrade(NameValue item, int levelNum, List<AudioSound> sound, bool play)
         {
-            if ((item.value * levelNum*item.used) <= points)
+            if ((item.value * levelNum * item.used) <= points)
             {
                 sound[1].play(play);
                 points -= item.value * levelNum * item.used;
@@ -196,13 +195,13 @@ namespace LiminalSpaceMazeGame
                     stamina = staminaMax;
                     break;
                 case "e":
-                    MaxHealth = (int)(staminaMax * Math.Sqrt(levelNum+1));
+                    MaxHealth = (int)(staminaMax * Math.Sqrt(levelNum + 1));
                     Health = maxHealth;
                     break;
             }
             item.used = item.used + 1;
             return item;
-            
+
         }
         public void reset()
         {

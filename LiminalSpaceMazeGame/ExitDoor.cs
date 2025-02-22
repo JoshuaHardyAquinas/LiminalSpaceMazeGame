@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.VisualBasic.Logging;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class ExitDoor: StationaryObject
+    internal class ExitDoor : StationaryObject
     {
         public bool Available = false;
         public int textureNumber = 1;
@@ -24,7 +18,7 @@ namespace LiminalSpaceMazeGame
         {
             foreach (char collectable in collected)
             {
-                if(collectable == 'K')
+                if (collectable == 'K')
                 {
                     Available = true;
                 }

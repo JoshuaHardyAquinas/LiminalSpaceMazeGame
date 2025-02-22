@@ -1,9 +1,8 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.ComponentModel.Design.Serialization;
 using static LiminalSpaceMazeGame.Game1;
 
 namespace LiminalSpaceMazeGame
@@ -12,7 +11,7 @@ namespace LiminalSpaceMazeGame
     {
         public Ray()
         {
-            
+
         }
         public override void update()
         {
@@ -35,7 +34,7 @@ namespace LiminalSpaceMazeGame
             //draw player including rotation
             //spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, 0, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
         }
-        static public Vector2 cast(int angle, Hero TheHero, Ray TheRay,List<ObjInGame> ingameObjects,ref Vector2 centreDis,int maxCastLength, ref char objHit, char toHit,char wallType)
+        static public Vector2 cast(int angle, Hero TheHero, Ray TheRay, List<ObjInGame> ingameObjects, ref Vector2 centreDis, int maxCastLength, ref char objHit, char toHit, char wallType)
         {
             float speed = 1f;
             TheRay.setLocation(TheHero.getLocation());
@@ -52,9 +51,9 @@ namespace LiminalSpaceMazeGame
                     if (Obj.objectEdge.Intersects(TheRay.Edge) && (Obj.name == toHit || Obj.name == wallType))//check collision with hitbox
                     {
                         TheRay.setLocation(TheRay.getLocation() - TheRay.Movement * 1.1f);//move ray backwards a lil further than the last hit
-                        for (int i = 0; i<11;i++)//increase ray accuracy for a known hit by moving slower to the actual location
+                        for (int i = 0; i < 11; i++)//increase ray accuracy for a known hit by moving slower to the actual location
                         {
-                            TheRay.setLocation(TheRay.getLocation() + TheRay.Movement*0.1f);//move 
+                            TheRay.setLocation(TheRay.getLocation() + TheRay.Movement * 0.1f);//move 
                             TheRay.update();
                             if (Obj.objectEdge.Intersects(TheRay.Edge))//check collision with hitbox
                             {
@@ -67,7 +66,7 @@ namespace LiminalSpaceMazeGame
                 }
                 speed += 0.1f;
                 TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
-                if (Math.Abs(TheRay.getLocation().X-TheHero.getLocation().X) > maxCastLength || Math.Abs(TheRay.getLocation().Y - TheHero.getLocation().Y) > maxCastLength)
+                if (Math.Abs(TheRay.getLocation().X - TheHero.getLocation().X) > maxCastLength || Math.Abs(TheRay.getLocation().Y - TheHero.getLocation().Y) > maxCastLength)
                 {
                     return new Vector2(maxCastLength, maxCastLength);
                 }

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace LiminalSpaceMazeGame
 {
@@ -20,12 +13,12 @@ namespace LiminalSpaceMazeGame
             West
         }
         protected static Random rnd = new Random();
-        public int[,] GenerateNewMaze(int mazeWidth,int mazeHeight)
+        public int[,] GenerateNewMaze(int mazeWidth, int mazeHeight)
         {
             //create maze using pre sizes
             int[,] newMaze = new int[mazeWidth, mazeHeight];
             //starting cords are 1,1 so there is an outer wall
-            
+
             int[] startingCoords = { 1, 1 };
             int[] nextCoords = { 1, 1 };
             //begin recursive backtracking using variables that are already pre defined
@@ -69,7 +62,7 @@ namespace LiminalSpaceMazeGame
                     break;
                 }
             }
-            if (nullCase)//if there is no locations then backtrack to prec location
+            if (nullCase)//if there is no locations then backtrack to prev location
             {
                 maze[currentCoords[0], currentCoords[1]] += 1;
                 return maze;
@@ -112,7 +105,7 @@ namespace LiminalSpaceMazeGame
                 maze[currentCoords[0], currentCoords[1]] = 1;//adds next cords to maze
                 currentCoords = (int[])nextCoords.Clone();
                 backtrackingMazeAlg(nextCoords, nextCoords, maze, length, width);//backtracking
-                backtrackingMazeAlg(currentCoords,currentCoords, maze, length, width);//move to next space in maze
+                backtrackingMazeAlg(currentCoords, currentCoords, maze, length, width);//move to next space in maze
             }
             return maze;//once backtracking is complete there is no other space to be than the start so maze is complete!
         }

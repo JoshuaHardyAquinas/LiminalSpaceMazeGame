@@ -1,17 +1,11 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using SharpDX.DirectWrite;
 
 namespace LiminalSpaceMazeGame
 {
-     class Monster : MovingObject
+    class Monster : MovingObject
     {
         private int textnum = 0;
         private int damage;
@@ -36,16 +30,16 @@ namespace LiminalSpaceMazeGame
         {
             maze = (int[,])theMaze.Clone();
             Random random = new Random();
-            damage = 2 * random.Next((int)Math.Sqrt(multistat)*2,multistat*2);
+            damage = 2 * random.Next((int)Math.Sqrt(multistat) * 2, multistat * 2);
             memoryStrength = 5 * multistat;
-            health = random.Next(multistat*2, multistat*4);
+            health = random.Next(multistat * 2, multistat * 4);
             maxHealth = health;
-            Speed = (float)random.NextDouble() *((float)Math.Sqrt(Math.Sqrt(multistat))-1) + 1f;
+            Speed = (float)random.NextDouble() * ((float)Math.Sqrt(Math.Sqrt(multistat)) - 1) + 1f;
             spawn(startingLoc);
             textnum = 0;
             rotation = 0f;
-            currentCoords[0] = (int)startingLoc.X/40;
-            currentCoords[1] = (int)startingLoc.Y/40;
+            currentCoords[0] = (int)startingLoc.X / 40;
+            currentCoords[1] = (int)startingLoc.Y / 40;
             nextCoords[0] = currentCoords[0];
             nextCoords[1] = currentCoords[1];
             spawnLoc = startingLoc;
@@ -55,9 +49,9 @@ namespace LiminalSpaceMazeGame
             base.update();
             //creates player edge
             Vector2 centreDis = theHero.getLocation() - getLocation();
-            double tangent = (double)Math.Sqrt(centreDis.X* centreDis.X + centreDis.Y* centreDis.Y);
-            
-            if (disToGo< 40)
+            double tangent = (double)Math.Sqrt(centreDis.X * centreDis.X + centreDis.Y * centreDis.Y);
+
+            if (disToGo < 40)
             {
                 dead = false;
             }
@@ -68,14 +62,14 @@ namespace LiminalSpaceMazeGame
                 {
                     for (int j = 0; j > 17; i++)
                     {
-                        if (maze[i,j] == 6)
+                        if (maze[i, j] == 6)
                         {
-                            maze[i,j] = 1;
+                            maze[i, j] = 1;
                         }
                     }
                 }
                 follow();
-                memory = memoryStrength/Speed;
+                memory = memoryStrength / Speed;
             }
             else if (memory > 0)
             {
@@ -95,7 +89,7 @@ namespace LiminalSpaceMazeGame
                 currentCoords[1] = nextCoords[1];
                 memory = 0;
             }
-            setLocation(getLocation() - (Movement*new Vector2(Speed,Speed)));
+            setLocation(getLocation() - (Movement * new Vector2(Speed, Speed)));
             //rotation = PI / 32;
             //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
             //Movement.Y = -1* (float)Math.Cos(rotation);
@@ -120,7 +114,7 @@ namespace LiminalSpaceMazeGame
             currentCoords[0] = nextCoords[0];
             currentCoords[1] = nextCoords[1];
             setLocation(new Vector2(currentCoords[0] * 40, currentCoords[1] * 40));
-            disToGo = 40f/Speed;
+            disToGo = 40f / Speed;
             Direction[] dir = {
                 Direction.North,
                 Direction.South,
@@ -153,11 +147,11 @@ namespace LiminalSpaceMazeGame
                     count++;
                 }
             }
-            if (count >1)//method to block off dead ends to prevent looping
+            if (count > 1)//method to block off dead ends to prevent looping
             {
                 blockoff = false;
             }
-            if(blockoff&& count == 1)
+            if (blockoff && count == 1)
             {
                 maze[currentCoords[0], currentCoords[1]] = 6;
             }
@@ -169,7 +163,7 @@ namespace LiminalSpaceMazeGame
                 return;
             }
             Vector2 centreDis = theHero.getLocation() - getLocation();//check if the vertical or horizontal distance is greater
-            if (Math.Abs(centreDis.Y) >= Math.Abs(centreDis. X))
+            if (Math.Abs(centreDis.Y) >= Math.Abs(centreDis.X))
             {
                 if (getLocation().Y >= theHero.getLocation().Y && dir[0] != Direction.none)//if the player is lower move up if possible
                 {

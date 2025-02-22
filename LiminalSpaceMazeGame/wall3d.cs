@@ -1,18 +1,12 @@
-﻿using Microsoft.Xna.Framework.Content;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System.Windows.Forms;
-using System.Net.Security;
+using System;
 
 
 namespace LiminalSpaceMazeGame
 {
-    public class wall3d: StationaryObject 
+    public class wall3d : StationaryObject
     {
         protected static Random rnd = new Random();
         private int Width;
@@ -37,7 +31,7 @@ namespace LiminalSpaceMazeGame
 
 
             centreDistance = centreDis;
-            
+
             Vector2 location = new Vector2(slice * 4, gameRes.Y / 2 - (float)wallHieght / 2);//move slice to specific place on screen
             type = objHit;
             Height = Convert.ToInt32(wallHieght);
@@ -47,7 +41,7 @@ namespace LiminalSpaceMazeGame
         {
 
         }
-        public void LoadContent(ContentManager Content,bool ex)
+        public void LoadContent(ContentManager Content, bool ex)
         {
             Width = 40;
             switch (type)
@@ -99,7 +93,7 @@ namespace LiminalSpaceMazeGame
             }
             rectangle = new Rectangle(textureSlice * 4, 0, 4, 400);
             //draw in location
-            spriteBatch.Draw(Texture, new Rectangle((int)getLocation().X,(int)getLocation().Y,4,Height), rectangle, Color.White);//draws and streatches texture to its correct size from its original
+            spriteBatch.Draw(Texture, new Rectangle((int)getLocation().X, (int)getLocation().Y, 4, Height), rectangle, Color.White);//draws and streatches texture to its correct size from its original
         }
     }
 }
