@@ -1,21 +1,15 @@
-﻿using Microsoft.Xna.Framework.Content;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System.Windows.Forms;
 
 namespace LiminalSpaceMazeGame
 {
-    public class Wall:StationaryObject
+    public class Wall : StationaryObject
     {
-        public Wall(int i,int j)
+        public Wall(int i, int j)
         {
             //set location and use the texture size as a grid
-            spawn(new Vector2(i * 40-20, j * 40-20));
+            spawn(new Vector2(i * 40 - 20, j * 40 - 20));
             objWidth = 40;
             objHeight = 40;
         }

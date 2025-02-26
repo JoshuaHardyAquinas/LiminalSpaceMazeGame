@@ -260,6 +260,12 @@
 /processorParam:TextureFormat=Color
 /build:Leaderboard.png
 
+#begin level complete.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:level complete.wav
+
 #begin Level screen.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -283,6 +289,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Monster2d.png
+
+#begin no Ammo.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:no Ammo.wav
 
 #begin nullVoidDead.png
 /importer:TextureImporter
