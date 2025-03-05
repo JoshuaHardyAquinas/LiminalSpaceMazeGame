@@ -49,9 +49,8 @@ namespace LiminalSpaceMazeGame
             base.update();
             //creates player edge
             Vector2 centreDis = theHero.getLocation() - getLocation();
-            double tangent = (double)Math.Sqrt(centreDis.X * centreDis.X + centreDis.Y * centreDis.Y);
 
-            if (disToGo < 40)
+            if (disToGo < 40)//only move if the monster is alive
             {
                 dead = false;
             }
@@ -90,10 +89,6 @@ namespace LiminalSpaceMazeGame
                 memory = 0;
             }
             setLocation(getLocation() - (Movement * new Vector2(Speed, Speed)));
-            //rotation = PI / 32;
-            //Movement.X = 1 * (float)Math.Sin(rotation);//trig to edit players directional movement
-            //Movement.Y = -1* (float)Math.Cos(rotation);
-
         }
         private void follow()
         {

@@ -64,7 +64,7 @@ namespace LiminalSpaceMazeGame
                         }
                     }
                 }
-                speed += 0.1f;
+                speed += 0.2f;
                 TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
                 if (Math.Abs(TheRay.getLocation().X - TheHero.getLocation().X) > maxCastLength || Math.Abs(TheRay.getLocation().Y - TheHero.getLocation().Y) > maxCastLength)
                 {
