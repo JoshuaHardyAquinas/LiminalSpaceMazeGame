@@ -10,15 +10,6 @@ namespace LiminalSpaceMazeGame
         private Texture2D background;
         private Texture2D forground;
         public bool displayFg;
-
-        public stateClass()
-        {
-
-        }
-        public void update()
-        {
-
-        }
         public void LoadContent(ContentManager Content, string bg, string fg)
         {
             //load player texture

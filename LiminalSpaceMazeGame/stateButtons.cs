@@ -18,18 +18,5 @@ namespace LiminalSpaceMazeGame
             objWidth = (int)size.X;
             objHeight = (int)size.Y;
         }
-        public override void update()
-        {
-
-        }
-        public void LoadContent(ContentManager Content, string texture)
-        {
-            Texture = Content.Load<Texture2D>(@texture);
-        }
-
-        public override void draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Texture, Edge, Color.White);
-        }
     }
 }

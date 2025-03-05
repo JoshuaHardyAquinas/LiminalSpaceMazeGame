@@ -13,10 +13,6 @@ namespace LiminalSpaceMazeGame
             TN = textName;
             spawn(loc);
         }
-        public override void update()
-        {
-
-        }
         public override void LoadContent(ContentManager Content)
         {
             //load player texture

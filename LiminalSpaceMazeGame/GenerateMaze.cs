@@ -12,7 +12,7 @@ namespace LiminalSpaceMazeGame
             South,
             West
         }
-        protected static Random rnd = new Random();
+        private static Random rnd = new Random();
         public int[,] GenerateNewMaze(int mazeWidth, int mazeHeight)
         {
             //create maze using pre sizes

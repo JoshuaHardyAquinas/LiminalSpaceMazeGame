@@ -6,6 +6,7 @@ namespace LiminalSpaceMazeGame
 {
     internal class Key : Collectable
     {
+        private int value = 50;
         public Key(Vector2 spawnLoc, char type)
         {
             isCollected = false;
@@ -40,7 +41,7 @@ namespace LiminalSpaceMazeGame
         public override void collect(Hero theHero)
         {
             theHero.collected.Add(CollectableType);
-            theHero.points += 50;
+            theHero.points += value;
             isCollected = true;
         }
     }

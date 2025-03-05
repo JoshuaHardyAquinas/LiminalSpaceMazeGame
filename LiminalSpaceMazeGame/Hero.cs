@@ -171,7 +171,7 @@ namespace LiminalSpaceMazeGame
             Health = maxHealth;
         }
 
-        public NameValue upgrade(NameValue item, int levelNum, List<AudioSound> sound, bool play)
+        public NameValue Upgrade(NameValue item, int levelNum, List<AudioSound> sound, bool play)
         {
             if ((item.value * levelNum * item.used) <= points)
             {
@@ -195,11 +195,11 @@ namespace LiminalSpaceMazeGame
                     stamina = staminaMax;
                     break;
                 case "e":
-                    MaxHealth = (int)(staminaMax * Math.Sqrt(levelNum + 1));
+                    MaxHealth = (int)(MaxHealth * Math.Sqrt(levelNum + 1));
                     Health = maxHealth;
                     break;
             }
-            item.used = item.used + 1;
+            item.used ++;
             return item;
 
         }

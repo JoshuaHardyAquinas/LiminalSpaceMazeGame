@@ -10,7 +10,7 @@ namespace LiminalSpaceMazeGame
         private int maxValue;
         private int currentValue;
         private int Height;
-        Color barcolour;
+        private Color barcolour;
         private Rectangle rectangle;
         public bool display = true;
 

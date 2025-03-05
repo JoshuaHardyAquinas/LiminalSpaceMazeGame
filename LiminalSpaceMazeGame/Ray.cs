@@ -17,30 +17,13 @@ namespace LiminalSpaceMazeGame
         {
             Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, 1, 1);
         }
-        public override void LoadContent(ContentManager Content)
-        {
-            //load player texture
-            Texture = Content.Load<Texture2D>(@"ray");
-        }
-        protected override void checkDeath()
-        {
-            if (Health <= 0)//player dies if health reaches 0
-            {
-                //die
-            }
-        }
-        public override void draw(SpriteBatch spriteBatch)
-        {
-            //draw player including rotation
-            //spriteBatch.Draw(Texture, Location, new Rectangle(0, 0, Texture.Width, Texture.Height), Color.White, 0, new Vector2(Texture.Width / 2f, Texture.Height / 2f), new Vector2(1, 1), SpriteEffects.None, 1);
-        }
-        static public Vector2 cast(int angle, Hero TheHero, Ray TheRay, List<ObjInGame> ingameObjects, ref Vector2 centreDis, int maxCastLength, ref char objHit, char toHit, char wallType)
+        static public Vector2 Cast(int angle, Hero TheHero, Ray TheRay, List<ObjInGame> ingameObjects, ref Vector2 centreDis, int maxCastLength, ref char objHit, char toHit, char wallType)
         {
             float speed = 1f;
-            TheRay.setLocation(TheHero.getLocation());
+            TheRay.setLocation(TheHero.getLocation());//Set the rays location to the heros location and rotation
             TheRay.rotation = TheHero.rotation;
-            TheRay.rotation = TheRay.rotation + (angle / 180f) * 3.14159265f / 2;
-            TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
+            TheRay.rotation = TheRay.rotation + (angle / 180f) * 3.14159265f / 2;//set the angle of the ray to the direction taht needs casting to
+            TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));//set speed to a constant and then multiply later
             Vector2 startloc = TheRay.getLocation();
             while (true)
             {
@@ -68,7 +51,7 @@ namespace LiminalSpaceMazeGame
                 TheRay.Movement = new Vector2(-speed * (float)Math.Sin(TheRay.rotation), speed * (float)Math.Cos(TheRay.rotation));
                 if (Math.Abs(TheRay.getLocation().X - TheHero.getLocation().X) > maxCastLength || Math.Abs(TheRay.getLocation().Y - TheHero.getLocation().Y) > maxCastLength)
                 {
-                    return new Vector2(maxCastLength, maxCastLength);
+                    return new Vector2(maxCastLength, maxCastLength);//if the ray somehow exits the maze, 
                 }
             }
         }

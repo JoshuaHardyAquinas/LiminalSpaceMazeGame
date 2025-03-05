@@ -6,7 +6,7 @@ using System;
 
 namespace LiminalSpaceMazeGame
 {
-    public class wall3d : StationaryObject
+    public class Wall3d : StationaryObject
     {
         protected static Random rnd = new Random();
         private int Width;
@@ -16,7 +16,7 @@ namespace LiminalSpaceMazeGame
         public char type;
         private Vector2 centreDistance;
         public double distanceFromHero;
-        public wall3d(Vector2 displacement, int slice, Vector2 gameRes, Vector2 centreDis, char objHit)
+        public Wall3d(Vector2 displacement, int slice, Vector2 gameRes, Vector2 centreDis, char objHit)
         {
             distanceFromHero = Math.Sqrt(displacement.Y * displacement.Y + displacement.X * displacement.X);
             int wallHieght;
@@ -36,10 +36,6 @@ namespace LiminalSpaceMazeGame
             type = objHit;
             Height = Convert.ToInt32(wallHieght);
             setLocation(location);
-        }
-        public override void update()
-        {
-
         }
         public void LoadContent(ContentManager Content, bool ex)
         {

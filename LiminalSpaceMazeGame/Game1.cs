@@ -59,7 +59,7 @@ namespace LiminalSpaceMazeGame
         List<Wall> walls = new List<Wall>();
         List<ObjInGame> gameObjects = new List<ObjInGame>();
 
-        List<wall3d> walls3d = new List<wall3d>();
+        List<Wall3d> walls3d = new List<Wall3d>();
         List<Collectable> collectables = new List<Collectable>();
 
         public GraphicsDeviceManager _graphics;
@@ -242,7 +242,6 @@ namespace LiminalSpaceMazeGame
             //textures
             spriteBatch = new SpriteBatch(GraphicsDevice);
             TheHero.LoadContent(Content);
-            TheRay.LoadContent(Content);
             TheUI.LoadContent(Content);
             keyUI.LoadContent(Content);
             keyUI.drawUI = false;
@@ -447,7 +446,7 @@ namespace LiminalSpaceMazeGame
                         }
                         else if (TheHero.name.Length < 3 && (ks1.IsKeyDown(down) == !ks2.IsKeyDown(down))&& safe.Contains(down.ToString()))//add letters
                         {
-                                TheHero.name = TheHero.name + down.ToString();
+                            TheHero.name = TheHero.name + down.ToString();
                         }
                         Keys[] KeyLogs = ks1.GetPressedKeys();
 
@@ -483,13 +482,13 @@ namespace LiminalSpaceMazeGame
                                     currentState = GameState.level;
                                     break;
                                 case 'S':
-                                    ShopItems[0] = TheHero.upgrade(ShopItems[0], levelNumber,soundEffects, playfx);
+                                    ShopItems[0] = TheHero.Upgrade(ShopItems[0], levelNumber,soundEffects, playfx);
                                     break;
                                 case 'H':
-                                    ShopItems[1] = TheHero.upgrade(ShopItems[1], levelNumber, soundEffects, playfx);
+                                    ShopItems[1] = TheHero.Upgrade(ShopItems[1], levelNumber, soundEffects, playfx);
                                     break;
                                 case 's':
-                                    ShopItems[2] = TheHero.upgrade(ShopItems[2], levelNumber, soundEffects , playfx);
+                                    ShopItems[2] = TheHero.Upgrade(ShopItems[2], levelNumber, soundEffects , playfx);
                                     break;
                             }
                             break;
@@ -533,7 +532,7 @@ namespace LiminalSpaceMazeGame
                     HealthBar.update(TheHero.checkHealth(), TheHero.maxHealth);
                     ShieldBar.update(TheHero.shield, TheHero.ShieldMax);
                     TheHero.gainHealth(1);
-                    Vector2 centreDis = new Vector2(0, 0);
+                    Vector2 centreDis;
                     foreach (Collectable col in collectables)
                     {
                         col.update();
@@ -655,12 +654,12 @@ namespace LiminalSpaceMazeGame
                                 centreDis = TheHero.getLocation() - monster.getLocation();//make variable to determine the vector distance away from the center of  the wall in question                                                                                  
                                 if (Math.Abs(centreDis.X) > Math.Abs(centreDis.Y))//move monster away depending on what side is further on collision
                                 {
-                                    monster.setLocation(new Vector2(centreDis.X * -0.25f + monster.getLocation().X, monster.getLocation().Y));
+                                    monster.setLocation(new Vector2(centreDis.X * -0.25f*monster.Speed + monster.getLocation().X, monster.getLocation().Y));
                                     TheHero.setLocation(new Vector2(centreDis.X * +0.125f + TheHero.getLocation().X, TheHero.getLocation().Y));
                                 }
                                 else
                                 {
-                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.25f + monster.getLocation().Y));
+                                    monster.setLocation(new Vector2(monster.getLocation().X, centreDis.Y * -0.25f* monster.Speed + monster.getLocation().Y));
                                     TheHero.setLocation(new Vector2(TheHero.getLocation().X, centreDis.Y * +0.125f + TheHero.getLocation().Y));
                                 }
                                 TheHero.loseHealth(monster.Damage);
@@ -799,9 +798,7 @@ namespace LiminalSpaceMazeGame
                             {
                                 if (Playerleaderboards[j].value <= Playerleaderboards[j + 1].value)
                                 {
-                                    NameValue temp = Playerleaderboards[j];
-                                    Playerleaderboards[j] = Playerleaderboards[j + 1];
-                                    Playerleaderboards[j + 1] = temp;
+                                    (Playerleaderboards[j + 1], Playerleaderboards[j]) = (Playerleaderboards[j], Playerleaderboards[j + 1]);
                                 }
                             }
                         }
@@ -959,7 +956,6 @@ namespace LiminalSpaceMazeGame
                 Key newKey = new Key(new Vector2(40, 120), 'K');
                 newKey.LoadContent(Content);
                 collectables.Add(newKey);
-                keyCount++;
             }
         }
 
@@ -1063,8 +1059,8 @@ namespace LiminalSpaceMazeGame
                             TheRay.draw(spriteBatch);
                             break;
                         case Dimension.D3://3d representation
-                            List<wall3d> CURRENT = new List<wall3d>();
-                            foreach (wall3d wall in walls3d)
+                            List<Wall3d> CURRENT = new List<Wall3d>();
+                            foreach (Wall3d wall in walls3d)
                             {
                                 if (wall.type == wallType)
                                 {
@@ -1072,7 +1068,7 @@ namespace LiminalSpaceMazeGame
                                 }
                                 CURRENT.Add(wall);
                             }
-                            foreach (wall3d wall in walls3d)
+                            foreach (Wall3d wall in walls3d)
                             {
                                 if (wall.type == 'E')
                                 {
@@ -1086,13 +1082,11 @@ namespace LiminalSpaceMazeGame
                                 {
                                     if (walls3d[j].distanceFromHero < walls3d[j + 1].distanceFromHero)
                                     {
-                                        wall3d temp = walls3d[j];
-                                        walls3d[j] = walls3d[j + 1];
-                                        walls3d[j + 1] = temp;
+                                        (walls3d[j + 1], walls3d[j]) = (walls3d[j], walls3d[j + 1]);
                                     }
                                 }
                             }
-                            foreach (wall3d wall in walls3d)
+                            foreach (Wall3d wall in walls3d)
                             {
                                 if (wall.type != wallType && wall.type != 'E')
                                 {
@@ -1101,11 +1095,11 @@ namespace LiminalSpaceMazeGame
                                 CURRENT.Add(wall);
                             }
 
-                            foreach (wall3d wall in walls3d)
+                            foreach (Wall3d wall in walls3d)
                             {
                                 if (wall.type != wallType && wall.type != 'E')
                                 {
-                                    foreach (wall3d pre in CURRENT)
+                                    foreach (Wall3d pre in CURRENT)
                                     {
                                         if (wall.getLocation().X == pre.getLocation().X)
                                         {
@@ -1155,16 +1149,16 @@ namespace LiminalSpaceMazeGame
             spriteBatch.End();
             base.Draw(gameTime);
         }
-        public void rayCast(int castLength, char toHit)
+        public void rayCast(int castLength, char toHit)//set up each ray to cast and then create a new slice
         {
             for (int i = -TheHero.FOV; i < TheHero.FOV; i++)
             {
                 char objHit = ' ';
                 Vector2 centreDis = new Vector2(0, 0);
-                Vector2 distanceTraveled = Ray.cast(i, TheHero, TheRay, gameObjects, ref centreDis, castLength, ref objHit, toHit, wallType);
+                Vector2 distanceTraveled = Ray.Cast(i, TheHero, TheRay, gameObjects, ref centreDis, castLength, ref objHit, toHit, wallType);//process new cast distance
                 if (distanceTraveled != new Vector2(castLength, castLength))
                 {
-                    wall3d newSlice = new wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit); //wall3d.generate3dWall(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);
+                    Wall3d newSlice = new Wall3d(distanceTraveled, i + TheHero.FOV, gameResolution, centreDis, objHit);//add to a list to turn into a textured 3d slice later
                     newSlice.LoadContent(Content, toExit);
                     walls3d.Add(newSlice);
                 }

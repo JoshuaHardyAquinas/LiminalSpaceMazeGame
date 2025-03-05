@@ -67,10 +67,9 @@ namespace LiminalSpaceMazeGame
                         }
                     }
                 }
-                follow();
                 memory = memoryStrength / Speed;
             }
-            else if (memory > 0)
+            else if (lineOfSight == true)
             {
                 previous = Direction.none;
                 follow();

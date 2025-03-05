@@ -6,6 +6,7 @@ namespace LiminalSpaceMazeGame
 {
     internal class CoinItem : Collectable
     {
+        private int value = 100;
         public CoinItem(Vector2 spawnLoc, char type)
         {
             isCollected = false;
@@ -38,7 +39,7 @@ namespace LiminalSpaceMazeGame
         }
         public override void collect(Hero theHero)
         {
-            theHero.points += 100;
+            theHero.points += value;
             isCollected = true;
         }
     }
