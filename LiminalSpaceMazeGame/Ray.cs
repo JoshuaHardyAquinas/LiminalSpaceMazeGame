@@ -1,6 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using static LiminalSpaceMazeGame.Game1;
@@ -9,16 +7,17 @@ namespace LiminalSpaceMazeGame
 {
     internal class Ray : MovingObject
     {
-        public Ray()
+        public Ray()//no constructor needed
         {
 
         }
-        public override void update()
+        public override void update()//give ray an edge of 1*1
         {
             Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, 1, 1);
         }
         static public Vector2 Cast(int angle, Hero TheHero, Ray TheRay, List<ObjInGame> ingameObjects, ref Vector2 centreDis, int maxCastLength, ref char objHit, char toHit, char wallType)
         {
+            //setup ray
             float speed = 1f;
             TheRay.setLocation(TheHero.getLocation());//Set the rays location to the heros location and rotation
             TheRay.rotation = TheHero.rotation;

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class Collectable : StationaryObject
+    abstract class Collectable : StationaryObject//abstract class for all collectables, can be extended into objects like the coin and the key and more in the future
     {
         public char CollectableType;
         public bool isCollected;
@@ -14,7 +14,7 @@ namespace LiminalSpaceMazeGame
         }
         public override void update()
         {
-            if (isCollected)
+            if (isCollected)//set outside the map if it was collected
             {
                 setLocation(new Vector2(-40, -40));
                 Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, objWidth, objHeight);
@@ -23,7 +23,7 @@ namespace LiminalSpaceMazeGame
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            if (!isCollected)
+            if (!isCollected)//draw if not collected
             {
                 spriteBatch.Draw(Texture, new Rectangle((int)getLocation().X, (int)getLocation().Y, objWidth, objHeight), null, Color.White);
             }
@@ -35,6 +35,7 @@ namespace LiminalSpaceMazeGame
         }
         public virtual void collect(Hero theHero)
         {
+            //generic collect 
             theHero.collected.Add(CollectableType);
             isCollected = true;
         }

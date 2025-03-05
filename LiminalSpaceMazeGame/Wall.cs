@@ -13,10 +13,6 @@ namespace LiminalSpaceMazeGame
             objWidth = 40;
             objHeight = 40;
         }
-        public override void update()
-        {
-
-        }
         public override void LoadContent(ContentManager Content)
         {
             //texture and hitbox

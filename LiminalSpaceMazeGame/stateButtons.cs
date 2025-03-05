@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using static LiminalSpaceMazeGame.Game1;
 
 namespace LiminalSpaceMazeGame

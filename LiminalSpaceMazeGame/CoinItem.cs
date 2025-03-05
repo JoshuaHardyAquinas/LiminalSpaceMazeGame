@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class CoinItem : Collectable
+    internal class CoinItem : Collectable//class for coin extended from generic class
     {
         private int value = 100;
         public CoinItem(Vector2 spawnLoc, char type)
@@ -30,14 +30,14 @@ namespace LiminalSpaceMazeGame
             base.LoadContent(Content);
             try
             {
-                Texture = Content.Load<Texture2D>(@"Coin");
+                Texture = Content.Load<Texture2D>(@"Coin");//coin texture
             }
             catch
             {
                 Texture = Content.Load<Texture2D>(@"nullVoidDead");
             }
         }
-        public override void collect(Hero theHero)
+        public override void collect(Hero theHero)//changed what is done when collected
         {
             theHero.points += value;
             isCollected = true;

@@ -75,6 +75,7 @@ namespace LiminalSpaceMazeGame
                 speedMultiplyer = 2;
                 stamina = stamina - 20;
             }
+            //stamina cooldown logic
             if (stamina < 0)
             {
                 cooldown = true;
@@ -135,7 +136,7 @@ namespace LiminalSpaceMazeGame
         }
         public void loseHealth(int value)
         {
-            if (shield > 0)
+            if (shield > 0)//lose health/ shield
             {
                 shield -= value;
                 if (shield < 0)
@@ -145,7 +146,6 @@ namespace LiminalSpaceMazeGame
                 }
             }
             Health -= value;
-
         }
         public int checkHealth()
         {
@@ -158,8 +158,9 @@ namespace LiminalSpaceMazeGame
 
         public void gainHealth(int value)
         {
+            //increment health
             Health += value;
-            if (Health > maxHealth)
+            if (Health > maxHealth)//do not exede max health
             {
                 Health = maxHealth;
             }
@@ -173,6 +174,7 @@ namespace LiminalSpaceMazeGame
 
         public NameValue Upgrade(NameValue item, int levelNum, List<AudioSound> sound, bool play)
         {
+            //check if the user has enough points and deduct
             if ((item.value * levelNum * item.used) <= points)
             {
                 sound[1].play(play);
@@ -184,7 +186,7 @@ namespace LiminalSpaceMazeGame
                 return item;
             }
 
-            switch (item.name[1].ToString())
+            switch (item.name[1].ToString())//complete upgrade to the stat taht was selected
             {
                 case "h":
                     ShieldMax += ShieldStart;
@@ -205,6 +207,7 @@ namespace LiminalSpaceMazeGame
         }
         public void reset()
         {
+            //reset all stats of teh hero to thier default value
             maxHealth = startHealth;
             Health = maxHealth;
             MaxShield = ShieldStart;

@@ -55,7 +55,7 @@ namespace LiminalSpaceMazeGame
                 dead = false;
             }
 
-            if (lineOfSight == true && disToGo == 0)// direct follow movement
+            if (lineOfSight == true && disToGo == 0)//reset map if changing to direct follow
             {
                 for (int i = 0; i > 17; i++)
                 {
@@ -69,7 +69,7 @@ namespace LiminalSpaceMazeGame
                 }
                 memory = memoryStrength / Speed;
             }
-            else if (lineOfSight == true)
+            else if (lineOfSight == true)//direct folow
             {
                 previous = Direction.none;
                 follow();
@@ -79,7 +79,7 @@ namespace LiminalSpaceMazeGame
             {
                 move(theHero);
             }
-            if (memory == 1)
+            if (memory == 1)//reset to wander
             {
                 nextCoords[0] = (int)((getLocation().X + 20) / 40);
                 nextCoords[1] = (int)((getLocation().Y + 20) / 40);
@@ -91,13 +91,13 @@ namespace LiminalSpaceMazeGame
         }
         private void follow()
         {
-            Movement.X = 1.1f * (float)Math.Sin(rotation);// --//--
+            Movement.X = 1.1f * (float)Math.Sin(rotation);// trig for direct follow
             Movement.Y = -1.1f * (float)Math.Cos(rotation);
         }
         private void move(Hero theHero)
         {
             Random rnd = new Random();
-
+            // if you still need to move to a node, continue
             if (disToGo > 0)
             {
                 disToGo--;
@@ -105,9 +105,11 @@ namespace LiminalSpaceMazeGame
                 Movement = distance;
                 return;
             }
+            //set current coords to where they should be if off
             currentCoords[0] = nextCoords[0];
             currentCoords[1] = nextCoords[1];
             setLocation(new Vector2(currentCoords[0] * 40, currentCoords[1] * 40));
+            //reset distance to go
             disToGo = 40f / Speed;
             Direction[] dir = {
                 Direction.North,
@@ -242,8 +244,8 @@ namespace LiminalSpaceMazeGame
         }
         public void loseHealth(int toLose)
         {
-            health -= toLose;//teleport outside the map and disable monster 
-            if (health <= 0)
+            health -= toLose;
+            if (health <= 0)//respawn monster and reset its map view
             {
                 dead = true;
                 for (int i = 0; i < 16; i++)
@@ -256,7 +258,8 @@ namespace LiminalSpaceMazeGame
                         }
                     }
                 }
-                disToGo = 160;
+                disToGo = 160;//delay movment after respawn
+                //reset stats
                 spawn(spawnLoc);
                 health = maxHealth;
                 currentCoords[0] = (int)spawnLoc.X / 40;

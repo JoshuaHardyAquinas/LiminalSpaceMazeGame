@@ -4,11 +4,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace LiminalSpaceMazeGame
 {
-    internal class Key : Collectable
+    internal class Key : Collectable//object class for the key
     {
         private int value = 50;
         public Key(Vector2 spawnLoc, char type)
         {
+            //set up key
             isCollected = false;
             spawn(spawnLoc - new Vector2(10, 10));
             CollectableType = type;
@@ -40,6 +41,7 @@ namespace LiminalSpaceMazeGame
         }
         public override void collect(Hero theHero)
         {
+            //add to hero list if collected and disable object
             theHero.collected.Add(CollectableType);
             theHero.points += value;
             isCollected = true;

@@ -9,13 +9,14 @@ namespace LiminalSpaceMazeGame
     {
         public bool Available = false;
         public int textureNumber = 1;
-        public ExitDoor(Vector2 loc)
+        public ExitDoor(Vector2 loc)//spawn daw and give a default edge
         {
             spawn(loc);
             Edge = new Rectangle((int)getLocation().X, (int)getLocation().Y, 30, 30);
         }
         public bool update(List<char> collected)
         {
+            //check if the player has a key, if so change texture and allow door open
             foreach (char collectable in collected)
             {
                 if (collectable == 'K')
@@ -23,7 +24,7 @@ namespace LiminalSpaceMazeGame
                     Available = true;
                 }
             }
-            if (Available == true)
+            if (Available == true)//set texture
             {
                 textureNumber = 2;
             }

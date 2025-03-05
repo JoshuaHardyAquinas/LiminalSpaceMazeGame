@@ -14,8 +14,9 @@ namespace LiminalSpaceMazeGame
         private Rectangle rectangle;
         public bool display = true;
 
-        public UILoadingBar(Vector2 startingLocation, int maxV, int maxL, int height, Color colour)
+        public UILoadingBar(Vector2 startingLocation, int maxV, int maxL, int height, Color colour)//used for health stamina exetera, dynamic scrolling cor current and changing max data values with constant maximum lengths
         {
+            //set up data
             barcolour = colour;
             maxLength = maxL;
             maxValue = maxV;
@@ -24,11 +25,13 @@ namespace LiminalSpaceMazeGame
         }
         public void update(int current)
         {
+            //set new bounds for bars
             currentValue = (current * maxLength) / maxValue;
             rectangle = new Rectangle((int)getLocation().X, (int)getLocation().Y, currentValue, Height);
         }
         public void update(int current, int newmax)
         {
+            //set new max value
             maxValue = newmax;
             update(current);
         }
@@ -39,7 +42,7 @@ namespace LiminalSpaceMazeGame
         }
         public override void draw(SpriteBatch spriteBatch)
         {
-            if (display)
+            if (display)//only display if necesary
             {
                 spriteBatch.Draw(Texture, rectangle, new Rectangle(0, 0, 100, 50), Color.White);
             }

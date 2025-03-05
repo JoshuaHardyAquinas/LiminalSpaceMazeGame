@@ -18,35 +18,36 @@ namespace LiminalSpaceMazeGame
         public double distanceFromHero;
         public Wall3d(Vector2 displacement, int slice, Vector2 gameRes, Vector2 centreDis, char objHit)
         {
+            //find distance of slice to hero
             distanceFromHero = Math.Sqrt(displacement.Y * displacement.Y + displacement.X * displacement.X);
             int wallHieght;
-            try
+            try//trycatch to stop infinatly tall or small walls
             {
                 wallHieght = Convert.ToInt32(8192 / distanceFromHero); //reciprocal function to convert distance of the wall from the player to teh wall height
             }
-            catch
+            catch//set them as non existant walls (they will not render)
             {
                 wallHieght = 0;
             }
 
-
-            centreDistance = centreDis;
+            centreDistance = centreDis;//save value to object
 
             Vector2 location = new Vector2(slice * 4, gameRes.Y / 2 - (float)wallHieght / 2);//move slice to specific place on screen
-            type = objHit;
+            type = objHit;//what obj was hit
             Height = Convert.ToInt32(wallHieght);
             setLocation(location);
         }
         public void LoadContent(ContentManager Content, bool ex)
         {
+            //create wall textures
             Width = 40;
             switch (type)
             {
-                case 'M':
+                case 'M'://shift so we can have repeating textures and textures that work in all directions
                     Texture = Content.Load<Texture2D>(@"216123");
                     Width = 50;
                     break;
-                case 'E':
+                case 'E'://exit open/closed
                     if (ex)
                     {
                         Texture = Content.Load<Texture2D>(@"exitOpen");
@@ -62,7 +63,7 @@ namespace LiminalSpaceMazeGame
                 case 'C':
                     Texture = Content.Load<Texture2D>(@"Coin_3d");
                     break;
-                case 'W':
+                case 'W'://wall types
                     Texture = Content.Load<Texture2D>(@"3dWall1");
                     break;
                 case 'w':
@@ -72,7 +73,7 @@ namespace LiminalSpaceMazeGame
                     Texture = Content.Load<Texture2D>(@"3dWall3");
                     break;
                 default:
-                    Texture = Content.Load<Texture2D>(@"nullVoidDead");//load wall texture for wall slices
+                    Texture = Content.Load<Texture2D>(@"nullVoidDead");//null if fails
                     break;
             }
         }
