@@ -171,6 +171,7 @@ namespace LiminalSpaceMazeGame
                 newItem.value = int.Parse(readin[1]);
                 Playerleaderboards.Add(newItem);
             }
+            //kill off streamreader
             sr.Close();
             sr.Dispose();
 
@@ -179,6 +180,7 @@ namespace LiminalSpaceMazeGame
             TheHero = new Hero(90, 1000, 100);
             TheMaze = new GenerateMaze();
             TheRay = new Ray();
+            //ui
             TheUI = new UI(new Vector2(0, 670), "ui");
             crosshair = new UI(new Vector2(340, 340), "crosshair");
             keyUI = new UI(new Vector2(TheUI.getLocation().X + 539f, TheUI.getLocation().Y + 5f), "key");
@@ -188,6 +190,7 @@ namespace LiminalSpaceMazeGame
             ShieldBar = new UILoadingBar(new Vector2(TheUI.getLocation().X + 165F, TheUI.getLocation().Y + 18f), TheHero.ShieldMax, 94, 27, Color.Blue);
             MonsterHealthBar = new UILoadingBar(new Vector2(crosshair.getLocation().X, crosshair.getLocation().Y + 25f), monsterHealth, 20, 6, Color.Red);
             sensitivityBar = new UILoadingBar(new Vector2(185, 170), 64, 350, 101, Color.OrangeRed);
+            //menus
             startMenu = new stateClass();
             ShopMenu = new stateClass();
             SettingsMenu = new stateClass();
@@ -461,6 +464,7 @@ namespace LiminalSpaceMazeGame
                 case GameState.Leaderboard:
                     foreach (stateButtons button in stateButtonList)
                     {
+                        //allow exit from leaderboard
                         if (button.activeState == currentState && button.Edge.Intersects(mousePosition) && (mouseState.LeftButton == ButtonState.Pressed && mouseState2.LeftButton == ButtonState.Released) && button.buttonAction == 'E')
                         {
                             soundEffects[0].play(playfx);
@@ -589,7 +593,7 @@ namespace LiminalSpaceMazeGame
                                 soundEffects[5].play(playfx);
 
                                 TheHero.Stamina -= 100;
-                                if (monster.shootable)
+                                if (monster.shootable)//shoot monster if possible
                                 {
                                     monster.loseHealth(TheHero.Damage);
                                     if (monster.gethealth() < 0)
@@ -719,6 +723,7 @@ namespace LiminalSpaceMazeGame
                     }
                     if (CurrentDimension == Dimension.D3)//raycast all objects in order if in 3d mode
                     {
+                        //it is doen like this to allow objects to be seen behind eachother
                         walls3d.Clear();//clear wall list
                         foreach (var wall in walls)
                         {
@@ -728,7 +733,7 @@ namespace LiminalSpaceMazeGame
                             newObj.name = wallType;
                             gameObjects.Add(newObj);
                         }
-                        rayCast(660, wallType);
+                        rayCast(660, wallType);//cast for walls
                         foreach (var coll in collectables)
                         {
                             if (coll.CollectableType == 'K')
@@ -740,7 +745,7 @@ namespace LiminalSpaceMazeGame
                                 gameObjects.Add(newObj);
                             }
                         }
-                        rayCast(400, 'K');
+                        rayCast(400, 'K');//cast fro keys
                         foreach (var coll in collectables)
                         {
                             if (coll.CollectableType == 'C')
@@ -752,7 +757,7 @@ namespace LiminalSpaceMazeGame
                                 gameObjects.Add(newObj);
                             }
                         }
-                        rayCast(400, 'C');
+                        rayCast(400, 'C');//cast for coins
                         foreach (var exit in Exits)
                         {
                             ObjInGame newObj = new ObjInGame();
@@ -761,7 +766,7 @@ namespace LiminalSpaceMazeGame
                             newObj.name = 'E';
                             gameObjects.Add(newObj);
                         }
-                        rayCast(400, 'E');
+                        rayCast(400, 'E');//cast for exits
                         foreach (var monster in monsters)
                         {
                             if (!monster.dead)
@@ -773,7 +778,7 @@ namespace LiminalSpaceMazeGame
                                 gameObjects.Add(newObj);
                             }
                         }
-                        rayCast(400, 'M');
+                        rayCast(400, 'M');//cast for monsters
 
                         gameObjects.Clear();
                     }
@@ -999,20 +1004,22 @@ namespace LiminalSpaceMazeGame
                     spriteBatch.DrawString(GameFont, (ShopItems[2].value * ShopItems[2].used * levelNumber).ToString(), new Vector2(345, 435), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
                     break;
                 case GameState.level:
+                    //draw elevator
                     this.IsMouseVisible = true;
                     levelDisplay.draw(spriteBatch);
                     spriteBatch.DrawString(GameFont, levelNumber.ToString(), new Vector2(levelDisplay.getLocation().X + 480, levelDisplay.getLocation().Y + 1144), Color.White, 0f, new Vector2(1, 1), 2f, SpriteEffects.None, 1);
                     
                     break;
                 case GameState.Settings:
+                    //draw settings menu
                     this.IsMouseVisible = true;
                     SettingsMenu.draw(spriteBatch);
                     sensitivityBar.draw(spriteBatch);
-                    if (TheHero.name != null)
+                    if (TheHero.name != null)//draw name if name is not null
                     {
                         spriteBatch.DrawString(GameFont, TheHero.name, new Vector2(290, 375), Color.Black, 0f, new Vector2(1, 1), 1.75f, SpriteEffects.None, 1);
                     }
-                    if (playsong)
+                    if (playsong)//red or green for enabled or disabled
                     {
                         spriteBatch.DrawString(GameFont, "music", new Vector2(180, 500), Color.Green, 0f, new Vector2(1, 1), 2.25f, SpriteEffects.None, 1);
                     }
